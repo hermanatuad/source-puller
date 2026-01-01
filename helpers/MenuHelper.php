@@ -174,16 +174,16 @@ class MenuHelper
         // Standard user links
         $menuItems[] = [
             'label' => '<i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span>',
-            'url' => ['pages-profile']
+            'url' => ['user/profile']
         ];
-        $menuItems[] = [
-            'label' => '<i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span>',
-            'url' => ['apps-chat']
-        ];
-        $menuItems[] = [
-            'label' => '<i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span>',
-            'url' => ['apps-tasks-kanban']
-        ];
+        // $menuItems[] = [
+        //     'label' => '<i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span>',
+        //     'url' => ['apps-chat']
+        // ];
+        // $menuItems[] = [
+        //     'label' => '<i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span>',
+        //     'url' => ['apps-tasks-kanban']
+        // ];
         $menuItems[] = [
             'label' => '<i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span>',
             'url' => ['pages-faqs']

@@ -1,12 +1,12 @@
 <?php
 
 $this->params['breadcrumbs'] = [
-	['label' => Yii::t('app', 'Audit Mutu Internal'), 'url' => ['index']],
+	['label' => Yii::t('app', 'Testing Page'), 'url' => ['index']],
 	'Testing',
 ];
 
 $this->params['pagetitle'] = 'Testing';
-$this->params['title'] = 'Audit Mutu Internal';
+$this->params['title'] = 'Testing Page';
 $this->title = $this->params['title'];
 
 ?>

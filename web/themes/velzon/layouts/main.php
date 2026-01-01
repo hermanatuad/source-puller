@@ -52,7 +52,6 @@ YiiAsset::register($this);
 </head>
 
 <body>
-    <?= Alert::widget() ?>
 
     <!-- Begin page -->
     <div id="layout-wrapper">
@@ -74,6 +73,9 @@ YiiAsset::register($this);
                     ?>
 
                     <div class="row">
+                        
+                        <?= Alert::widget() ?>
+
                         <?= $content ?>
                     </div>
                 </div>

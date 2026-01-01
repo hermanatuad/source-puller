@@ -21,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $whatsapp_number
  * @property string $auth_key
  * @property integer $status
+ * @property string $access_role
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -30,6 +31,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
+
+    public $password;
+    public $password_confirm;
 
     /**
      * {@inheritdoc}
@@ -47,6 +51,51 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                // Generate UUID for new users
+                if (empty($this->id)) {
+                    $this->id = $this->generateUUID();
+                }
+                
+                // Generate auth_key for new users if not set
+                if (empty($this->auth_key)) {
+                    $this->generateAuthKey();
+                }
+            }
+            // Hash password if it's been set
+            if (!empty($this->password)) {
+                $this->setPassword($this->password);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Generate UUID v4
+     * @return string
+     */
+    public function generateUUID()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 
     /**
@@ -77,7 +126,18 @@ class User extends ActiveRecord implements IdentityInterface
 
             [['phone_number', 'whatsapp_number'], 'trim'],
             [['phone_number', 'whatsapp_number'], 'string', 'max' => 20],
+
+            ['access_role', 'trim'],
+            ['access_role', 'string', 'max' => 50],
             [['phone_number', 'whatsapp_number'], 'match', 'pattern' => '/^[0-9+\-\s()]+$/', 'message' => 'Only numbers, +, -, spaces, and parentheses are allowed.'],
+
+            ['password', 'string', 'min' => 6],
+            ['password', 'required', 'on' => 'create'],
+            
+            ['password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords do not match'],
+            ['password_confirm', 'required', 'when' => function($model) {
+                return !empty($model->password);
+            }, 'message' => 'Please confirm your password'],
         ];
     }
 

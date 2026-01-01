@@ -4,7 +4,7 @@
 
 <head>
 
-    <?php echo $this->render('title-meta', array('title'=>'404 Error Cover')); ?>
+    <?php echo $this->render('title-meta', array('title'=>'Page not found')); ?>
 
     <?php echo $this->render('head-css'); ?>
 

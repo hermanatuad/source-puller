@@ -323,22 +323,28 @@
                 <div class="dropdown ms-sm-3 header-item topbar-user">
                     <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle header-profile-user" src="/images/users/avatar-1.jpg" alt="Header Avatar">
-                            <span class="text-start ms-xl-2">
-                                <?php
-                                $userName = 'Guest';
-                                $userRole = 'Guest';
-                                if (!Yii::$app->user->isGuest) {
-                                    $user = Yii::$app->user->identity;
-                                    $userName = $user->name ?: $user->username;
+                            <?php
+                            $userName = 'Guest';
+                            $userRole = 'Guest';
+                            $userInitial = 'G';
+                            if (!Yii::$app->user->isGuest) {
+                                $user = Yii::$app->user->identity;
+                                $userName = $user->name ?: $user->username;
+                                $userInitial = strtoupper(substr($userName, 0, 1));
 
-                                    // Get user role
-                                    $roles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->id);
-                                    if (!empty($roles)) {
-                                        $userRole = ucfirst(array_keys($roles)[0]);
-                                    }
+                                // Get user role
+                                $roles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->id);
+                                if (!empty($roles)) {
+                                    $userRole = ucfirst(array_keys($roles)[0]);
                                 }
-                                ?>
+                            }
+                            ?>
+                            <div class="avatar-xs">
+                                <div class="avatar-title rounded-circle bg-primary-subtle text-primary">
+                                    <?= $userInitial ?>
+                                </div>
+                            </div>
+                            <span class="text-start ms-xl-2">
                                 <span class="d-none d-xl-inline-block ms-1 fw-semibold user-name-text"><?= \yii\helpers\Html::encode($userName) ?></span>
                                 <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text"><?= \yii\helpers\Html::encode($userRole) ?></span>
                             </span>

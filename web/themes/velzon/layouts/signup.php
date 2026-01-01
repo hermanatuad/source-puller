@@ -3,7 +3,7 @@
 
 <head>
 
-    <?php echo $this->render('title-meta', array('title'=>'Sign Up')); ?>
+    <?php echo $this->render('title-meta', array('title' => 'Sign Up')); ?>
 
     <?php echo $this->render('head-css'); ?>
 
@@ -64,71 +64,90 @@
                                     <div class="p-lg-5 p-4">
                                         <div>
                                             <h5 class="text-primary">Register Account</h5>
-                                            <p class="text-muted">Get your Free Velzon account now.</p>
+                                            <p class="text-muted">Get your free account now.</p>
                                         </div>
 
+                                        <?php if (Yii::$app->session->hasFlash('success')): ?>
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                <?= Yii::$app->session->getFlash('success') ?>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        <?php endif; ?>
+
                                         <div class="mt-4">
-                                            <form class="needs-validation" novalidate action="/">
+                                            <?php
 
-                                                <div class="mb-3">
-                                                    <label for="useremail" class="form-label">Email <span class="text-danger">*</span></label>
-                                                    <input type="email" class="form-control" id="useremail" placeholder="Enter email address" required>
-                                                    <div class="invalid-feedback">
-                                                        Please enter email
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" id="username" placeholder="Enter username" required>
-                                                    <div class="invalid-feedback">
-                                                        Please enter username
-                                                    </div>
-                                                </div>
+                                            use richardfan\widget\JSRegister;
+                                            use yii\helpers\Html;
+                                            use yii\widgets\ActiveForm;
 
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="password-input">Password</label>
-                                                    <div class="position-relative auth-pass-inputgroup">
-                                                        <input type="password" class="form-control pe-5 password-input" onpaste="return false" placeholder="Enter password" id="password-input" aria-describedby="passwordInput" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
-                                                        <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon"><i class="ri-eye-fill align-middle"></i></button>
-                                                        <div class="invalid-feedback">
-                                                            Please enter password
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            $form = ActiveForm::begin([
+                                                'id' => 'signup-form',
+                                                'options' => ['class' => 'needs-validation'],
+                                                'enableClientValidation' => true,
+                                            ]);
+                                            ?>
 
-                                                <div class="mb-4">
-                                                    <p class="mb-0 fs-12 text-muted fst-italic">By registering you agree to the Velzon <a href="#" class="text-primary text-decoration-underline fst-normal fw-medium">Terms of Use</a></p>
-                                                </div>
+                                            <div class="mb-3">
+                                                <?= $form->field($model, 'email')->textInput([
+                                                    'class' => 'form-control',
+                                                    'placeholder' => 'Enter email address',
+                                                    'type' => 'email',
+                                                ])->label('Email <span class="text-danger">*</span>') ?>
+                                            </div>
 
-                                                <div id="password-contain" class="p-3 bg-light mb-2 rounded">
-                                                    <h5 class="fs-13">Password must contain:</h5>
-                                                    <p id="pass-length" class="invalid fs-12 mb-2">Minimum <b>8 characters</b></p>
-                                                    <p id="pass-lower" class="invalid fs-12 mb-2">At <b>lowercase</b> letter (a-z)</p>
-                                                    <p id="pass-upper" class="invalid fs-12 mb-2">At least <b>uppercase</b> letter (A-Z)</p>
-                                                    <p id="pass-number" class="invalid fs-12 mb-0">A least <b>number</b> (0-9)</p>
-                                                </div>
+                                            <div class="mb-3">
+                                                <?= $form->field($model, 'username')->textInput([
+                                                    'class' => 'form-control',
+                                                    'placeholder' => 'Enter username',
+                                                ])->label('Username <span class="text-danger">*</span>') ?>
+                                            </div>
 
-                                                <div class="mt-4">
-                                                    <button class="btn btn-primary w-100" type="submit">Sign Up</button>
-                                                </div>
+                                            <div class="mb-3">
+                                                <?= $form->field($model, 'name')->textInput([
+                                                    'class' => 'form-control',
+                                                    'placeholder' => 'Enter your full name (optional)',
+                                                ])->label('Full Name <span class="text-danger">*</span>') ?>
+                                            </div>
 
-                                                <div class="mt-4 text-center">
-                                                    <div class="signin-other-title">
-                                                        <h5 class="fs-13 mb-4 title text-muted">Create account with</h5>
-                                                    </div>
-
-                                                    <div>
-                                                        <button type="button" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></button>
-                                                        <button type="button" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></button>
-                                                        <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-                                                        <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
-                                                    </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Password <span class="text-danger">*</span></label>
+                                                <div class="position-relative auth-pass-inputgroup">
+                                                    <?= $form->field($model, 'password', [
+                                                        'template' => '{input}{error}',
+                                                        'options' => ['class' => '']
+                                                    ])->passwordInput([
+                                                        'class' => 'form-control pe-5 password-input',
+                                                        'placeholder' => 'Enter password',
+                                                        'id' => 'password-input',
+                                                    ]) ?>
+                                                    <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon" type="button" id="password-addon">
+                                                        <i class="ri-eye-fill align-middle"></i>
+                                                    </button>
                                                 </div>
-                                            </form>
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <p class="mb-0 fs-12 text-muted fst-italic">By registering you agree to our Terms of Use</p>
+                                            </div>
+
+                                            <div id="password-contain" class="p-3 bg-light mb-2 rounded">
+                                                <h5 class="fs-13">Password must contain:</h5>
+                                                <p id="pass-length" class="invalid fs-12 mb-2">Minimum <b>8 characters</b></p>
+                                                <p id="pass-lower" class="invalid fs-12 mb-2">At least <b>lowercase</b> letter (a-z)</p>
+                                                <p id="pass-upper" class="invalid fs-12 mb-2">At least <b>uppercase</b> letter (A-Z)</p>
+                                                <p id="pass-number" class="invalid fs-12 mb-0">At least <b>number</b> (0-9)</p>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary w-100']) ?>
+                                            </div>
+
+                                            <?php ActiveForm::end(); ?>
                                         </div>
 
                                         <div class="mt-5 text-center">
-                                            <p class="mb-0">Already have an account ? <a href="auth-signin-cover" class="fw-semibold text-primary text-decoration-underline"> Signin</a> </p>
+                                            <p class="mb-0">Already have an account? <?= Html::a('Sign in', ['site/signin'], ['class' => 'fw-semibold text-primary text-decoration-underline']) ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +171,9 @@
                     <div class="col-lg-12">
                         <div class="text-center">
                             <p class="mb-0">&copy;
-                                <script>document.write(new Date().getFullYear())</script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script> Velzon. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
                             </p>
                         </div>
                     </div>
@@ -165,10 +186,27 @@
 
     <?php echo $this->render('vendor-scripts'); ?>
 
-    <!-- validation init -->
-    <script src="/js/pages/form-validation.init.js"></script>
     <!-- password create init -->
     <script src="/js/pages/passowrd-create.init.js"></script>
+    <?php JSRegister::begin(); ?>
+    <script>
+        // Password toggle
+        document.getElementById('password-addon').addEventListener('click', function() {
+            var passwordInput = document.getElementById('password-input');
+            var icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('ri-eye-fill');
+                icon.classList.add('ri-eye-off-fill');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('ri-eye-off-fill');
+                icon.classList.add('ri-eye-fill');
+            }
+        });
+    </script>
+    <?php JSRegister::end(); ?>
 </body>
 
 </html>

@@ -121,8 +121,42 @@
                                             <?php ActiveForm::end(); ?>
                                         </div>
 
+                                        <div class="mt-4 text-center">
+                                            <div class="signin-other-title">
+                                                <h5 class="fs-13 mb-4 title">Or sign in with</h5>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn-soft-success w-100">
+                                                        <i class="ri-whatsapp-line fs-16 align-middle me-2"></i>
+                                                        <span class="align-middle">WhatsApp</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn-soft-danger w-100">
+                                                        <i class="ri-google-fill fs-16 align-middle me-2"></i>
+                                                        <span class="align-middle">Google</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn-soft-info w-100">
+                                                        <i class="ri-telegram-line fs-16 align-middle me-2"></i>
+                                                        <span class="align-middle">Telegram</span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" class="btn btn-soft-dark w-100">
+                                                        <i class="ri-github-fill fs-16 align-middle me-2"></i>
+                                                        <span class="align-middle">GitHub</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="mt-5 text-center">
-                                            <p class="mb-0">Don't have an account ? <a href="site/signup" class="fw-semibold text-primary text-decoration-underline"> Signup</a> </p>
+                                            <p class="mb-0">Don't have an account? <?= \yii\helpers\Html::a('Sign up', ['site/signup'], ['class' => 'fw-semibold text-primary text-decoration-underline']) ?></p>
                                         </div>
                                     </div>
                                 </div>

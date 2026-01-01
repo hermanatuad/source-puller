@@ -3,7 +3,7 @@
 
 <head>
 
-    <?php echo $this->render('title-meta', array('title'=>'500 Error')); ?>
+    <?php echo $this->render('title-meta', array('title'=>'Error')); ?>
 
     <?php echo $this->render('head-css'); ?>
 

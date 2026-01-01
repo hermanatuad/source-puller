@@ -62,6 +62,10 @@ class SiteController extends Controller
         if ($exception !== null) {
             $statusCode = $exception->statusCode ?? 500;
             
+            if ($statusCode == 403) {
+                return $this->render('error', ['exception' => $exception]);
+            }
+            
             $this->layout = false;
             
             if ($statusCode == 404) {
@@ -70,7 +74,6 @@ class SiteController extends Controller
                 return $this->render('@webroot/themes/velzon/layouts/500');
             }
             
-            // For other error codes, use default error view
             return $this->render('error', ['exception' => $exception]);
         }
         
@@ -114,6 +117,30 @@ class SiteController extends Controller
 
         $model->password = '';
         return $this->render('@webroot/themes/velzon/layouts/signin', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Signup action.
+     *
+     * @return Response|string
+     */
+    public function actionSignup()
+    {
+        $this->layout = false;
+        
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new \app\models\SignupForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            Yii::$app->session->setFlash('success', 'Thank you for registration. Please login with your credentials.');
+            return $this->redirect(['signin']);
+        }
+
+        return $this->render('@webroot/themes/velzon/layouts/signup', [
             'model' => $model,
         ]);
     }
