@@ -48,3 +48,4 @@ tests/_support/_generated/
 *.exe
 .DS_Store
 
+config/db.php
