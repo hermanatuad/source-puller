@@ -1,0 +1,75 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+runtime/logs/*
+
+# Tests
+tests/
+codeception.yml
+
+# Documentation
+README.md
+LICENSE.md
+CHANGELOG.md
+docs/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Dependencies
+vendor/
+node_modules/
+bower_components/
+
+# Build files
+web/assets/*
+!web/assets/.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Cache
+runtime/cache/*
+!runtime/cache/.gitignore
+
+# Debug
+runtime/debug/*
+!runtime/debug/.gitignore
+
+# Vagrant
+Vagrantfile
+vagrant/
+
+# Composer
+composer.phar
+composer.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
