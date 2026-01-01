@@ -36,31 +36,66 @@
                 use yii\helpers\Url;
 
                 $menu = MenuHelper::getMenuItems();
+                $currentRoute = Yii::$app->controller->route;
 
-                function renderMenu($items) {
+                // Function to check if current route matches menu item
+                function isActiveRoute($url, $currentRoute) {
+                    if (is_array($url)) {
+                        $route = isset($url[0]) ? trim($url[0], '/') : '';
+                        return strpos($currentRoute, $route) === 0;
+                    }
+                    return false;
+                }
+
+                // Function to check if menu has active child
+                function hasActiveChild($items, $currentRoute) {
                     foreach ($items as $item) {
+                        if (isset($item['url']) && isActiveRoute($item['url'], $currentRoute)) {
+                            return true;
+                        }
+                        if (!empty($item['items']) && hasActiveChild($item['items'], $currentRoute)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                function renderMenu($items, $currentRoute) {
+                    foreach ($items as $item) {
+                        // Check visibility
+                        if (isset($item['visible']) && !$item['visible']) {
+                            continue;
+                        }
+
                         if (isset($item['type']) && $item['type'] === 'title') {
                             echo '<li class="menu-title"><span>' . $item['label'] . '</span></li>';
                             continue;
                         }
 
                         $hasChildren = !empty($item['items']);
+                        
                         if ($hasChildren) {
                             $id = 'sidebar' . substr(md5(strip_tags($item['label'])), 0, 8);
+                            $isActive = hasActiveChild($item['items'], $currentRoute);
+                            $collapseClass = $isActive ? 'collapse menu-dropdown show' : 'collapse menu-dropdown';
+                            $ariaExpanded = $isActive ? 'true' : 'false';
+                            
                             echo '<li class="nav-item">';
-                            echo '<a class="nav-link menu-link" href="#' . $id . '" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="' . $id . '">' . $item['label'] . '</a>';
-                            echo '<div class="collapse menu-dropdown" id="' . $id . '"><ul class="nav nav-sm flex-column">';
-                            renderMenu($item['items']);
+                            echo '<a class="nav-link menu-link' . ($isActive ? ' active' : '') . '" href="#' . $id . '" data-bs-toggle="collapse" role="button" aria-expanded="' . $ariaExpanded . '" aria-controls="' . $id . '">' . $item['label'] . '</a>';
+                            echo '<div class="' . $collapseClass . '" id="' . $id . '"><ul class="nav nav-sm flex-column">';
+                            renderMenu($item['items'], $currentRoute);
                             echo '</ul></div></li>';
                         } else {
                             $url = isset($item['url']) ? (is_array($item['url']) ? Url::to($item['url']) : $item['url']) : '#';
                             $target = isset($item['target']) ? ' target="' . $item['target'] . '"' : '';
-                            echo '<li class="nav-item"><a class="nav-link" href="' . $url . '"' . $target . '>' . $item['label'] . '</a></li>';
+                            $isActive = isset($item['url']) && isActiveRoute($item['url'], $currentRoute);
+                            $activeClass = $isActive ? ' active' : '';
+                            echo '<li class="nav-item"><a class="nav-link' . $activeClass . '" href="' . $url . '"' . $target . '>' . $item['label'] . '</a></li>';
                         }
                     }
                 }
 
-                renderMenu($menu);
+                renderMenu($menu, $currentRoute);
                 ?>
             </ul>
         </div>
