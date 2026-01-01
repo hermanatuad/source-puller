@@ -22,6 +22,10 @@ class RbacController extends Controller
         $auth->removeAll();
 
         // Create permissions
+        $viewPost = $auth->createPermission('viewPost');
+        $viewPost->description = 'View post';
+        $auth->add($viewPost);
+
         $createPost = $auth->createPermission('createPost');
         $createPost->description = 'Create a post';
         $auth->add($createPost);
@@ -34,50 +38,59 @@ class RbacController extends Controller
         $deletePost->description = 'Delete post';
         $auth->add($deletePost);
 
-        $viewPost = $auth->createPermission('viewPost');
-        $viewPost->description = 'View post';
-        $auth->add($viewPost);
+        $manageUsers = $auth->createPermission('manageUsers');
+        $manageUsers->description = 'Manage users';
+        $auth->add($manageUsers);
 
-        // Create roles and assign permissions
+        $manageRoles = $auth->createPermission('manageRoles');
+        $manageRoles->description = 'Manage roles and permissions';
+        $auth->add($manageRoles);
+
+        $systemSettings = $auth->createPermission('systemSettings');
+        $systemSettings->description = 'Access system settings';
+        $auth->add($systemSettings);
+
+        // Create roles with hierarchy
         
-        // Guest role - can only view
-        $guest = $auth->createRole('guest');
-        $guest->description = 'Guest user';
-        $auth->add($guest);
-        $auth->addChild($guest, $viewPost);
-
-        // User role - can create and view
+        // User role - lowest level, can view and create
         $user = $auth->createRole('user');
-        $user->description = 'Regular user';
+        $user->description = 'Regular user - can view and create content';
         $auth->add($user);
-        $auth->addChild($user, $guest);
+        $auth->addChild($user, $viewPost);
         $auth->addChild($user, $createPost);
 
-        // Moderator role - can update and delete
-        $moderator = $auth->createRole('moderator');
-        $moderator->description = 'Moderator';
-        $auth->add($moderator);
-        $auth->addChild($moderator, $user);
-        $auth->addChild($moderator, $updatePost);
-
-        // Admin role - can do everything
+        // Admin role - middle level, can manage content and users
         $admin = $auth->createRole('admin');
-        $admin->description = 'Administrator';
+        $admin->description = 'Administrator - can manage content and users';
         $auth->add($admin);
-        $auth->addChild($admin, $moderator);
+        $auth->addChild($admin, $user);
+        $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $deletePost);
+        $auth->addChild($admin, $manageUsers);
+
+        // Creator role - highest level, full system access
+        $creator = $auth->createRole('creator');
+        $creator->description = 'Creator - full system access';
+        $auth->add($creator);
+        $auth->addChild($creator, $admin);
+        $auth->addChild($creator, $manageRoles);
+        $auth->addChild($creator, $systemSettings);
 
         // Assign roles to users
-        // Assign admin role to user with ID = 1
-        $auth->assign($admin, 1);
-
-        // Assign user role to user with ID = 2
-        $auth->assign($user, 2);
+        // User ID 1 = creator
+        $auth->assign($creator, 1);
+        // User ID 2 = admin
+        $auth->assign($admin, 2);
+        // User ID 3 = user
+        $auth->assign($user, 3);
 
         $this->stdout("RBAC initialized successfully!\n", \yii\helpers\Console::FG_GREEN);
-        $this->stdout("Roles created: guest, user, moderator, admin\n");
-        $this->stdout("User ID 1 assigned to 'admin' role\n");
-        $this->stdout("User ID 2 assigned to 'user' role\n");
+        $this->stdout("\nRole Hierarchy:\n", \yii\helpers\Console::FG_YELLOW);
+        $this->stdout("  creator (highest) -> admin -> user (lowest)\n");
+        $this->stdout("\nRole Assignments:\n", \yii\helpers\Console::FG_YELLOW);
+        $this->stdout("  User ID 1 -> 'creator' role\n");
+        $this->stdout("  User ID 2 -> 'admin' role\n");
+        $this->stdout("  User ID 3 -> 'user' role\n");
 
         return ExitCode::OK;
     }

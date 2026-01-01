@@ -173,7 +173,7 @@ class MenuHelper
         ];
         $menuItems[] = [
             'label' => '<i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span>',
-            'url' => ['auth-logout-basic']
+            'url' => ['site/logout']
         ];
 
         return $menuItems;

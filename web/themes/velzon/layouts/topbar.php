@@ -319,8 +319,22 @@
                         <span class="d-flex align-items-center">
                             <img class="rounded-circle header-profile-user" src="/images/users/avatar-1.jpg" alt="Header Avatar">
                             <span class="text-start ms-xl-2">
-                                <span class="d-none d-xl-inline-block ms-1 fw-semibold user-name-text">Anna Adame</span>
-                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">Founder</span>
+                                <?php
+                                $userName = 'Guest';
+                                $userRole = 'Guest';
+                                if (!Yii::$app->user->isGuest) {
+                                    $user = Yii::$app->user->identity;
+                                    $userName = $user->name ?: $user->username;
+                                    
+                                    // Get user role
+                                    $roles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->id);
+                                    if (!empty($roles)) {
+                                        $userRole = ucfirst(array_keys($roles)[0]);
+                                    }
+                                }
+                                ?>
+                                <span class="d-none d-xl-inline-block ms-1 fw-semibold user-name-text"><?= \yii\helpers\Html::encode($userName) ?></span>
+                                <span class="d-none d-xl-block ms-1 fs-12 user-name-sub-text"><?= \yii\helpers\Html::encode($userRole) ?></span>
                             </span>
                         </span>
                     </button>
@@ -339,7 +353,16 @@
                                 continue;
                             }
                             $url = isset($it['url']) ? (is_array($it['url']) ? \yii\helpers\Url::to($it['url']) : $it['url']) : 'javascript:void(0);';
-                            echo '<a class="dropdown-item" href="' . $url . '">' . $it['label'] . '</a>';
+                            
+                            // Check if this is logout link - use POST method
+                            if (is_array($it['url']) && isset($it['url'][0]) && $it['url'][0] === 'site/logout') {
+                                echo \yii\helpers\Html::a($it['label'], $url, [
+                                    'class' => 'dropdown-item',
+                                    'data-method' => 'post',
+                                ]);
+                            } else {
+                                echo '<a class="dropdown-item" href="' . $url . '">' . $it['label'] . '</a>';
+                            }
                         }
                         ?>
                     </div>
