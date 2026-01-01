@@ -1,36 +1,49 @@
-# phpstorm project files
-.idea
+# IDE / editor
+.idea/
+.vscode/
+nbproject/
 
-# netbeans project files
-nbproject
-
-# zend studio for eclipse project files
-.buildpath
-.project
-.settings
-
-# windows thumbnail cache
+# OS files
+.DS_Store
 Thumbs.db
 
-# composer vendor dir
-/vendor
-
-# composer itself is not needed
+# Composer
+/vendor/
 composer.phar
+# Do NOT ignore composer.lock for application repositories — keep reproducible installs
 
-# composer lock
-composer.lock
-
-# Mac DS_Store Files
-.DS_Store
-
-# phpunit itself is not needed
-phpunit.phar
-# local phpunit config
+# PHPUnit
+.phpunit.result.cache
+# ignore local phpunit config if you use phpunit.xml.dist in repo
 /phpunit.xml
 
-tests/_output/*
-tests/_support/_generated
+# Yii2 runtime & assets
+/runtime/
+/web/assets/
 
-#vagrant folder
-/.vagrant
+# Test artifacts
+tests/_output/
+tests/_support/_generated/
+
+# Vagrant
+/.vagrant/
+
+# Node / JS
+/node_modules/
+/npm-debug.log
+/yarn-error.log
+
+# Environment files
+.env
+.env.local
+
+# Caches, logs, build
+.cache/
+.sass-cache/
+/logs/
+/coverage/
+/build/
+
+# Misc binaries
+*.exe
+.DS_Store
