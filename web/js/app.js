@@ -1883,7 +1883,13 @@ File: Main Js File
 			var isLayoutAttributes = {};
 			isLayoutAttributes["data-layout"] = sessionStorage.getItem("data-layout");
 			isLayoutAttributes["data-sidebar-size"] = sessionStorage.getItem("data-sidebar-size");
-			isLayoutAttributes["data-bs-theme"] = sessionStorage.getItem("data-bs-theme");
+			// Check localStorage first for theme persistence across page reloads
+			var savedTheme = localStorage.getItem("velzonTheme");
+			isLayoutAttributes["data-bs-theme"] = savedTheme || sessionStorage.getItem("data-bs-theme");
+			// Sync sessionStorage with localStorage
+			if (savedTheme) {
+				sessionStorage.setItem("data-bs-theme", savedTheme);
+			}
 			isLayoutAttributes["data-layout-width"] = sessionStorage.getItem("data-layout-width");
 			isLayoutAttributes["data-sidebar"] = sessionStorage.getItem("data-sidebar");
 			isLayoutAttributes['data-sidebar-image'] = sessionStorage.getItem('data-sidebar-image');
