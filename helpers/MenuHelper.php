@@ -77,6 +77,19 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
+                'label' => 'Administration'
+            ];
+
+            // RBAC Management
+            $menuItems[] = [
+                'label' => '<i class="ri-shield-user-line"></i> <span>RBAC Management</span>',
+                'url' => ['rbac/index'],
+                'visible' => Yii::$app->user->can('creator')
+            ];
+
+
+            $menuItems[] = [
+                'type' => 'title',
                 'label' => 'Components'
             ];
 
@@ -111,6 +124,29 @@ class MenuHelper
                             ],
                         ]
                     ],
+                ]
+            ];
+
+
+            $menuItems[] = [
+                'label' => '<i class="ri-share-line"></i> <span>Master</span>',
+                'visible' => Yii::$app->user->can('admin'),
+                'items' => [
+					[
+						'label' => '<span> Auth Item</span>',
+						'url' => ['auth-item/index'],
+						'visible' => Yii::$app->user->can('creator')
+					],
+					[
+						'label' => '<span> Auth Item Child</span>',
+						'url' => ['auth-item-child/index'],
+						'visible' => Yii::$app->user->can('creator')
+					],
+                    [
+                        'label' => 'Users',
+                        'url' => ['user/index'],
+						'visible' => Yii::$app->user->can('admin')
+                    ]
                 ]
             ];
         } else {
