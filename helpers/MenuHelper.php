@@ -6,232 +6,177 @@ use Yii;
 use yii\helpers\Url;
 
 /**
- * MenuHelper contains menu-related utility functions
+ * Css helper class.
  */
 class MenuHelper
 {
-    /**
-     * Check if current route is active
-     * 
-     * @param string|array $route Route to check (e.g., 'site/index' or ['site/index'])
-     * @param bool $exactMatch Whether to match exactly or check if route starts with given route
-     * @return bool
-     */
-    public static function isActive($route, $exactMatch = false)
-    {
-        $currentRoute = Yii::$app->controller->getRoute();
-        
-        if (is_array($route)) {
-            $route = $route[0];
-        }
-        
-        // Remove leading slash
-        $route = ltrim($route, '/');
-        $currentRoute = ltrim($currentRoute, '/');
-        
-        if ($exactMatch) {
-            return $currentRoute === $route;
-        }
-        
-        return strpos($currentRoute, $route) === 0;
-    }
+	public static function getMenuItems()
+	{
 
-    /**
-     * Get active CSS class if route is active
-     * 
-     * @param string|array $route Route to check
-     * @param string $activeClass CSS class to return if active (default: 'active')
-     * @param bool $exactMatch Whether to match exactly
-     * @return string Active class or empty string
-     */
-    public static function activeClass($route, $activeClass = 'active', $exactMatch = false)
-    {
-        return self::isActive($route, $exactMatch) ? $activeClass : '';
-    }
+		$menuItems = [];
 
-    /**
-     * Check if menu should be shown (collapsed/expanded)
-     * 
-     * @param array $routes Array of routes to check
-     * @return bool
-     */
-    public static function isMenuOpen($routes)
-    {
-        if (!is_array($routes)) {
-            $routes = [$routes];
-        }
-        
-        foreach ($routes as $route) {
-            if (self::isActive($route)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
+		// Top title
+		$menuItems[] = [
+			'type' => 'title',
+			'label' => 'Menu'
+		];
 
-    /**
-     * Get show/collapse class for menu
-     * 
-     * @param array $routes Array of routes to check
-     * @param string $showClass CSS class when menu is open (default: 'show')
-     * @return string Show class or empty string
-     */
-    public static function menuShowClass($routes, $showClass = 'show')
-    {
-        return self::isMenuOpen($routes) ? $showClass : '';
-    }
+		// Dashboards
+		$menuItems[] = [
+			'label' => '<i class="ri-dashboard-2-line"></i> <span>Dashboards</span>',
+			'items' => [
+				['label' => 'Analytics', 'url' => 'dashboard-analytics'],
+				['label' => 'CRM', 'url' => 'dashboard-crm'],
+				['label' => 'Ecommerce', 'url' => '/index'],
+				['label' => 'Crypto', 'url' => 'dashboard-crypto'],
+				['label' => 'Projects', 'url' => 'dashboard-projects'],
+				['label' => 'NFT', 'url' => 'dashboard-nft'],
+				['label' => 'Job', 'url' => 'dashboard-job'],
+			]
+		];
 
-    /**
-     * Generate menu item HTML
-     * 
-     * @param array $item Menu item configuration
-     * @return string HTML string
-     */
-    public static function renderMenuItem($item)
-    {
-        $label = $item['label'] ?? '';
-        $url = $item['url'] ?? '#';
-        $icon = $item['icon'] ?? '';
-        $badge = $item['badge'] ?? null;
-        $active = self::isActive($url);
-        
-        $html = '<a href="' . Url::to($url) . '" class="' . ($active ? 'active' : '') . '">';
-        
-        if ($icon) {
-            $html .= '<i class="' . $icon . '"></i> ';
-        }
-        
-        $html .= '<span>' . $label . '</span>';
-        
-        if ($badge) {
-            $badgeClass = $badge['class'] ?? 'badge-primary';
-            $badgeText = $badge['text'] ?? '';
-            $html .= ' <span class="badge ' . $badgeClass . '">' . $badgeText . '</span>';
-        }
-        
-        $html .= '</a>';
-        
-        return $html;
-    }
+		// Layouts
+		$menuItems[] = [
+			'label' => '<i class="ri-layout-3-line"></i> <span>Layouts</span> <span class="badge badge-pill bg-danger">Hot</span>',
+			'items' => [
+				['label' => 'Horizontal', 'url' => 'layouts-horizontal', 'target' => '_blank'],
+				['label' => 'Detached', 'url' => 'layouts-detached', 'target' => '_blank'],
+				['label' => 'Two Column', 'url' => 'layouts-two-column', 'target' => '_blank'],
+				['label' => 'Hovered', 'url' => 'layouts-vertical-hovered', 'target' => '_blank'],
+			]
+		];
 
-    /**
-     * Get breadcrumb items based on current route
-     * 
-     * @param array $customItems Custom breadcrumb items to append
-     * @return array Breadcrumb items
-     */
-    public static function getBreadcrumbs($customItems = [])
-    {
-        $items = [
-            ['label' => 'Home', 'url' => ['site/index']],
-        ];
-        
-        return array_merge($items, $customItems);
-    }
 
-    /**
-     * Check if user has access to menu item
-     * 
-     * @param array $item Menu item configuration
-     * @return bool
-     */
-    public static function hasAccess($item)
-    {
-        // Check if visible key exists and is false
-        if (isset($item['visible']) && !$item['visible']) {
-            return false;
-        }
-        
-        // Check if permission key exists
-        if (isset($item['permission'])) {
-            return MyHelper::can($item['permission']);
-        }
-        
-        // Check if roles key exists
-        if (isset($item['roles'])) {
-            if (Yii::$app->user->isGuest) {
-                return in_array('?', $item['roles']);
-            }
-            return in_array('@', $item['roles']) || Yii::$app->user->can($item['roles']);
-        }
-        
-        return true;
-    }
+		$menuItems[] = [
+			'type' => 'title',
+			'label' => 'Pages'
+		];
 
-    /**
-     * Filter menu items based on user access
-     * 
-     * @param array $items Menu items array
-     * @return array Filtered menu items
-     */
-    public static function filterMenuItems($items)
-    {
-        $filtered = [];
-        
-        foreach ($items as $item) {
-            if (self::hasAccess($item)) {
-                if (isset($item['items']) && is_array($item['items'])) {
-                    $item['items'] = self::filterMenuItems($item['items']);
-                }
-                $filtered[] = $item;
-            }
-        }
-        
-        return $filtered;
-    }
+		// Landing
+		$menuItems[] = [
+			'label' => '<i class="ri-rocket-line"></i> <span>Landing</span>',
+			'items' => [
+				['label' => 'One Page', 'url' => 'landing'],
+				['label' => 'NFT Landing', 'url' => 'nft-landing'],
+				['label' => 'Job', 'url' => 'job-landing'],
+			]
+		];
 
-    /**
-     * Get current controller ID
-     * 
-     * @return string
-     */
-    public static function getControllerId()
-    {
-        return Yii::$app->controller->id;
-    }
 
-    /**
-     * Get current action ID
-     * 
-     * @return string
-     */
-    public static function getActionId()
-    {
-        return Yii::$app->controller->action->id;
-    }
+		$menuItems[] = [
+			'label' => '<i class="ri-contacts-book-line"></i> <span>Contact</span>',
+			'url' => ['site/contact']
+		];
 
-    /**
-     * Check if current controller matches
-     * 
-     * @param string|array $controllerId Controller ID(s) to check
-     * @return bool
-     */
-    public static function isController($controllerId)
-    {
-        $current = self::getControllerId();
-        
-        if (is_array($controllerId)) {
-            return in_array($current, $controllerId);
-        }
-        
-        return $current === $controllerId;
-    }
+		$menuItems[] = [
+			'label' => '<i class="ri-tools-line"></i> <span>Test</span>',
+			'url' => ['site/test']
+		];
 
-    /**
-     * Check if current action matches
-     * 
-     * @param string|array $actionId Action ID(s) to check
-     * @return bool
-     */
-    public static function isAction($actionId)
+
+		$menuItems[] = [
+			'type' => 'title',
+			'label' => 'Components'
+		];
+
+		// Components (Base UI simplified)
+		$menuItems[] = [
+			'label' => '<i class="ri-pencil-ruler-2-line"></i> <span>Base UI</span>',
+			'items' => [
+				['label' => 'Alerts', 'url' => 'ui-alerts'],
+				['label' => 'Badges', 'url' => 'ui-badges'],
+				['label' => 'Buttons', 'url' => 'ui-buttons'],
+				['label' => 'Cards', 'url' => 'ui-cards'],
+				['label' => 'Tabs', 'url' => 'ui-tabs'],
+				['label' => 'Modals', 'url' => 'ui-modals'],
+			]
+		];
+
+		// Multi-level
+		$menuItems[] = [
+			'label' => '<i class="ri-share-line"></i> <span>Multi Level</span>',
+			'items' => [
+				['label' => 'Level 1.1', 'url' => '#'],
+				[
+					'label' => 'Level 1.2',
+					'items' => [
+						['label' => 'Level 2.1', 'url' => '#'],
+						[
+							'label' => 'Level 2.2',
+							'items' => [
+								['label' => 'Level 3.1', 'url' => '#'],
+								['label' => 'Level 3.2', 'url' => '#'],
+							]
+						],
+					]
+				],
+			]
+		];
+
+		// If user is guest, show login
+		if (Yii::$app->user->isGuest) {
+			$menuItems[] = [
+				'label' => '<i class="fa fa-sign-in"></i>Login',
+				'url' => ['site/login']
+			];
+		}
+
+		return $menuItems;
+	}
+
+    public static function getUserMenuItems()
     {
-        $current = self::getActionId();
-        
-        if (is_array($actionId)) {
-            return in_array($current, $actionId);
-        }
-        
-        return $current === $actionId;
+		$menuItems = [];
+
+		$name = !Yii::$app->user->isGuest && isset(Yii::$app->user->identity->nama) ? Yii::$app->user->identity->nama : 'Guest';
+
+		// Header
+		$menuItems[] = [
+			'type' => 'header',
+			'label' => 'Welcome ' . $name . '!'
+		];
+
+		// Standard user links
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Profile</span>',
+			'url' => ['pages-profile']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Messages</span>',
+			'url' => ['apps-chat']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span>',
+			'url' => ['apps-tasks-kanban']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span>',
+			'url' => ['pages-faqs']
+		];
+
+		// divider
+		$menuItems[] = [
+			'type' => 'divider'
+		];
+
+		// Balance (static here, could be dynamic)
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span>',
+			'url' => ['pages-profile']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span>',
+			'url' => ['pages-profile-settings']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span>',
+			'url' => ['auth-lockscreen-basic']
+		];
+		$menuItems[] = [
+			'label' => '<i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span>',
+			'url' => ['auth-logout-basic']
+		];
+
+		return $menuItems;
     }
 }

@@ -19,10 +19,10 @@ $config = [
                     'css' => []
                 ],
                 'yii\bootstrap5\BootstrapPluginAsset' => [
-                    'js'=>[]
+                    'js' => []
                 ],
                 'yii\web\JqueryAsset' => [
-                    'js'=>[]
+                    'js' => []
                 ],
             ],
         ],
@@ -34,7 +34,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\\models\\User',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -50,7 +50,7 @@ $config = [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => 'yii\\log\\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -61,6 +61,15 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '<action>' => '/velzon/root'
+            ],
+        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@webroot/themes/velzon'
+                ],
+                'baseUrl' => '@web/themes/velzon',
+                'basePath' => '@webroot/themes/velzon',
             ],
         ],
     ],
