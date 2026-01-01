@@ -44,14 +44,37 @@ class SiteController extends Controller
     public function actions()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
+    }
+
+    /**
+     * Displays error page with custom layouts
+     *
+     * @return string
+     */
+    public function actionError()
+    {
+        $exception = Yii::$app->errorHandler->exception;
+        if ($exception !== null) {
+            $statusCode = $exception->statusCode ?? 500;
+            
+            $this->layout = false;
+            
+            if ($statusCode == 404) {
+                return $this->render('@webroot/themes/velzon/layouts/404');
+            } elseif ($statusCode == 500 || $statusCode >= 500) {
+                return $this->render('@webroot/themes/velzon/layouts/500');
+            }
+            
+            // For other error codes, use default error view
+            return $this->render('error', ['exception' => $exception]);
+        }
+        
+        return $this->render('error');
     }
 
     /**
@@ -61,6 +84,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            // Not logged in - show landing page
+            $this->layout = false;
+            return $this->render('@webroot/themes/velzon/layouts/landing');
+        }
+        
+        // Logged in - show dashboard
         return $this->render('index');
     }
 
@@ -69,8 +99,10 @@ class SiteController extends Controller
      *
      * @return Response|string
      */
-    public function actionLogin()
+    public function actionSignin()
     {
+        $this->layout = false;
+        
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -81,7 +113,7 @@ class SiteController extends Controller
         }
 
         $model->password = '';
-        return $this->render('login', [
+        return $this->render('@webroot/themes/velzon/layouts/signin', [
             'model' => $model,
         ]);
     }

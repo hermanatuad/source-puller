@@ -8,13 +8,39 @@ use app\widgets\Alert;
 use richardfan\widget\JSRegister;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
+use yii\web\YiiAsset;
+
+// Register YiiAsset to enable data-method and CSRF handling
+YiiAsset::register($this);
 
 ?>
 <?php $this->beginPage() ?>
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-bs-theme="light" data-body-image="img-1" data-preloader="disable">
+<?php echo $this->render('setting'); ?>
 
 <head>
+
+    <?php JSRegister::begin(); ?>
+    <script>
+        (function() {
+            try {
+                var key = 'velzonTheme';
+                var stored = null;
+                try {
+                    stored = localStorage.getItem(key);
+                } catch (e) {
+                    stored = null;
+                }
+                if (stored) {
+                    document.documentElement.setAttribute('data-bs-theme', stored);
+                    try {
+                        sessionStorage.setItem('data-bs-theme', stored);
+                    } catch (e) {}
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <?php JSRegister::end(); ?>
 
     <?php
     $metaTitle = isset($this->params['title']) ? $this->params['title'] : (isset($this->title) ? $this->title : '');
@@ -66,5 +92,5 @@ use yii\bootstrap5\Html;
     <!-- App js -->
     <script src="/js/app.js"></script>
 
-</html>
-<?php $this->endPage() ?>
+    </html>
+    <?php $this->endPage() ?>

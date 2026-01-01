@@ -50,6 +50,12 @@
                     </div>
                 </div>
 
+                <div class="ms-1 header-item d-none d-sm-flex">
+                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode">
+                        <i class='bx bx-moon fs-22'></i>
+                    </button>
+                </div>
+
                 <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
                     <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle disabled" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-bell fs-22'></i>
@@ -325,7 +331,7 @@
                                 if (!Yii::$app->user->isGuest) {
                                     $user = Yii::$app->user->identity;
                                     $userName = $user->name ?: $user->username;
-                                    
+
                                     // Get user role
                                     $roles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->id);
                                     if (!empty($roles)) {
@@ -340,7 +346,10 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
                         <?php
+
                         use app\helpers\MenuHelper;
+                        use yii\helpers\Html;
+                        use yii\helpers\Url;
 
                         $topItems = MenuHelper::getUserMenuItems();
                         foreach ($topItems as $it) {
@@ -352,15 +361,17 @@
                                 echo '<div class="dropdown-divider"></div>';
                                 continue;
                             }
-                            $url = isset($it['url']) ? (is_array($it['url']) ? \yii\helpers\Url::to($it['url']) : $it['url']) : 'javascript:void(0);';
-                            
-                            // Check if this is logout link - use POST method
+
+                            // Check if this is logout link - use POST form
                             if (is_array($it['url']) && isset($it['url'][0]) && $it['url'][0] === 'site/logout') {
-                                echo \yii\helpers\Html::a($it['label'], $url, [
+                                echo Html::beginForm(['site/logout'], 'post', ['style' => 'display:inline']);
+                                echo Html::submitButton($it['label'], [
                                     'class' => 'dropdown-item',
-                                    'data-method' => 'post',
+                                    'style' => 'border:none; background:none; text-align:left; width:100%; cursor:pointer; padding:0.35rem 1.5rem;'
                                 ]);
+                                echo Html::endForm();
                             } else {
+                                $url = isset($it['url']) ? (is_array($it['url']) ? Url::to($it['url']) : $it['url']) : 'javascript:void(0);';
                                 echo '<a class="dropdown-item" href="' . $url . '">' . $it['label'] . '</a>';
                             }
                         }

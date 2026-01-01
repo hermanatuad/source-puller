@@ -16,25 +16,25 @@ class MenuHelper
         $menuItems = [];
 
         if (!Yii::$app->user->isGuest) {
-            // Top title
-            $menuItems[] = [
-                'type' => 'title',
-                'label' => 'Menu'
-            ];
+            // // Top title
+            // $menuItems[] = [
+            //     'type' => 'title',
+            //     'label' => 'Menu'
+            // ];
 
-            // Dashboards
-            $menuItems[] = [
-                'label' => '<i class="ri-dashboard-2-line"></i> <span>Dashboards</span>',
-                'items' => [
-                    ['label' => 'Analytics', 'url' => 'dashboard-analytics'],
-                    ['label' => 'CRM', 'url' => 'dashboard-crm'],
-                    ['label' => 'Ecommerce', 'url' => '/index'],
-                    ['label' => 'Crypto', 'url' => 'dashboard-crypto'],
-                    ['label' => 'Projects', 'url' => 'dashboard-projects'],
-                    ['label' => 'NFT', 'url' => 'dashboard-nft'],
-                    ['label' => 'Job', 'url' => 'dashboard-job'],
-                ]
-            ];
+            // // Dashboards
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-dashboard-2-line"></i> <span>Dashboards</span>',
+            //     'items' => [
+            //         ['label' => 'Analytics', 'url' => 'dashboard-analytics'],
+            //         ['label' => 'CRM', 'url' => 'dashboard-crm'],
+            //         ['label' => 'Ecommerce', 'url' => '/index'],
+            //         ['label' => 'Crypto', 'url' => 'dashboard-crypto'],
+            //         ['label' => 'Projects', 'url' => 'dashboard-projects'],
+            //         ['label' => 'NFT', 'url' => 'dashboard-nft'],
+            //         ['label' => 'Job', 'url' => 'dashboard-job'],
+            //     ]
+            // ];
 
             // Layouts
             $menuItems[] = [
@@ -53,15 +53,15 @@ class MenuHelper
                 'label' => 'Pages'
             ];
 
-            // Landing
-            $menuItems[] = [
-                'label' => '<i class="ri-rocket-line"></i> <span>Landing</span>',
-                'items' => [
-                    ['label' => 'One Page', 'url' => 'landing'],
-                    ['label' => 'NFT Landing', 'url' => 'nft-landing'],
-                    ['label' => 'Job', 'url' => 'job-landing'],
-                ]
-            ];
+            // // Landing
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-rocket-line"></i> <span>Landing</span>',
+            //     'items' => [
+            //         ['label' => 'One Page', 'url' => 'landing'],
+            //         ['label' => 'NFT Landing', 'url' => 'nft-landing'],
+            //         ['label' => 'Job', 'url' => 'job-landing'],
+            //     ]
+            // ];
 
 
             $menuItems[] = [
@@ -81,17 +81,17 @@ class MenuHelper
             ];
 
             // Components (Base UI simplified)
-            $menuItems[] = [
-                'label' => '<i class="ri-pencil-ruler-2-line"></i> <span>Base UI</span>',
-                'items' => [
-                    ['label' => 'Alerts', 'url' => 'ui-alerts'],
-                    ['label' => 'Badges', 'url' => 'ui-badges'],
-                    ['label' => 'Buttons', 'url' => 'ui-buttons'],
-                    ['label' => 'Cards', 'url' => 'ui-cards'],
-                    ['label' => 'Tabs', 'url' => 'ui-tabs'],
-                    ['label' => 'Modals', 'url' => 'ui-modals'],
-                ]
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-pencil-ruler-2-line"></i> <span>Base UI</span>',
+            //     'items' => [
+            //         ['label' => 'Alerts', 'url' => 'ui-alerts'],
+            //         ['label' => 'Badges', 'url' => 'ui-badges'],
+            //         ['label' => 'Buttons', 'url' => 'ui-buttons'],
+            //         ['label' => 'Cards', 'url' => 'ui-cards'],
+            //         ['label' => 'Tabs', 'url' => 'ui-tabs'],
+            //         ['label' => 'Modals', 'url' => 'ui-modals'],
+            //     ]
+            // ];
 
             // Multi-level
             $menuItems[] = [
@@ -114,10 +114,10 @@ class MenuHelper
                 ]
             ];
         } else {
-            $menuItems[] = [
-                'label' => '<i class="ri-contacts-book-line"></i> <span>Login</span>',
-                'url' => ['site/login']
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-contacts-book-line"></i> <span>Login</span>',
+            //     'url' => ['site/signin']
+            // ];
         }
 
         return $menuItems;
@@ -159,18 +159,18 @@ class MenuHelper
         ];
 
         // Balance (static here, could be dynamic)
-        $menuItems[] = [
-            'label' => '<i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span>',
-            'url' => ['pages-profile']
-        ];
-        $menuItems[] = [
-            'label' => '<i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span>',
-            'url' => ['pages-profile-settings']
-        ];
-        $menuItems[] = [
-            'label' => '<i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span>',
-            'url' => ['auth-lockscreen-basic']
-        ];
+        // $menuItems[] = [
+        //     'label' => '<i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Balance : <b>$5971.67</b></span>',
+        //     'url' => ['pages-profile']
+        // ];
+        // $menuItems[] = [
+        //     'label' => '<i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Settings</span>',
+        //     'url' => ['pages-profile-settings']
+        // ];
+        // $menuItems[] = [
+        //     'label' => '<i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Lock screen</span>',
+        //     'url' => ['auth-lockscreen-basic']
+        // ];
         $menuItems[] = [
             'label' => '<i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Logout</span>',
             'url' => ['site/logout']

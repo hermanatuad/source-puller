@@ -52,8 +52,8 @@
                     </ul>
 
                     <div class="">
-                        <a href="auth-signin-basic" class="btn btn-link fw-medium text-decoration-none text-body">Sign in</a>
-                        <a href="auth-signup-basic" class="btn btn-primary">Sign Up</a>
+                        <a href="site/signin" class="btn btn-link fw-medium text-decoration-none text-body">Sign in</a>
+                        <a href="site/signup" class="btn btn-primary">Sign Up</a>
                     </div>
                 </div>
 
