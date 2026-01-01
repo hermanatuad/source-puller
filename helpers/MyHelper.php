@@ -70,6 +70,66 @@ class MyHelper
     }
 
     /**
+     * Convert Gregorian date to Hijri (Islamic) date.
+     *
+     * @param string|int|null $date Date string or timestamp. If null uses current date.
+     * @param bool $asString If true returns formatted string like "1 Ramadhan 1445"; if false returns array.
+     * @return array|string
+     */
+    public static function toHijri($date = null, $asString = true)
+    {
+        if ($date === null) {
+            $ts = time();
+        } elseif (is_numeric($date)) {
+            $ts = (int) $date;
+        } else {
+            $ts = strtotime($date);
+            if ($ts === false) {
+                return $asString ? '' : [];
+            }
+        }
+
+        $day = (int) gmdate('j', $ts);
+        $month = (int) gmdate('n', $ts);
+        $year = (int) gmdate('Y', $ts);
+
+        $a = (int) floor((14 - $month) / 12);
+        $y = $year + 4800 - $a;
+        $m = $month + 12 * $a - 3;
+        $jd = $day + (int) floor((153 * $m + 2) / 5) + 365 * $y + (int) floor($y / 4) - (int) floor($y / 100) + (int) floor($y / 400) - 32045;
+
+        $l = $jd - 1948440 + 10632;
+        $n = (int) floor(($l - 1) / 10631);
+        $l = $l - 10631 * $n + 354;
+        $j = (int) ((int) floor((10985 - $l) / 5316) * (int) floor((50 * $l) / 17719) + (int) floor($l / 5670) * (int) floor((43 * $l) / 15238));
+        $l = $l - (int) floor((30 - $j) / 15) * (int) floor((17719 * $j) / 50) - (int) floor($j / 16) * (int) floor((15238 * $j) / 43) + 29;
+        $mH = (int) floor((24 * $l) / 709);
+        $dH = (int) ($l - (int) floor((709 * $mH) / 24));
+        $yH = (int) (30 * $n + $j - 30);
+
+        $months = [
+            'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
+            'Jumadil Awal', 'Jumadil Akhir', 'Rajab', "Sya'ban",
+            'Ramadhan', 'Syawal', "Dzulqa'dah", "Dzulhijjah"
+        ];
+
+        $monthName = isset($months[$mH - 1]) ? $months[$mH - 1] : '';
+
+        $result = [
+            'year' => $yH,
+            'month' => $mH,
+            'day' => $dH,
+            'monthName' => $monthName,
+        ];
+
+        if ($asString) {
+            return $dH . ' ' . $monthName . ' ' . $yH;
+        }
+
+        return $result;
+    }
+
+    /**
      * Generate random string
      * 
      * @param int $length Length of random string (default: 10)
