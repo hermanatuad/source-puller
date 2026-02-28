@@ -1,21 +1,49 @@
 <?php
 
-// Get environment variables with fallback to defaults
-$dbHost = getenv('db_host') ?: '34.143.253.172';
-$dbPort = getenv('db_port') ?: '1234';
-$dbName = getenv('db_name') ?: 'yii_test';
-$dbUsername = getenv('db_username') ?: 'root';
-$dbPassword = getenv('db_password') ?: 'example';
+// Multi-database configuration supporting MySQL (default) and PostgreSQL (datawarehouse)
+
+// MySQL Configuration (Default Database)
+$mysqlHost = getenv('mysql_host') ?: '34.143.253.172';
+$mysqlPort = getenv('mysql_port') ?: '3306';
+$mysqlDbName = getenv('mysql_db_name') ?: 'yii_test';
+$mysqlUsername = getenv('mysql_username') ?: 'root';
+$mysqlPassword = getenv('mysql_password') ?: 'example';
+
+// PostgreSQL Configuration (Data Warehouse)
+$postgresHost = getenv('postgres_host') ?: 'localhost';
+$postgresPort = getenv('postgres_port') ?: '5432';
+$postgresDbName = getenv('postgres_db_name') ?: 'datawarehouse';
+$postgresUsername = getenv('postgres_username') ?: 'postgres';
+$postgresPassword = getenv('postgres_password') ?: 'postgres';
 
 return [
-    'class' => 'yii\db\Connection',
-    'dsn' => "mysql:host={$dbHost};port={$dbPort};dbname={$dbName}",
-    'username' => $dbUsername,
-    'password' => $dbPassword,
-    'charset' => 'utf8',
+    // Default MySQL Connection
+    'db' => [
+        'class' => 'yii\db\Connection',
+        'dsn' => "mysql:host={$mysqlHost};port={$mysqlPort};dbname={$mysqlDbName}",
+        'username' => $mysqlUsername,
+        'password' => $mysqlPassword,
+        'charset' => 'utf8mb4',
+        'tablePrefix' => '',
 
-    // Schema cache options (for production environment)
-    //'enableSchemaCache' => true,
-    //'schemaCacheDuration' => 60,
-    //'schemaCache' => 'cache',
+        // Schema cache options (for production environment)
+        //'enableSchemaCache' => true,
+        //'schemaCacheDuration' => 60,
+        //'schemaCache' => 'cache',
+    ],
+
+    // PostgreSQL Data Warehouse Connection
+    'dbDataWarehouse' => [
+        'class' => 'yii\db\Connection',
+        'dsn' => "pgsql:host={$postgresHost};port={$postgresPort};dbname={$postgresDbName}",
+        'username' => $postgresUsername,
+        'password' => $postgresPassword,
+        'charset' => 'UTF8',
+        'tablePrefix' => '',
+
+        // Schema cache options (for production environment)
+        //'enableSchemaCache' => true,
+        //'schemaCacheDuration' => 60,
+        //'schemaCache' => 'cache',
+    ],
 ];

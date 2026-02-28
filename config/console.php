@@ -1,7 +1,7 @@
 <?php
 
 $params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
+$dbConfig = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic-console',
@@ -28,7 +28,8 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => $dbConfig['db'],
+        'dbDataWarehouse' => $dbConfig['dbDataWarehouse'],
     ],
     'params' => $params,
     /*

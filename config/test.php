@@ -1,6 +1,6 @@
 <?php
 $params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/test_db.php';
+$dbConfig = require __DIR__ . '/test_db.php';
 
 /**
  * Application configuration shared by all test types
@@ -14,7 +14,8 @@ return [
     ],
     'language' => 'en-US',
     'components' => [
-        'db' => $db,
+        'db' => $dbConfig['db'],
+        'dbDataWarehouse' => $dbConfig['dbDataWarehouse'],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
