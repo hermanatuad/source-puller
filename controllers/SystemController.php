@@ -123,6 +123,10 @@ class SystemController extends Controller
     {
         $model = $this->findModel($id);
         if (!$model) {
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
+            }
+
             Yii::$app->session->setFlash('error', 'System not found.');
             return $this->redirect(['index']);
         }
@@ -137,7 +141,16 @@ class SystemController extends Controller
 
         if ($model->system_type == 'mysql') {
             $connectionResult = MyHelper::testConMysql($params);
-            // echo '<pre>';print_r($connectionResult);exit;
+
+            if (Yii::$app->request->isAjax) {
+                // Return JSON payload for AJAX requests
+                return $this->asJson([
+                    'status' => $connectionResult['status'] ?? 'error',
+                    'message' => $connectionResult['message'] ?? ($connectionResult['status'] === 'success' ? 'Connection successful' : 'Connection failed'),
+                    'data' => $connectionResult['data'] ?? null,
+                ]);
+            }
+
             if ($connectionResult['status'] === 'success') {
                 Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
             } else {
@@ -146,10 +159,13 @@ class SystemController extends Controller
 
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for connection test.']);
+            }
+
             Yii::$app->session->setFlash('error', 'Unsupported system type for connection test.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     /**
