@@ -50,25 +50,20 @@ use yii\widgets\ActiveForm;
                 </div>
 
                 <div class="col-md-6">
-                    <div class="input-group">
-                        <?= $form->field($model, 'hostname')->textInput([
-                            'maxlength' => true,
-                            'class' => 'form-control',
-                            'placeholder' => 'host.example.com or 192.168.1.10'
-                        ])->label('Hostname') ?>
-                    </div>
+                    <?= $form->field($model, 'hostname')->textInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'placeholder' => 'host.example.com or 192.168.1.10'
+                    ])->label('Hostname') ?>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="position-relative">
-                        <?= $form->field($model, 'password')->passwordInput([
-                            'maxlength' => true,
-                            'class' => 'form-control',
-                            'id' => 'system-password',
-                            'placeholder' => '••••••••'
-                        ])->label('Password') ?>
-                        <button type="button" class="btn btn-sm btn-outline-secondary position-absolute" style="right:10px;top:38px;" id="toggle-system-password">Show</button>
-                    </div>
+                    <?= $form->field($model, 'password')->passwordInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'id' => 'system-password',
+                        'placeholder' => '••••••••'
+                    ])->label('Password') ?>
                 </div>
 
                 <div class="col-md-3">
@@ -107,10 +102,10 @@ use yii\widgets\ActiveForm;
 
     <?php JSRegister::begin(); ?>
     <script>
-        document.getElementById('toggle-system-password')?.addEventListener('click', function(){
+        document.getElementById('toggle-system-password')?.addEventListener('click', function() {
             var pwd = document.getElementById('system-password');
-            if(!pwd) return;
-            if(pwd.type === 'password'){
+            if (!pwd) return;
+            if (pwd.type === 'password') {
                 pwd.type = 'text';
                 this.innerText = 'Hide';
             } else {
@@ -125,6 +120,6 @@ use yii\widgets\ActiveForm;
 
 <?php JSRegister::begin(); ?>
 <script>
-    
+
 </script>
 <?php JSRegister::end(); ?>
