@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Password') ?>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <?= $form->field($model, 'hostname')->textInput([
                         'maxlength' => true,
                         'class' => 'form-control',
@@ -82,6 +82,14 @@ use yii\widgets\ActiveForm;
                         'max' => 65535,
                         'placeholder' => '3306'
                     ])->label('Port') ?>
+                </div>
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'database_name')->textInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'placeholder' => 'Database Name'
+                    ])->label('Database Name') ?>
                 </div>
 
                 <div class="col-md-8">
