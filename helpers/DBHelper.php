@@ -413,22 +413,30 @@ class DBHelper
 
     private static function saveToCache($key, $data)
     {
-        // Tentukan direktori cache
-        $cacheDir = __DIR__ . '/cache/';
+        // Use Yii runtime directory for cache to avoid permission issues in source tree
+        $cacheDir = Yii::getAlias('@runtime') . '/db_cache/';
         if (!is_dir($cacheDir)) {
-            mkdir($cacheDir, 0755, true);
+            if (!@mkdir($cacheDir, 0755, true)) {
+                // cannot create cache directory; skip caching silently
+                return false;
+            }
         }
 
         $cacheFile = $cacheDir . $key . '.cache';
-        file_put_contents($cacheFile, serialize($data));
+        @file_put_contents($cacheFile, serialize($data));
+        return true;
     }
 
     private static function getFromCache($key)
     {
-        $cacheFile = __DIR__ . '/cache/' . $key . '.cache';
+        $cacheFile = Yii::getAlias('@runtime') . '/db_cache/' . $key . '.cache';
 
         if (file_exists($cacheFile)) {
-            $data = unserialize(file_get_contents($cacheFile));
+            $contents = @file_get_contents($cacheFile);
+            if ($contents === false) {
+                return null;
+            }
+            $data = @unserialize($contents);
             return $data;
         }
 
@@ -443,10 +451,10 @@ class DBHelper
         $database = $params['database'] ?? '';
 
         $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
-        $cacheFile = __DIR__ . '/cache/' . $cacheKey . '.cache';
+        $cacheFile = Yii::getAlias('@runtime') . '/db_cache/' . $cacheKey . '.cache';
 
         if (file_exists($cacheFile)) {
-            unlink($cacheFile);
+            @unlink($cacheFile);
             return ['status' => 'success', 'message' => 'Cache cleared'];
         }
 
