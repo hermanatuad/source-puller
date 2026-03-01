@@ -15,38 +15,47 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="system-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card">
+        <div class="card-header d-flex align-items-center">
+            <h4 class="card-title mb-0 flex-grow-1"><i class="ri-stack-line me-2"></i> <?= Html::encode($this->title) ?></h4>
+            <div class="flex-shrink-0">
+                <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Create System', ['create'], ['class' => 'btn btn-primary']) ?>
+            </div>
+        </div>
 
-    <p>
-        <?= Html::a('Create System', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="card-body">
+            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'system_code',
-            'system_name',
-            'system_type',
-            'hostname',
-            //'password',
-            //'port',
-            //'path',
-            //'description',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, System $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
-        ],
-    ]); ?>
-
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'tableOptions' => ['class' => 'table table-hover table-striped align-middle table-nowrap mb-0'],
+                'summary' => false,
+                'pager' => [
+                    'class' => \yii\widgets\LinkPager::class,
+                    'options' => ['class' => 'pagination'],
+                    'linkOptions' => ['class' => 'page-link'],
+                    'activePageCssClass' => 'active',
+                    'disabledPageCssClass' => 'disabled',
+                    'prevPageLabel' => '<i class="mdi mdi-chevron-left"></i>',
+                    'nextPageLabel' => '<i class="mdi mdi-chevron-right"></i>',
+                ],
+                'columns' => [
+                    ['class' => 'yii\\grid\\SerialColumn'],
+                    'system_code',
+                    'system_name',
+                    'system_type',
+                    'hostname',
+                    [
+                        'class' => ActionColumn::className(),
+                        'urlCreator' => function ($action, System $model, $key, $index, $column) {
+                            return Url::toRoute([$action, 'id' => $model->id]);
+                        }
+                    ],
+                ],
+            ]); ?>
+        </div>
+    </div>
 
 </div>
 
