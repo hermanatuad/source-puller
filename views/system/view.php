@@ -103,12 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tr>
                                 <tr>
                                     <th scope="row">
-                                        <i class="ri-time-line me-2 text-muted"></i>Created At
-                                    </th>
-                                    <td><?= Yii::$app->formatter->asDatetime($model->created_at) ?></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
                                         <i class="ri-refresh-line me-2 text-muted"></i>Updated At
                                     </th>
                                     <td><?= Yii::$app->formatter->asDatetime($model->updated_at) ?></td>
