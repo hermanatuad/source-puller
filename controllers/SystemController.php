@@ -79,6 +79,7 @@ class SystemController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'uuid' => $model->generateUuid(),
         ]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use richardfan\widget\JSRegister;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,7 +13,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
     <?= $form->field($model, 'system_code')->textInput(['maxlength' => true]) ?>
 
@@ -37,3 +38,9 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php JSRegister::begin(); ?>
+<script>
+    
+</script>
+<?php JSRegister::end(); ?>
