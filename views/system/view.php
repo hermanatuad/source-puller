@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'btn btn-info btn-sm me-2'
                     ]) ?>
                     <?=  Html::a('<i class="ri-refresh-line align-bottom me-1"></i> Clear Cache', ['clear-cache', 'id' => $model->id], [
-                        'class' => 'btn btn-secondary btn-sm'
+                        'class' => 'btn btn-secondary btn-sm me-2'
                     ]) ?>
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
