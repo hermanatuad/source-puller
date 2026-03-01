@@ -51,8 +51,9 @@ use yii\widgets\ActiveForm;
 
                 <div class="col-md-6">
                     <div class="input-group">
-                        <span class="input-group-text"><i class="ri-computer-line"></i></span>
+                        <span class="input-group-text"><i class="ri-computer-line fs-6"></i></span>
                         <?= $form->field($model, 'hostname')->textInput([
+                            'id' => 'cleave-delimiter',
                             'maxlength' => true,
                             'class' => 'form-control',
                             'placeholder' => 'host.example.com or 192.168.1.10'
@@ -108,10 +109,10 @@ use yii\widgets\ActiveForm;
 
     <?php JSRegister::begin(); ?>
     <script>
-        document.getElementById('toggle-system-password')?.addEventListener('click', function(){
+        document.getElementById('toggle-system-password')?.addEventListener('click', function() {
             var pwd = document.getElementById('system-password');
-            if(!pwd) return;
-            if(pwd.type === 'password'){
+            if (!pwd) return;
+            if (pwd.type === 'password') {
                 pwd.type = 'text';
                 this.innerText = 'Hide';
             } else {
@@ -126,6 +127,10 @@ use yii\widgets\ActiveForm;
 
 <?php JSRegister::begin(); ?>
 <script>
-    
+    var cleaveDelimiter = new Cleave('#cleave-delimiter', {
+        delimiter: '·',
+        blocks: [3, 3, 3],
+        uppercase: true
+    });
 </script>
 <?php JSRegister::end(); ?>
