@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
             <div class="row g-3">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-floating">
                         <?= $form->field($model, 'system_code')->textInput([
                             'maxlength' => true,
@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
                     </div>
                 </div>
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="form-floating">
                         <?= $form->field($model, 'system_name')->textInput([
                             'maxlength' => true,
@@ -42,14 +42,14 @@ use yii\widgets\ActiveForm;
                     </div>
                 </div>
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <?= $form->field($model, 'system_type')->dropDownList([
                         'mysql' => 'MySQL',
                         'postgres' => 'PostgreSQL'
                     ], ['prompt' => 'Select Type', 'class' => 'form-select'])->label('System Type') ?>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <?= $form->field($model, 'hostname')->textInput([
                         'maxlength' => true,
                         'class' => 'form-control',
@@ -57,7 +57,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Hostname') ?>
                 </div>
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <?= $form->field($model, 'password')->passwordInput([
                         'maxlength' => true,
                         'class' => 'form-control',
@@ -66,7 +66,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Password') ?>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <?= $form->field($model, 'port')->input('number', [
                         'class' => 'form-control',
                         'min' => 1,
@@ -75,7 +75,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Port') ?>
                 </div>
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <?= $form->field($model, 'path')->hiddenInput([
                         'maxlength' => true,
                         'class' => 'form-control',
