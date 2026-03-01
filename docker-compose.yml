@@ -52,5 +52,3 @@ networks:
   yii2-network:
     driver: bridge
 
-volumes:
-  # No local DB volumes required when using external DB
