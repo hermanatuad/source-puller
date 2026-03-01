@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\helpers\MyHelper;
 use app\models\System;
 use app\models\SystemSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -116,6 +117,30 @@ class SystemController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionCheckConnection($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model) {
+            Yii::$app->session->setFlash('error', 'System not found.');
+            return $this->redirect(['index']);
+        }
+
+        if ($model->system_type == 'mysql') {
+            $connectionResult = MyHelper::testConMysql($model);
+            if ($connectionResult['success']) {
+                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
+            }
+
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            Yii::$app->session->setFlash('error', 'Unsupported system type for connection test.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     /**

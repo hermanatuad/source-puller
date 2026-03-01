@@ -28,6 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <i class="ri-delete-bin-line align-bottom me-1"></i> Delete
                         </button>
                     <?= Html::endForm() ?>
+                    <?= Html::a('<i class="ri-file-text-line align-bottom me-1"></i> Test Connection', ['check-connection', 'id' => $model->id], [
+                        'class' => 'btn btn-info btn-sm me-2'
+                    ]) ?>
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
                     ]) ?>
