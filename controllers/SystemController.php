@@ -122,15 +122,21 @@ class SystemController extends Controller
     public function actionCheckConnection($id)
     {
         $model = $this->findModel($id);
-        echo '<pre>';print_r($model);exit;
         if (!$model) {
             Yii::$app->session->setFlash('error', 'System not found.');
             return $this->redirect(['index']);
         }
 
+        $params = [
+            'hostname' => $model->hostname,
+            'port' => $model->port,
+            'username' => $model->username,
+            'password' => $model->password,
+            'database' => $model->database_name
+        ];
+
         if ($model->system_type == 'mysql') {
-            $connectionResult = MyHelper::testConMysql($model);
-            echo '<pre>';print_r($connectionResult);exit;
+            $connectionResult = MyHelper::testConMysql($params);
             if ($connectionResult['success']) {
                 Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
             } else {

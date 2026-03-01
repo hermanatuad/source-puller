@@ -11,6 +11,7 @@ use Yii;
  * @property string $system_code
  * @property string $system_name
  * @property string $system_type
+ * @property string $database_name
  * @property string|null $hostname
  * @property string|null $username
  * @property string|null $password
@@ -37,10 +38,10 @@ class System extends \yii\db\ActiveRecord
     {
         return [
             [['hostname', 'username', 'password', 'port', 'path', 'description'], 'default', 'value' => null],
-            [['id', 'system_code', 'system_name', 'system_type'], 'required'],
+            [['id', 'system_code', 'system_name', 'system_type', 'database_name'], 'required'],
             [['id'], 'string', 'max' => 36],
             [['system_code'], 'string', 'max' => 20],
-            [['system_name', 'system_type', 'hostname', 'username', 'password', 'port', 'path', 'description'], 'string', 'max' => 255],
+            [['system_name', 'system_type', 'database_name', 'hostname', 'username', 'password', 'port', 'path', 'description'], 'string', 'max' => 255],
             [['system_code'], 'unique'],
             [['id'], 'unique'],
         ];
@@ -56,6 +57,7 @@ class System extends \yii\db\ActiveRecord
             'system_code' => 'System Code',
             'system_name' => 'System Name',
             'system_type' => 'System Type',
+            'database_name' => 'Database Name',
             'hostname' => 'Hostname',
             'username' => 'Username',
             'password' => 'Password',
