@@ -129,13 +129,6 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-links-line"></i> <span>Affiliations</span>',
-                'url' => ['affiliation/index'],
-                'visible' => Yii::$app->user->can('admin')
-            ];
-
-
-            $menuItems[] = [
                 'label' => '<i class="ri-settings-3-line"></i> <span>Database System</span>',
                 'url' => ['system/index'],
                 'visible' => Yii::$app->user->can('admin')
@@ -145,6 +138,11 @@ class MenuHelper
                 'label' => '<i class="ri-database-2-line"></i> <span>Master</span>',
                 'visible' => Yii::$app->user->can('admin'),
                 'items' => [
+                    [
+                        'label' => '<i class="ri-links-line"></i> <span>Affiliations</span>',
+                        'url' => ['affiliation/index'],
+                        'visible' => Yii::$app->user->can('creator')
+                    ],
                     [
                         'label' => '<i class="ri-shield-user-line"></i> <span>Auth Item</span>',
                         'url' => ['auth-item/index'],
