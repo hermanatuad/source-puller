@@ -2,6 +2,8 @@
 
 namespace app\helpers;
 
+use Exception;
+use mysqli;
 use Yii;
 
 /**
@@ -47,6 +49,87 @@ class MyHelper
             $id .= $characters[random_int(0, strlen($characters) - 1)];
         }
         return $id;
+    }
+
+
+    public static function testConMysql($params)
+    {
+        // Ekstrak parameter dengan default values
+        $hostname = $params['hostname'] ?? '';
+        $username = $params['username'] ?? '';
+        $port = $params['port'] ?? '';
+        $password = $params['password'] ?? '';
+        $database = $params['database'] ?? '';
+
+        // Validasi parameter wajib
+        $missing = [];
+        if (empty($hostname)) {
+            $missing[] = 'hostname';
+        }
+        if (empty($username)) {
+            $missing[] = 'username';
+        }
+        if (empty($database)) {
+            $missing[] = 'database';
+        }
+        if (empty($port) && $port !== 0) {
+            $missing[] = 'port';
+        }
+
+        if (!empty($missing)) {
+            return [
+                'status' => 'error',
+                'message' => 'Missing required parameter(s): ' . implode(', ', $missing),
+                'data' => [
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database
+                ]
+            ];
+        }
+
+        try {
+            // Buat koneksi
+            $mysqli = new mysqli($hostname, $username, $password, $database, $port);
+
+            // Cek error koneksi
+            if ($mysqli->connect_error) {
+                throw new Exception("Connection failed: " . $mysqli->connect_error);
+            }
+
+            // Koneksi berhasil
+            $result = [
+                'status' => 'success',
+                'message' => 'Successfully connected to MySQL',
+                'data' => [
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database,
+                    'server_info' => $mysqli->server_info,
+                    'server_version' => $mysqli->query("SELECT VERSION()")->fetch_row()[0],
+                    'host_info' => $mysqli->host_info,
+                    'protocol_version' => $mysqli->protocol_version,
+                    'thread_id' => $mysqli->thread_id,
+                    'character_set' => $mysqli->character_set_name()
+                ]
+            ];
+
+            $mysqli->close();
+            return $result;
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'data' => [
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database 
+                ]
+            ];
+        }
     }
 
     /**
