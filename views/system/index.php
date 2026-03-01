@@ -13,53 +13,6 @@ use yii\grid\GridView;
 $this->title = 'Systems';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="system-index">
-
-    <div class="card">
-        <div class="card-header d-flex align-items-center">
-            <h4 class="card-title mb-0 flex-grow-1"><i class="ri-stack-line me-2"></i> <?= Html::encode($this->title) ?></h4>
-            <div class="flex-shrink-0">
-                <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Create System', ['create'], ['class' => 'btn btn-primary']) ?>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-            <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'tableOptions' => ['class' => 'table table-hover table-striped align-middle table-nowrap mb-0'],
-                'summary' => false,
-                'pager' => [
-                    'class' => \yii\widgets\LinkPager::class,
-                    'options' => ['class' => 'pagination'],
-                    'linkOptions' => ['class' => 'page-link'],
-                    'activePageCssClass' => 'active',
-                    'disabledPageCssClass' => 'disabled',
-                    'prevPageLabel' => '<i class="mdi mdi-chevron-left"></i>',
-                    'nextPageLabel' => '<i class="mdi mdi-chevron-right"></i>',
-                ],
-                'columns' => [
-                    ['class' => 'yii\\grid\\SerialColumn'],
-                    'system_code',
-                    'system_name',
-                    'system_type',
-                    'hostname',
-                    [
-                        'class' => ActionColumn::className(),
-                        'urlCreator' => function ($action, System $model, $key, $index, $column) {
-                            return Url::toRoute([$action, 'id' => $model->id]);
-                        }
-                    ],
-                ],
-            ]); ?>
-        </div>
-    </div>
-
-</div>
-
-
 
 <div class="row">
     <div class="col-lg-12">
@@ -69,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
                 </h4>
                 <div class="flex-shrink-0">
-                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Create User', ['create'], [
+                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add System', ['create'], [
                         'class' => 'btn btn-primary'
                     ]) ?>
                 </div>
