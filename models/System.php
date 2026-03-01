@@ -11,10 +11,11 @@ use Yii;
  * @property string $system_code
  * @property string $system_name
  * @property string $system_type
- * @property string $hostname
- * @property string $password
- * @property string $port
- * @property string $path
+ * @property string|null $hostname
+ * @property string|null $username
+ * @property string|null $password
+ * @property string|null $port
+ * @property string|null $path
  * @property string|null $description
  */
 class System extends \yii\db\ActiveRecord
@@ -35,11 +36,11 @@ class System extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description'], 'default', 'value' => null],
-            [['id', 'system_code', 'system_name', 'system_type', 'hostname', 'password', 'port', 'path'], 'required'],
+            [['hostname', 'username', 'password', 'port', 'path', 'description'], 'default', 'value' => null],
+            [['id', 'system_code', 'system_name', 'system_type'], 'required'],
             [['id'], 'string', 'max' => 36],
             [['system_code'], 'string', 'max' => 20],
-            [['system_name', 'system_type', 'hostname', 'password', 'port', 'path', 'description'], 'string', 'max' => 255],
+            [['system_name', 'system_type', 'hostname', 'username', 'password', 'port', 'path', 'description'], 'string', 'max' => 255],
             [['system_code'], 'unique'],
             [['id'], 'unique'],
         ];
@@ -56,6 +57,7 @@ class System extends \yii\db\ActiveRecord
             'system_name' => 'System Name',
             'system_type' => 'System Type',
             'hostname' => 'Hostname',
+            'username' => 'Username',
             'password' => 'Password',
             'port' => 'Port',
             'path' => 'Path',

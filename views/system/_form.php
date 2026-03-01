@@ -42,7 +42,7 @@ use yii\widgets\ActiveForm;
                     </div>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <?= $form->field($model, 'system_type')->dropDownList([
                         'mysql' => 'MySQL',
                         'postgres' => 'PostgreSQL'
@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Password') ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <?= $form->field($model, 'hostname')->textInput([
                         'maxlength' => true,
                         'class' => 'form-control',
@@ -75,7 +75,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Hostname') ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <?= $form->field($model, 'port')->input('number', [
                         'class' => 'form-control',
                         'min' => 1,
