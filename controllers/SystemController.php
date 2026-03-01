@@ -137,8 +137,8 @@ class SystemController extends Controller
 
         if ($model->system_type == 'mysql') {
             $connectionResult = MyHelper::testConMysql($params);
-            echo '<pre>';print_r($connectionResult);exit;
-            if ($connectionResult['success']) {
+            // echo '<pre>';print_r($connectionResult);exit;
+            if ($connectionResult['status'] === 'success') {
                 Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
             } else {
                 Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
