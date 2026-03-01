@@ -71,7 +71,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'label' => '<i class="ri-users-line"></i> <span>Patients</span>',
-                'url' => ['patient/index']
+                'url' => ['patients/index']
             ];
 
 
