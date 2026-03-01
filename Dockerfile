@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     libwebp-dev \
     mysql-client \
+    postgresql-dev \
     bash
 
 # Install PHP extensions
@@ -21,6 +22,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     pdo \
     pdo_mysql \
     mysqli \
+    pdo_pgsql \
     zip \
     gd \
     intl \
