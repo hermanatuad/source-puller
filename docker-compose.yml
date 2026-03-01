@@ -16,16 +16,8 @@ services:
       - PHP_MEMORY_LIMIT=512M
       - PHP_UPLOAD_MAX_FILESIZE=50M
       - PHP_POST_MAX_SIZE=50M
-      - mysql_host=34.71.143.136
-      - mysql_port=3306
-      - mysql_db_name=derrick
-      - mysql_username=root
-      - mysql_password=rootpassword123
-      - postgres_host=34.71.143.136
-      - postgres_port=5432
-      - postgres_db_name=datawarehouse
-      - postgres_username=appuser
-      - postgres_password=AppPass!123
+    env_file:
+      - .env
     networks:
       - yii2-network
     # Note: external DB at 34.71.143.136; no local DB dependency

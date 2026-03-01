@@ -3,7 +3,7 @@
 // Multi-database configuration supporting MySQL (default) and PostgreSQL (datawarehouse)
 
 // MySQL Configuration (Default Database)
-$mysqlHost = getenv('mysql_host') ?: '34.143.253.172';
+$mysqlHost = getenv('mysql_host') ?: 'localhost';
 $mysqlPort = getenv('mysql_port') ?: '3306';
 $mysqlDbName = getenv('mysql_db_name') ?: 'yii_test';
 $mysqlUsername = getenv('mysql_username') ?: 'root';
