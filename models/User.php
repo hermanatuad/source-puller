@@ -121,6 +121,9 @@ class User extends ActiveRecord implements IdentityInterface
             ['name', 'trim'],
             ['name', 'string', 'max' => 255],
 
+            ['affiliation_code', 'trim'],
+            ['affiliation_code', 'string', 'max' => 20],
+
             ['telegram_id', 'trim'],
             ['telegram_id', 'string', 'max' => 100],
 
