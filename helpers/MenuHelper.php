@@ -65,13 +65,13 @@ class MenuHelper
 
 
             $menuItems[] = [
-                'label' => '<i class="ri-hospital-line"></i> <span>Hospitals</span>',
-                'url' => ['hospital/index']
+                'label' => '<i class="ri-hospital-line"></i> <span>Patient</span>',
+                'url' => ['entity/index']
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-user-line"></i> <span>Patients</span>',
-                'url' => ['patients/index']
+                'label' => '<i class="ri-user-line"></i> <span>Clinician</span>',
+                'url' => ['clinician/index']
             ];
 
 
@@ -128,29 +128,36 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-ancient-gate-fill"></i> <span>Affiliations</span>',
+                'label' => '<i class="ri-organization-line"></i> <span>Affiliations</span>',
                 'url' => ['affiliation/index'],
-                'visible' => Yii::$app->user->can('adminn')
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
+
+            $menuItems[] = [
+                'label' => '<i class="ri-settings-3-line"></i> <span>System</span>',
+                'url' => ['system/index'],
+                'visible' => Yii::$app->user->can('admin')
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-share-line"></i> <span>Master</span>',
+                'label' => '<i class="ri-database-2-line"></i> <span>Master</span>',
                 'visible' => Yii::$app->user->can('admin'),
                 'items' => [
-					[
-						'label' => '<span> Auth Item</span>',
-						'url' => ['auth-item/index'],
-						'visible' => Yii::$app->user->can('creator')
-					],
-					[
-						'label' => '<span> Auth Item Child</span>',
-						'url' => ['auth-item-child/index'],
-						'visible' => Yii::$app->user->can('creator')
-					],
                     [
-                        'label' => 'Users',
+                        'label' => '<i class="ri-shield-user-line"></i> <span>Auth Item</span>',
+                        'url' => ['auth-item/index'],
+                        'visible' => Yii::$app->user->can('creator')
+                    ],
+                    [
+                        'label' => '<i class="ri-links-line"></i> <span>Auth Item Child</span>',
+                        'url' => ['auth-item-child/index'],
+                        'visible' => Yii::$app->user->can('creator')
+                    ],
+                    [
+                        'label' => '<i class="ri-user-line"></i> <span>Users</span>',
                         'url' => ['user/index'],
-						'visible' => Yii::$app->user->can('admin')
+                        'visible' => Yii::$app->user->can('admin')
                     ]
                 ]
             ];

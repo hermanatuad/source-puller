@@ -10,6 +10,10 @@ use Yii;
  * @property int $id
  * @property string $entity_id
  * @property string $status
+ * @property string $created_at_data
+ * @property string $updated_at_data
+ * @property string $created_at
+ * @property string $updated_at
  */
 class Entity extends \yii\db\ActiveRecord
 {
@@ -29,8 +33,9 @@ class Entity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'entity_id', 'status'], 'required'],
+            [['id', 'entity_id', 'status', 'created_at_data'], 'required'],
             [['id'], 'integer'],
+            [['created_at_data', 'updated_at_data', 'created_at', 'updated_at'], 'safe'],
             [['entity_id', 'status'], 'string', 'max' => 20],
             [['id'], 'unique'],
         ];
@@ -45,6 +50,10 @@ class Entity extends \yii\db\ActiveRecord
             'id' => 'ID',
             'entity_id' => 'Entity ID',
             'status' => 'Status',
+            'created_at_data' => 'Created At Data',
+            'updated_at_data' => 'Updated At Data',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
     }
 

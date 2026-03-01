@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'entity_id',
             'entity_reference',
             'system_code',
+            'created_at_data',
+            //'updated_at_data',
+            //'created_at',
+            //'updated_at',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, EntitySystem $model, $key, $index, $column) {
