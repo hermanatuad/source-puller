@@ -136,7 +136,7 @@ class MenuHelper
 
 
             $menuItems[] = [
-                'label' => '<i class="ri-settings-3-line"></i> <span>System</span>',
+                'label' => '<i class="ri-settings-3-line"></i> <span>Database System</span>',
                 'url' => ['system/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];

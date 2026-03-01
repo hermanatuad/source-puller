@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /** @var app\models\SystemSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Systems';
+$this->title = 'Database Systems';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
                 </h4>
                 <div class="flex-shrink-0">
-                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Affiliation', ['create'], [
+                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Database System', ['create'], [
                         'class' => 'btn btn-primary'
                     ]) ?>
                 </div>
