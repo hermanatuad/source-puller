@@ -13,6 +13,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?php
+    $prefillSystem = Yii::$app->request->get('system_code');
+    if (!empty($prefillSystem) && empty($model->system_code)) {
+        $model->system_code = $prefillSystem;
+    }
+    ?>
+
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
