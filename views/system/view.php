@@ -101,12 +101,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </th>
                                     <td><?= Html::encode($model->description) ?: '<span class="text-muted">-</span>' ?></td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">
-                                        <i class="ri-refresh-line me-2 text-muted"></i>Updated At
-                                    </th>
-                                    <td><?= Yii::$app->formatter->asDatetime($model->updated_at) ?></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
