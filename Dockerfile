@@ -55,8 +55,10 @@ COPY . /var/www/html
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
-    && chmod -R 777 /var/www/html/runtime \
-    && chmod -R 777 /var/www/html/web/assets
+    && mkdir -p /var/www/html/runtime/cache /var/www/html/runtime/tmp \
+    && chown -R www-data:www-data /var/www/html/runtime /var/www/html/runtime/cache /var/www/html/runtime/tmp /var/www/html/web/assets \
+    && chmod -R 775 /var/www/html/runtime /var/www/html/runtime/cache /var/www/html/runtime/tmp \
+    && chmod -R 755 /var/www/html/web/assets
 
 # Expose port 9000 for PHP-FPM
 # Copy entrypoint and make it executable
