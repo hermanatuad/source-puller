@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\MyHelper;
 use app\models\System;
 use app\models\SystemSearch;
 use yii\web\Controller;
@@ -79,7 +80,7 @@ class SystemController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'uuid' => $model->generateUuid(),
+            'uuid' => MyHelper::genuuid(),
         ]);
     }
 
