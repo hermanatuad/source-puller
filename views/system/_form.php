@@ -50,20 +50,29 @@ use yii\widgets\ActiveForm;
                 </div>
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'hostname')->textInput([
+                    <?= $form->field($model, 'username')->textInput([
                         'maxlength' => true,
                         'class' => 'form-control',
-                        'placeholder' => 'host.example.com or 192.168.1.10'
-                    ])->label('Hostname') ?>
+                        'id' => 'system-username',
+                        'placeholder' => 'admin'
+                    ])->label('Username') ?>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <?= $form->field($model, 'password')->passwordInput([
                         'maxlength' => true,
                         'class' => 'form-control',
                         'id' => 'system-password',
                         'placeholder' => '••••••••'
                     ])->label('Password') ?>
+                </div>
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'hostname')->textInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'placeholder' => 'host.example.com or 192.168.1.10'
+                    ])->label('Hostname') ?>
                 </div>
 
                 <div class="col-md-4">
