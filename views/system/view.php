@@ -8,7 +8,7 @@ use app\models\BridgeSearch;
 /** @var yii\web\View $this */
 /** @var app\models\System $model */
 
-$this->title = $model->id;
+$this->title = $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
