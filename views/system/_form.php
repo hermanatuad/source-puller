@@ -125,16 +125,18 @@ use yii\widgets\ActiveForm;
 
 </div>
 
-<?php JSRegister::begin(); ?>
-<script>
-    var cleaveDelimiter = new Cleave('#cleave-delimiter', {
-        delimiter: '·',
-        blocks: [3, 3, 3],
-        uppercase: true
-    });
-</script>
-<!-- cleave.js -->
-<script src="assets/libs/cleave.js/cleave.min.js"></script>
-<!-- form masks init -->
-<script src="assets/js/pages/form-masks.init.js"></script>
-<?php JSRegister::end(); ?>
+<?php
+// Register external JS files via Yii view so assets are managed properly
+$this->registerJsFile('@web/assets/libs/cleave.js/cleave.min.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/assets/js/pages/form-masks.init.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+
+$init = <<<JS
+var cleaveDelimiter = new Cleave('#cleave-delimiter', {
+    delimiter: '·',
+    blocks: [3, 3, 3],
+    uppercase: true
+});
+JS;
+
+$this->registerJs($init, \yii\web\View::POS_READY);
+?>
