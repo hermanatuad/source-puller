@@ -52,8 +52,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Copy application files
 COPY . /var/www/html
 
-COPY config/db.php /var/www/html/config/db.php
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
@@ -61,6 +59,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/web/assets
 
 # Expose port 9000 for PHP-FPM
+# Copy entrypoint and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 9000
 
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
