@@ -15,9 +15,9 @@ $this->title = 'Systems';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
+<div class="row min-vh-100">
+    <div class="col-lg-12  h-100">
+        <div class="card  h-100 d-flex flex-column">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">
                     <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
