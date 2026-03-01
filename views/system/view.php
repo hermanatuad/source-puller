@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
+use yii\widgets\Pjax;
 use app\models\BridgeSearch;
 
 /** @var yii\web\View $this */
@@ -117,7 +119,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card mt-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>Bridges for this System</div>
-                <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', ['bridge/create', 'system_code' => $model->system_code], ['class' => 'btn btn-success btn-sm']) ?>
+                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', [
+                    'class' => 'btn btn-success btn-sm',
+                    'id' => 'btn-add-bridge',
+                    'data-url' => Url::to(['bridge/create', 'system_code' => $model->system_code]),
+                ]) ?>
             </div>
             <div class="card-body p-0">
                 <?php
@@ -126,6 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
 
                 <div class="table-responsive">
+                <?php Pjax::begin(['id' => 'bridges-pjax']); ?>
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
@@ -140,8 +147,83 @@ $this->params['breadcrumbs'][] = $this->title;
                         ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
                     ],
                 ]) ?>
+                <?php Pjax::end(); ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal for Add Bridge -->
+<div class="modal fade" id="modal-bridge" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Bridge</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-bridge-body">
+        <div class="text-center py-4"><div class="spinner-border" role="status"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php
+$this->registerJs(<<<'JS'
+;(function($){
+    var btn = $('#btn-add-bridge');
+    var modal = $('#modal-bridge');
+    var modalBody = $('#modal-bridge-body');
+
+    btn.off('click').on('click', function(e){
+        e.preventDefault();
+        var url = btn.data('url');
+        if (!url) return;
+
+        modalBody.html('<div class="text-center py-4"><div class="spinner-border" role="status"></div></div>');
+        var bsModal = new bootstrap.Modal(modal[0]);
+        bsModal.show();
+
+        $.get(url, function(html){
+            modalBody.html(html);
+        }).fail(function(){
+            modalBody.html('<div class="alert alert-danger">Failed to load form.</div>');
+        });
+    });
+
+    // Delegate submit inside modal (handles dynamic content)
+    modal.on('submit', 'form', function(e){
+        e.preventDefault();
+        var form = $(this);
+        var action = form.attr('action') || form.data('url');
+        var data = form.serialize();
+
+        $.post(action, data, function(res){
+            if (res && res.status === 'success') {
+                // close modal and reload bridges grid
+                var bsModal = bootstrap.Modal.getInstance(modal[0]);
+                bsModal.hide();
+                $.pjax.reload({container:'#bridges-pjax'});
+            } else {
+                // Replace modal body with returned HTML (validation errors)
+                if (typeof res === 'string') {
+                    modalBody.html(res);
+                } else if (res && res.message) {
+                    modalBody.html('<div class="alert alert-danger">'+(res.message||'Error')+'</div>');
+                }
+            }
+        }, 'json').fail(function(xhr){
+            // If server returned HTML (non-json), replace modal body
+            if (xhr.responseText) {
+                modalBody.html(xhr.responseText);
+            } else {
+                modalBody.html('<div class="alert alert-danger">Request failed.</div>');
+            }
+        });
+    });
+
+})(jQuery);
+JS
+);
+?>

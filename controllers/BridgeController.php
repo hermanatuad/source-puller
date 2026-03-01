@@ -71,10 +71,21 @@ class BridgeController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                if ($this->request->isAjax) {
+                    return $this->asJson(['status' => 'success', 'id' => $model->id]);
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                // If AJAX and validation fails, return form HTML to show errors
+                if ($this->request->isAjax) {
+                    return $this->renderAjax('_form', ['model' => $model]);
+                }
             }
         } else {
             $model->loadDefaultValues();
+            if ($this->request->isAjax) {
+                return $this->renderAjax('_form', ['model' => $model]);
+            }
         }
 
         return $this->render('create', [
