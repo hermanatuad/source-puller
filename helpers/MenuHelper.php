@@ -65,13 +65,13 @@ class MenuHelper
 
 
             $menuItems[] = [
-                'label' => '<i class="ri-contacts-book-line"></i> <span>Hospital</span>',
-                'url' => ['site/hospitals']
+                'label' => '<i class="ri-contacts-book-line"></i> <span>Hospitals</span>',
+                'url' => ['hospital/index']
             ];
 
             $menuItems[] = [
                 'label' => '<i class="ri-users-line"></i> <span>Patients</span>',
-                'url' => ['site/patients']
+                'url' => ['patient/index']
             ];
 
 

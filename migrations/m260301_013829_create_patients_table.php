@@ -14,6 +14,10 @@ class m260301_013829_create_patients_table extends Migration
     {
         $this->createTable('{{%patients}}', [
             'id' => $this->primaryKey(),
+            'patient_id' => $this->string()->notNull(),
+            'status' => $this->string()->notNull(),
+            'created_at' => $this->dateTime()->notNull(),
+            'updated_at' => $this->dateTime()->notNull(),
         ]);
     }
 
