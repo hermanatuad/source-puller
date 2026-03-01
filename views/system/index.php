@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">DBS Code</th>
-                                <th scope="col">DBS Name</th>
+                                <th scope="col">System Name</th>
                                 <th scope="col">DBS Name</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Hostname</th>
