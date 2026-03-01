@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\DBHelper;
 use app\helpers\MyHelper;
 use app\models\System;
 use app\models\SystemSearch;
@@ -140,7 +141,7 @@ class SystemController extends Controller
         ];
 
         if ($model->system_type == 'mysql') {
-            $connectionResult = MyHelper::testConMysql($params);
+            $connectionResult = DBHelper::testConMysql($params);
 
             if (Yii::$app->request->isAjax) {
                 // Return JSON payload for AJAX requests
