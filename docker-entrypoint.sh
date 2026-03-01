@@ -44,5 +44,10 @@ PHP
   chmod 640 "$CONFIG_FILE" || true
 fi
 
+# Ensure runtime and web/assets directories exist and are writable
+mkdir -p /var/www/html/runtime/cache /var/www/html/web/assets
+chown -R www-data:www-data /var/www/html/runtime /var/www/html/web/assets || true
+chmod -R 0777 /var/www/html/runtime /var/www/html/web/assets || true
+
 # Execute the main process (php-fpm)
 exec "$@"
