@@ -14,7 +14,9 @@ RUN apk add --no-cache \
     libwebp-dev \
     mysql-client \
     postgresql-dev \
-    bash
+    bash \
+    ca-certificates \
+    openssh-client
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
@@ -31,14 +33,21 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Allow composer to run as root inside container and set home
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_HOME=/tmp
+
+# Ensure composer is executable
+RUN chmod +x /usr/bin/composer || true
+
 # Set working directory
 WORKDIR /var/www/html
 
 # Copy application files
 COPY . /var/www/html
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install dependencies (prefer-dist reduces VCS operations)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
