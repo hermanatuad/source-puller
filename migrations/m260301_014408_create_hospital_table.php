@@ -3,19 +3,19 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%hospital}}`.
+ * Handles the creation of table `{{%affiliation}}`.
  */
-class m260301_014408_create_hospital_table extends Migration
+class mf260301_014408_create_afiliation_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%hospital}}', [
+        $this->createTable('{{%affiliation}}', [
             'id' => $this->primaryKey(),
-            'hospital_code' => $this->string()->notNull(),
-            'hospital_name' => $this->string()->notNull(),
+            'affiliation_code' => $this->string()->notNull(),
+            'affiliation_name' => $this->string()->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ]);
@@ -26,6 +26,7 @@ class m260301_014408_create_hospital_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%hospital}}');
+        // $this->dropTable('{{%affiliation}}');
+        // $this->dropTable('{{%hospital}}');
     }
 }
