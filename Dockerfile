@@ -46,8 +46,8 @@ WORKDIR /var/www/html
 # Copy composer files first to leverage Docker layer caching
 COPY composer.json composer.lock /var/www/html/
 
-# Install dependencies (prefer-dist reduces VCS operations)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# Install dependencies (include dev packages for dev environment)
+RUN composer install --optimize-autoloader --no-interaction --prefer-dist
 
 # Copy application files
 COPY . /var/www/html
