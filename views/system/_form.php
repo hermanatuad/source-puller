@@ -133,4 +133,8 @@ use yii\widgets\ActiveForm;
         uppercase: true
     });
 </script>
+<!-- cleave.js -->
+<script src="assets/libs/cleave.js/cleave.min.js"></script>
+<!-- form masks init -->
+<script src="assets/js/pages/form-masks.init.js"></script>
 <?php JSRegister::end(); ?>
