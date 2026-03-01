@@ -68,11 +68,6 @@ class BridgeController extends Controller
     public function actionCreate()
     {
         $model = new Bridge();
-        // Prefill system_code when provided (used by modal or links)
-        $prefillSystem = $this->request->get('system_code');
-        if (!empty($prefillSystem)) {
-            $model->system_code = $prefillSystem;
-        }
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {

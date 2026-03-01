@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\helpers\DBHelper;
 use app\helpers\MyHelper;
+use app\helpers\DBHelper;
 use app\models\System;
 use app\models\SystemSearch;
 use Yii;
@@ -167,6 +168,39 @@ class SystemController extends Controller
             Yii::$app->session->setFlash('error', 'Unsupported system type for connection test.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
+    }
+
+    public function actionClearCache($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model) {
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
+            }
+            Yii::$app->session->setFlash('error', 'System not found.');
+            return $this->redirect(['index']);
+        }
+
+        $params = [
+            'hostname' => $model->hostname,
+            'port' => $model->port,
+            'username' => $model->username,
+            'database' => $model->database_name ?? null,
+        ];
+
+        $result = DBHelper::clearCache($params);
+
+        if (Yii::$app->request->isAjax) {
+            return $this->asJson($result);
+        }
+
+        if (!empty($result['status']) && $result['status'] === 'success') {
+            Yii::$app->session->setFlash('success', $result['message'] ?? 'Cache cleared');
+        } else {
+            Yii::$app->session->setFlash('error', $result['message'] ?? 'Failed to clear cache');
+        }
+
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     /**
