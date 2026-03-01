@@ -17,7 +17,7 @@ class SystemSearch extends System
     public function rules()
     {
         return [
-            [['id', 'system_code', 'system_name', 'description'], 'safe'],
+            [['id', 'system_code', 'system_name', 'system_type', 'hostname', 'password', 'port', 'path', 'description'], 'safe'],
         ];
     }
 
@@ -60,6 +60,11 @@ class SystemSearch extends System
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'system_code', $this->system_code])
             ->andFilterWhere(['like', 'system_name', $this->system_name])
+            ->andFilterWhere(['like', 'system_type', $this->system_type])
+            ->andFilterWhere(['like', 'hostname', $this->hostname])
+            ->andFilterWhere(['like', 'password', $this->password])
+            ->andFilterWhere(['like', 'port', $this->port])
+            ->andFilterWhere(['like', 'path', $this->path])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;

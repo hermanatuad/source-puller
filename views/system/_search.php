@@ -21,7 +21,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'system_name') ?>
 
-    <?= $form->field($model, 'description') ?>
+    <?= $form->field($model, 'system_type') ?>
+
+    <?= $form->field($model, 'hostname') ?>
+
+    <?php // echo $form->field($model, 'password') ?>
+
+    <?php // echo $form->field($model, 'port') ?>
+
+    <?php // echo $form->field($model, 'path') ?>
+
+    <?php // echo $form->field($model, 'description') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

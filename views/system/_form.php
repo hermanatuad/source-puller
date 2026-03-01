@@ -18,6 +18,16 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'system_name')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'system_type')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'hostname')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'port')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'path')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">

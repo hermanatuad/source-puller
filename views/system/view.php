@@ -32,6 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'system_code',
             'system_name',
+            'system_type',
+            'hostname',
+            'password',
+            'port',
+            'path',
             'description',
         ],
     ]) ?>

@@ -32,7 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'system_code',
             'system_name',
-            'description',
+            'system_type',
+            'hostname',
+            //'password',
+            //'port',
+            //'path',
+            //'description',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, System $model, $key, $index, $column) {
