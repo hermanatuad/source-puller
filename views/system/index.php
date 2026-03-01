@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= Html::encode($model->system_code) ?></td>
-                                        <td><?= Html::encode($model->system_name) ?></td>
+                                        <td><?= Html::a($model->system_name, ['view', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode(ucfirst($model->system_type)) ?></td>
                                         <td><?= Html::encode($model->hostname) ?></td>
                                         <td><?= Html::encode($model->port) ?></td>
