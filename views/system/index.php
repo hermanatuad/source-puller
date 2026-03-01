@@ -35,8 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">System Code</th>
-                                <th scope="col">System Name</th>
+                                <th scope="col">DBS Code</th>
+                                <th scope="col">DBS Name</th>
+                                <th scope="col">DBS Name</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Hostname</th>
                                 <th scope="col">Port</th>
@@ -55,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= $no++ ?></td>
                                         <td><?= Html::encode($model->system_code) ?></td>
                                         <td><?= Html::a($model->system_name, ['view', 'id' => $model->id]) ?></td>
+                                        <td><?= Html::a($model->database_name, ['view', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode(ucfirst($model->system_type)) ?></td>
                                         <td><?= Html::encode($model->hostname) ?></td>
                                         <td><?= Html::encode($model->port) ?></td>
