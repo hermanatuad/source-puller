@@ -4,6 +4,7 @@ use richardfan\widget\JSRegister;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
+use app\models\Affiliation;
 
 /** @var yii\web\View $this */
 /** @var app\models\User $model */
@@ -129,6 +130,21 @@ if (!$model->isNewRecord) {
                 \app\models\User::STATUS_ACTIVE => 'Active',
                 \app\models\User::STATUS_INACTIVE => 'Inactive',
             ], ['class' => 'form-select', 'prompt' => 'Select Status']) ?>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="mb-3">
+            <?php
+                $affiliations = ArrayHelper::map(Affiliation::find()->orderBy('affiliation_name')->all(), 'id', 'affiliation_name');
+            ?>
+            <?= $form->field($model, 'affiliation_id')->dropDownList($affiliations, [
+                'class' => 'form-select',
+                'prompt' => 'Select Affiliation (optional)'
+            ]) ?>
+            <small class="text-muted">Assign an affiliation to the user (optional).</small>
         </div>
     </div>
 </div>
