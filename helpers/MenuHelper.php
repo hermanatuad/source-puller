@@ -90,7 +90,8 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Components'
+                'label' => 'Components',
+                'visible' => Yii::$app->user->can('admin')
             ];
 
             // Components (Base UI simplified)
@@ -128,7 +129,7 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-organization-line"></i> <span>Affiliations</span>',
+                'label' => '<i class="ri-links-line"></i> <span>Affiliations</span>',
                 'url' => ['affiliation/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
