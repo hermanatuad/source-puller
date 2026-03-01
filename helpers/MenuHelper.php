@@ -37,20 +37,20 @@ class MenuHelper
             // ];
 
             // Layouts
-            $menuItems[] = [
-                'label' => '<i class="ri-layout-3-line"></i> <span>Layouts</span> <span class="badge badge-pill bg-danger">Hot</span>',
-                'items' => [
-                    ['label' => 'Horizontal', 'url' => 'layouts-horizontal', 'target' => '_blank'],
-                    ['label' => 'Detached', 'url' => 'layouts-detached', 'target' => '_blank'],
-                    ['label' => 'Two Column', 'url' => 'layouts-two-column', 'target' => '_blank'],
-                    ['label' => 'Hovered', 'url' => 'layouts-vertical-hovered', 'target' => '_blank'],
-                ]
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-layout-3-line"></i> <span>Layouts</span> <span class="badge badge-pill bg-danger">Hot</span>',
+            //     'items' => [
+            //         ['label' => 'Horizontal', 'url' => 'layouts-horizontal', 'target' => '_blank'],
+            //         ['label' => 'Detached', 'url' => 'layouts-detached', 'target' => '_blank'],
+            //         ['label' => 'Two Column', 'url' => 'layouts-two-column', 'target' => '_blank'],
+            //         ['label' => 'Hovered', 'url' => 'layouts-vertical-hovered', 'target' => '_blank'],
+            //     ]
+            // ];
 
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Pages'
+                'label' => 'Sources'
             ];
 
             // // Landing
@@ -65,33 +65,33 @@ class MenuHelper
 
 
             $menuItems[] = [
-                'label' => '<i class="ri-contacts-book-line"></i> <span>Contact</span>',
+                'label' => '<i class="ri-contacts-book-line"></i> <span>Hospital</span>',
                 'url' => ['site/contact']
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-tools-line"></i> <span>Test</span>',
+                'label' => '<i class="ri-users-line"></i> <span>Patients</span>',
                 'url' => ['site/test']
             ];
 
 
-            $menuItems[] = [
-                'type' => 'title',
-                'label' => 'Administration'
-            ];
+            // $menuItems[] = [
+            //     'type' => 'title',
+            //     'label' => 'Administration'
+            // ];
 
-            // RBAC Management
-            $menuItems[] = [
-                'label' => '<i class="ri-shield-user-line"></i> <span>RBAC Management</span>',
-                'url' => ['rbac/index'],
-                'visible' => Yii::$app->user->can('creator')
-            ];
+            // // RBAC Management
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-shield-user-line"></i> <span>RBAC Management</span>',
+            //     'url' => ['rbac/index'],
+            //     'visible' => Yii::$app->user->can('creator')
+            // ];
 
 
-            $menuItems[] = [
-                'type' => 'title',
-                'label' => 'Components'
-            ];
+            // $menuItems[] = [
+            //     'type' => 'title',
+            //     'label' => 'Components'
+            // ];
 
             // Components (Base UI simplified)
             // $menuItems[] = [
@@ -106,49 +106,49 @@ class MenuHelper
             //     ]
             // ];
 
-            // Multi-level
-            $menuItems[] = [
-                'label' => '<i class="ri-share-line"></i> <span>Multi Level</span>',
-                'items' => [
-                    ['label' => 'Level 1.1', 'url' => '#'],
-                    [
-                        'label' => 'Level 1.2',
-                        'items' => [
-                            ['label' => 'Level 2.1', 'url' => '#'],
-                            [
-                                'label' => 'Level 2.2',
-                                'items' => [
-                                    ['label' => 'Level 3.1', 'url' => '#'],
-                                    ['label' => 'Level 3.2', 'url' => '#'],
-                                ]
-                            ],
-                        ]
-                    ],
-                ]
-            ];
+            // // Multi-level
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-share-line"></i> <span>Multi Level</span>',
+            //     'items' => [
+            //         ['label' => 'Level 1.1', 'url' => '#'],
+            //         [
+            //             'label' => 'Level 1.2',
+            //             'items' => [
+            //                 ['label' => 'Level 2.1', 'url' => '#'],
+            //                 [
+            //                     'label' => 'Level 2.2',
+            //                     'items' => [
+            //                         ['label' => 'Level 3.1', 'url' => '#'],
+            //                         ['label' => 'Level 3.2', 'url' => '#'],
+            //                     ]
+            //                 ],
+            //             ]
+            //         ],
+            //     ]
+            // ];
 
 
-            $menuItems[] = [
-                'label' => '<i class="ri-share-line"></i> <span>Master</span>',
-                'visible' => Yii::$app->user->can('admin'),
-                'items' => [
-					[
-						'label' => '<span> Auth Item</span>',
-						'url' => ['auth-item/index'],
-						'visible' => Yii::$app->user->can('creator')
-					],
-					[
-						'label' => '<span> Auth Item Child</span>',
-						'url' => ['auth-item-child/index'],
-						'visible' => Yii::$app->user->can('creator')
-					],
-                    [
-                        'label' => 'Users',
-                        'url' => ['user/index'],
-						'visible' => Yii::$app->user->can('admin')
-                    ]
-                ]
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-share-line"></i> <span>Master</span>',
+            //     'visible' => Yii::$app->user->can('admin'),
+            //     'items' => [
+			// 		[
+			// 			'label' => '<span> Auth Item</span>',
+			// 			'url' => ['auth-item/index'],
+			// 			'visible' => Yii::$app->user->can('creator')
+			// 		],
+			// 		[
+			// 			'label' => '<span> Auth Item Child</span>',
+			// 			'url' => ['auth-item-child/index'],
+			// 			'visible' => Yii::$app->user->can('creator')
+			// 		],
+            //         [
+            //             'label' => 'Users',
+            //             'url' => ['user/index'],
+			// 			'visible' => Yii::$app->user->can('admin')
+            //         ]
+            //     ]
+            // ];
         } else {
             // $menuItems[] = [
             //     'label' => '<i class="ri-contacts-book-line"></i> <span>Login</span>',
