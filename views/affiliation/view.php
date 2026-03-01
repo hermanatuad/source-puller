@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Affiliation $model */
 
-$this->title = $model->id;
+$this->title = $model->affiliation_name;
 $this->params['breadcrumbs'][] = ['label' => 'Affiliations', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);

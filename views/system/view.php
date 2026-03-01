@@ -23,58 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
             </div>
             <div class="modal-body">
-
-                <form action="javascript:void(0);">
-                    <div class="row g-3">
-                        <div class="col-xxl-6">
-                            <div>
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="Enter firstname">
-                            </div>
-                        </div><!--end col-->
-                        <div class="col-xxl-6">
-                            <div>
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="Enter lastname">
-                            </div>
-                        </div><!--end col-->
-                        <div class="col-lg-12">
-                            <label for="genderInput" class="form-label">Gender</label>
-                            <div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                                    <label class="form-check-label" for="inlineRadio1">Male</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                    <label class="form-check-label" for="inlineRadio2">Female</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">Others</label>
-                                </div>
-                            </div>
-                        </div><!--end col-->
-                        <div class="col-xxl-6">
-                            <div>
-                                <label for="emailInput" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="emailInput" placeholder="Enter your email">
-                            </div>
-                        </div><!--end col-->
-                        <div class="col-xxl-6">
-                            <div>
-                                <label for="passwordInput" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="passwordInput" value="451326546">
-                            </div>
-                        </div><!--end col-->
-                        <div class="col-lg-12">
-                            <div class="hstack gap-2 justify-content-end">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </div><!--end col-->
-                    </div><!--end row-->
-                </form>
+                <h5 class="fs-15">
+                    Overflowing text to show scroll behavior
+                </h5>
+                <p class="text-muted">One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>
+                <p class="text-muted">The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. "What's happened to me?" he thought.</p>
+                <p class="text-muted">It wasn't a dream. His room, a proper human room although a little too small, lay peacefully between its four familiar walls.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -84,7 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 
 <div class="row">
     <div class="col-lg-12">
