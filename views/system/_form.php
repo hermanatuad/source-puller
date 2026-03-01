@@ -44,9 +44,8 @@ use yii\widgets\ActiveForm;
 
                 <div class="col-md-6">
                     <?= $form->field($model, 'system_type')->dropDownList([
-                        'internal' => 'Internal',
-                        'external' => 'External',
-                        'api' => 'API'
+                        'mysql' => 'MySQL',
+                        'postgres' => 'PostgreSQL'
                     ], ['prompt' => 'Select Type', 'class' => 'form-select'])->label('System Type') ?>
                 </div>
 
@@ -68,7 +67,7 @@ use yii\widgets\ActiveForm;
                             'class' => 'form-control',
                             'id' => 'system-password',
                             'placeholder' => '••••••••'
-                        ])->label('Password (optional)') ?>
+                        ])->label('Password') ?>
                         <button type="button" class="btn btn-sm btn-outline-secondary position-absolute" style="right:10px;top:38px;" id="toggle-system-password">Show</button>
                     </div>
                 </div>
@@ -83,11 +82,11 @@ use yii\widgets\ActiveForm;
                 </div>
 
                 <div class="col-md-9">
-                    <?= $form->field($model, 'path')->textInput([
+                    <?= $form->field($model, 'path')->hiddenInput([
                         'maxlength' => true,
                         'class' => 'form-control',
                         'placeholder' => '/api/v1'
-                    ])->label('Path') ?>
+                    ])->label(false) ?>
                 </div>
 
                 <div class="col-12">
