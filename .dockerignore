@@ -62,7 +62,7 @@ vagrant/
 
 # Composer
 composer.phar
-composer.lock
+!composer.lock
 
 # OS files
 .DS_Store
