@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\LinkPager;
 
 /** @var yii\web\View $this */
 /** @var app\models\SystemSearch $searchModel */
@@ -39,8 +40,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th scope="col">Type</th>
                                 <th scope="col">Hostname</th>
                                 <th scope="col">Port</th>
-                                <th scope="col">Path</th>
-                                <th scope="col">Created At</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -59,8 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= Html::encode(ucfirst($model->system_type)) ?></td>
                                         <td><?= Html::encode($model->hostname) ?></td>
                                         <td><?= Html::encode($model->port) ?></td>
-                                        <td><?= Html::encode($model->path) ?></td>
-                                        <td><?= Yii::$app->formatter->asDatetime($model->created_at) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
                                                 <button class="btn btn-soft-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
