@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card h-100 d-flex flex-column">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">
-                    <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
+                    <i class="ri-user-line me-2"></i>List of Database Systems
                 </h4>
                 <div class="flex-shrink-0">
                     <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Database System', ['create'], [

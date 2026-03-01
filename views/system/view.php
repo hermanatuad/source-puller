@@ -102,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th scope="row">
                                         <i class="ri-code-s-slash-line me-2 text-muted"></i>Database Name
                                     </th>
-                                    <td><?= Html::encode($model->system_code) ?></td>
+                                    <td><?= Html::encode($model->database_name) ?></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">
