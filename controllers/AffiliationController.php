@@ -79,6 +79,7 @@ class AffiliationController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'uuid' => \app\helpers\MyHelper::genuuid(),
         ]);
     }
 

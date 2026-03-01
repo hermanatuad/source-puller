@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id]) ?>
 
     <?= $form->field($model, 'affiliation_code')->textInput(['maxlength' => true]) ?>
 
