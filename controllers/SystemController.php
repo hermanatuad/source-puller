@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\helpers\DBHelper;
 use app\helpers\MyHelper;
-use app\helpers\DBHelper;
 use app\models\System;
 use app\models\SystemSearch;
 use Yii;
