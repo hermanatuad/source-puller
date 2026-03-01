@@ -100,6 +100,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tr>
                                 <tr>
                                     <th scope="row">
+                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Database Name
+                                    </th>
+                                    <td><?= Html::encode($model->system_code) ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
                                         <i class="ri-key-2-line me-2 text-muted"></i>Hostname
                                     </th>
                                     <td><?= Html::encode($model->hostname) ?: '<span class="text-muted">-</span>' ?></td>

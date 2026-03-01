@@ -54,8 +54,8 @@ class System extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'system_code' => 'System Code',
-            'system_name' => 'System Name',
+            'system_code' => 'DBS Code',
+            'system_name' => 'DBS Name',
             'system_type' => 'System Type',
             'database_name' => 'Database Name',
             'hostname' => 'Hostname',

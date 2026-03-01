@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Affiliation $model */
 
-$this->title = 'Update Affiliation: ' . $model->id;
+$this->title = 'Update Affiliation: ' . $model->affiliation_name;
 $this->params['breadcrumbs'][] = ['label' => 'Affiliations', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

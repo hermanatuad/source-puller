@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /** @var app\models\SystemSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Database Systems';
+$this->title = 'Database Systems (DBS)';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
