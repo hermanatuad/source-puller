@@ -122,6 +122,7 @@ class SystemController extends Controller
     public function actionCheckConnection($id)
     {
         $model = $this->findModel($id);
+        echo '<pre>';print_r($model);exit;
         if (!$model) {
             Yii::$app->session->setFlash('error', 'System not found.');
             return $this->redirect(['index']);
