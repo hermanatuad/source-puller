@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::a('<i class="ri-file-text-line align-bottom me-1"></i> Test Connection', ['check-connection', 'id' => $model->id], [
                         'class' => 'btn btn-info btn-sm me-2'
                     ]) ?>
+                    <?=  Html::a('<i class="ri-refresh-line align-bottom me-1"></i> Clear Cache', ['clear-cache', 'id' => $model->id], [
+                        'class' => 'btn btn-secondary btn-sm'
+                    ]) ?>
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
                     ]) ?>
@@ -114,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card mt-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>Bridges for this System</div>
-                <?= Html::a('Add Bridge', ['bridge/create', 'system_code' => $model->system_code], ['class' => 'btn btn-success btn-sm']) ?>
+                <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', ['bridge/create', 'system_code' => $model->system_code], ['class' => 'btn btn-success btn-sm']) ?>
             </div>
             <div class="card-body p-0">
                 <?php
