@@ -27,12 +27,26 @@ class MyHelper
     {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
+    }
+
+    public static function genEntityId()
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $length = 7;
+        $id = '';
+        for ($i = 0; $i < $length; $i++) {
+            $id .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+        return $id;
     }
 
     /**
@@ -120,9 +134,18 @@ class MyHelper
         $yH = (int) (30 * $n + $j - 30);
 
         $months = [
-            'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir',
-            'Jumadil Awal', 'Jumadil Akhir', 'Rajab', "Sya'ban",
-            'Ramadhan', 'Syawal', "Dzulqa'dah", "Dzulhijjah"
+            'Muharram',
+            'Safar',
+            'Rabiul Awwal',
+            'Rabiul Akhir',
+            'Jumadil Awal',
+            'Jumadil Akhir',
+            'Rajab',
+            "Sya'ban",
+            'Ramadhan',
+            'Syawal',
+            "Dzulqa'dah",
+            "Dzulhijjah"
         ];
 
         $monthName = isset($months[$mH - 1]) ? $months[$mH - 1] : '';
@@ -201,7 +224,7 @@ class MyHelper
         if (Yii::$app->user->isGuest) {
             return false;
         }
-        
+
         if (is_array($permission)) {
             foreach ($permission as $perm) {
                 if (Yii::$app->user->can($perm)) {
@@ -210,7 +233,7 @@ class MyHelper
             }
             return false;
         }
-        
+
         return Yii::$app->user->can($permission);
     }
 }
