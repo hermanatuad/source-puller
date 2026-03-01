@@ -1,10 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\GridView;
 use app\models\BridgeSearch;
-use richardfan\widget\JSRegister;
 
 /** @var yii\web\View $this */
 /** @var app\models\System $model */
@@ -26,14 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'btn btn-primary btn-sm me-2'
                     ]) ?>
                     <?= Html::beginForm(['delete', 'id' => $model->id], 'post', ['style' => 'display:inline']) ?>
-                    <button type="submit" class="btn btn-danger btn-sm me-2" onclick="return confirm('Are you sure you want to delete this system?')">
-                        <i class="ri-delete-bin-line align-bottom me-1"></i> Delete
-                    </button>
+                        <button type="submit" class="btn btn-danger btn-sm me-2" onclick="return confirm('Are you sure you want to delete this system?')">
+                            <i class="ri-delete-bin-line align-bottom me-1"></i> Delete
+                        </button>
                     <?= Html::endForm() ?>
-                    <?= Html::button('<i class="ri-file-text-line align-bottom me-1"></i> Test Connection', [
-                        'class' => 'btn btn-info btn-sm me-2',
-                        'id' => 'btn-test-connection',
-                        'data-url' => Url::to(['check-connection', 'id' => $model->id]),
+                    <?= Html::a('<i class="ri-file-text-line align-bottom me-1"></i> Test Connection', ['check-connection', 'id' => $model->id], [
+                        'class' => 'btn btn-info btn-sm me-2'
                     ]) ?>
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
@@ -42,7 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
 
             <div class="card-body">
-                <div id="connection-result"></div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="text-center border-end">
@@ -128,77 +123,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
 
                 <div class="table-responsive">
-                    <?= GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'summary' => false,
-                        'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
-                        'columns' => [
-                            ['class' => 'yii\\grid\\SerialColumn'],
-                            'bridge_type',
-                            'bridge_source',
-                            'bridge_target',
-                            'created_at:datetime',
-                            ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
-                        ],
-                    ]) ?>
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'summary' => false,
+                    'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
+                    'columns' => [
+                        ['class' => 'yii\\grid\\SerialColumn'],
+                        'bridge_type',
+                        'bridge_source',
+                        'bridge_target',
+                        'created_at:datetime',
+                        ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
+                    ],
+                ]) ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
-<?php JSRegister::begin(); ?>
-<script>
-(function($){
-    'use strict';
-
-    const btn = $('#btn-test-connection');
-    const result = $('#connection-result');
-    if (!btn.length) return;
-
-    // ensure single handler
-    btn.off('click').on('click', function(e){
-        e.preventDefault();
-        const url = btn.data('url');
-        if (!url) return;
-
-        // disable button and show spinner
-        btn.prop('disabled', true);
-        const $spinner = $('<span id="conn-spinner" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>');
-        btn.prepend($spinner);
-
-        // CSRF token for POST
-        const csrf = $('meta[name="csrf-token"]').attr('content') || '';
-
-        $.ajax({
-            url: url,
-            method: 'POST',
-            dataType: 'json',
-            headers: { 'X-CSRF-Token': csrf },
-            data: {},
-            success: function(res){
-                const cls = (res.status === 'success') ? 'alert-success' : 'alert-danger';
-                const msg = res.message || ((res.status === 'success') ? 'Connection successful' : 'Connection failed');
-                const html = `
-                    <div class="alert ${cls} alert-dismissible fade show" role="alert">
-                        ${msg}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                result.html(html);
-            },
-            error: function(){
-                result.html('<div class="alert alert-danger">Request failed. Please try again.</div>');
-            },
-            complete: function(){
-                btn.prop('disabled', false);
-                $spinner.remove();
-            }
-        });
-    });
-
-})(jQuery);
-</script>
-<?php JSRegister::end(); ?>
