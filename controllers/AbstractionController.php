@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\MyHelper;
 use app\models\Abstraction;
 use app\models\AbstractionSearch;
 use yii\web\Controller;
