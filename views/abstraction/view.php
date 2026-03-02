@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Abstraction $model */
 
-$this->title = $model->id;
+$this->title = $model->table_name;
 $this->params['breadcrumbs'][] = ['label' => 'Abstractions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -28,7 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tbody>
                                 <tr>
                                     <th scope="row">
-                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Data Name 
+                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>ID
+                                    </th>
+                                    <td><?= Html::encode($model->id) ?></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Data Name
                                     </th>
                                     <td><?= Html::encode($model->table_name) ?></td>
                                 </tr>
@@ -38,12 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </th>
                                     <td><?= Html::encode($model->table_warehouse) ?></td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">
-                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Type
-                                    </th>
-                                    <td><?= Html::encode($model->type) ?></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -51,6 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-6">
                         <table class="table table-borderless mb-0">
                             <tbody>
+                                <tr>
+                                    <th scope="row">
+                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Type
+                                    </th>
+                                    <td><?= Html::encode($model->type) ?></td>
+                                </tr>
                                 <tr>
                                     <th scope="row">
                                         <i class="ri-code-s-slash-line me-2 text-muted"></i>Description
