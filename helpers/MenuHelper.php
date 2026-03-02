@@ -69,10 +69,10 @@ class MenuHelper
                 'url' => ['entity/index']
             ];
 
-            $menuItems[] = [
-                'label' => '<i class="ri-user-line"></i> <span>Clinician</span>',
-                'url' => ['clinician/index']
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-user-line"></i> <span>Clinician</span>',
+            //     'url' => ['clinician/index']
+            // ];
 
 
             // $menuItems[] = [
