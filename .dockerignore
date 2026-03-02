@@ -73,3 +73,6 @@ Thumbs.db
 *.temp
 *.bak
 *.swp
+
+
+.env
