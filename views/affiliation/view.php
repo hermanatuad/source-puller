@@ -105,39 +105,42 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="col-md-12">
         <h4>Users for this affiliation</h4>
-        <?php
-        $dataProvider = new ActiveDataProvider([
-            'query' => \app\models\User::find()->where(['affiliation_code' => $model->affiliation_code]),
-            'pagination' => [
-                'pageSize' => 10,
-            ],
-        ]);
-        Pjax::begin(['id' => 'affiliation-users-pjax']);
-        echo GridView::widget([
-            'dataProvider' => $dataProvider,
-            'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
-                'id',
-                'username',
-                'name',
-                'email',
-                'access_role',
-                [
-                    'attribute' => 'status',
-                    'value' => function($m) { return $m->status; }
-                ],
-                [
-                    'attribute' => 'created_at',
-                    'format' => ['datetime', 'php:Y-m-d H:i'],
-                ],
-                [
-                    'class' => 'yii\grid\ActionColumn',
-                    'controller' => 'user',
-                ],
-            ],
-        ]);
-        Pjax::end();
-        ?>
+        <?php if (!empty($users)): ?>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            <?php foreach ($users as $index => $user): ?>
+                                <tr>
+                                    <td><?= $index + 1 ?></td>
+                                    <td><?= Html::encode($user->username) ?></td>
+                                    <td><?= Html::encode($user->email) ?></td>
+                                    <td>
+                                        <?= Html::a('View', ['user/view', 'id' => $user->   id], ['class' => 'btn btn-sm btn-info']) ?>
+                                        <?= Html::a('Edit', ['user/update', 'id' => $user->id], ['class' => 'btn btn-sm btn-primary']) ?>
+                                        <?= Html::a('Delete', ['user/delete', 'id' => $user->id], [
+                                            'class' => 'btn btn-sm btn-danger',
+                                            'data' => [
+                                                'confirm' => 'Are you sure you want to delete this user?',
+                                                'method' => 'post',
+                                            ],
+                                        ]) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <p class="text-muted">No users associated with this affiliation.</p>
+        <?php endif; ?>
     </div>
 </div>
 </div>
