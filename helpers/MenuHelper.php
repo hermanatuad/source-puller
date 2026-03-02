@@ -90,7 +90,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Components',
+                'label' => 'Sources',
                 'visible' => Yii::$app->user->can('admin')
             ];
 
@@ -129,21 +129,26 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-settings-3-line"></i> <span>Database System</span>',
+                'label' => '<i class="ri-database-2-line"></i> <span>Database System</span>',
                 'url' => ['system/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
 
-
             $menuItems[] = [
                 'type' => 'title',
-                'label' => '<strong>Data Management</strong>',
+                'label' => '<strong>Data Warehouse</strong>',
                 'visible' => Yii::$app->user->can('admin')
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-settings-3-line"></i> <span>Patient Data</span>',
-                'url' => ['datawarehouse-patient/index'],
+                'label' => '<i class="ri-tools-line"></i> <span>Abstraction</span>',
+                'url' => ['abstraction/index'],
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
+            $menuItems[] = [
+                'label' => '<i class="ri-database-2-line"></i> <span>Patient Data</span>',
+                'url' => ['entity/datawarehouse-patient'],
                 'visible' => Yii::$app->user->can('admin')
             ];
 

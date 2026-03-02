@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\Entity;
-use app\models\EntitySearch;
+use app\models\Abstraction;
+use app\models\AbstractionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * EntityController implements the CRUD actions for Entity model.
+ * AbstractionController implements the CRUD actions for Abstraction model.
  */
-class EntityController extends Controller
+class AbstractionController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,13 +32,13 @@ class EntityController extends Controller
     }
 
     /**
-     * Lists all Entity models.
+     * Lists all Abstraction models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new EntitySearch();
+        $searchModel = new AbstractionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -47,21 +47,9 @@ class EntityController extends Controller
         ]);
     }
 
-
-    public function actionDatawarehousePatient()
-    {
-        $searchModel = new EntitySearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
-        return $this->render('datawarehouse-patient', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
     /**
-     * Displays a single Entity model.
-     * @param int $id ID
+     * Displays a single Abstraction model.
+     * @param string $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -73,13 +61,13 @@ class EntityController extends Controller
     }
 
     /**
-     * Creates a new Entity model.
+     * Creates a new Abstraction model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Entity();
+        $model = new Abstraction();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -95,9 +83,9 @@ class EntityController extends Controller
     }
 
     /**
-     * Updates an existing Entity model.
+     * Updates an existing Abstraction model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
+     * @param string $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -115,9 +103,9 @@ class EntityController extends Controller
     }
 
     /**
-     * Deletes an existing Entity model.
+     * Deletes an existing Abstraction model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
+     * @param string $id ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -129,15 +117,15 @@ class EntityController extends Controller
     }
 
     /**
-     * Finds the Entity model based on its primary key value.
+     * Finds the Abstraction model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Entity the loaded model
+     * @param string $id ID
+     * @return Abstraction the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Entity::findOne(['id' => $id])) !== null) {
+        if (($model = Abstraction::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
