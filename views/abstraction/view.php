@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php Pjax::begin(['id' => 'bridges-pjax']); ?>
                                 <?= GridView::widget([
                                     'dataProvider' => $dataProvider,
-                                    'filterModel' => $searchModel,
+                                    // 'filterModel' => $searchModel,
                                     'summary' => false,
                                     'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
                                     'columns' => [
