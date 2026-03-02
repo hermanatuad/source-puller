@@ -23,27 +23,27 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="form-floating">
                         <?= $form->field($model, 'table_name')->textInput([
                             'maxlength' => true,
                             'class' => 'form-control',
-                            'placeholder' => 'SYS001'
+                            'placeholder' => 'Patient Records'
                         ])->label('Table Name') ?>
                     </div>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="form-floating">
                         <?= $form->field($model, 'table_warehouse')->textInput([
                             'maxlength' => true,
                             'class' => 'form-control',
-                            'placeholder' => 'My Application'
-                        ])->label('System Name') ?>
+                            'placeholder' => 'patient_table'
+                        ])->label('Table Warehouse Name') ?>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'type')->dropDownList([
                         'main' => 'Main',
                         'secondary' => 'Secondary',
@@ -55,7 +55,7 @@ use yii\widgets\ActiveForm;
                     <?= $form->field($model, 'description')->textarea([
                         'rows' => 3,
                         'class' => 'form-control',
-                        'placeholder' => 'Optional notes about this system'
+                        'placeholder' => 'Optional notes about abstractions'
                     ])->label('Description') ?>
                 </div>
             </div>
@@ -67,21 +67,5 @@ use yii\widgets\ActiveForm;
     </div>
 
     <?php ActiveForm::end(); ?>
-
-    <?php JSRegister::begin(); ?>
-    <script>
-        document.getElementById('toggle-system-password')?.addEventListener('click', function() {
-            var pwd = document.getElementById('system-password');
-            if (!pwd) return;
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                this.innerText = 'Hide';
-            } else {
-                pwd.type = 'password';
-                this.innerText = 'Show';
-            }
-        });
-    </script>
-    <?php JSRegister::end(); ?>
 
 </div>
