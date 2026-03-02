@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="col-lg-12">
                                             <div class="hstack gap-2 justify-content-end">
                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="btn btn-primary" id="submit-column">Submit</button>
                                             </div>
                                         </div><!--end col-->
                                     </div><!--end row-->
@@ -167,3 +167,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<?php \richardfan\widget\JSRegister::begin(); ?>
+<script>
+    $('#submit-column').on('click', function(e) {
+        e.preventDefault();
+        console.log('submit column');
+    })
+</script>
+<?php \richardfan\widget\JSRegister::end(); ?>
