@@ -20,6 +20,77 @@ class DBHelper
      * @return string Formatted currency string
      */
 
+    public static function getDatabaseInfoFromCache($params, $cacheTTL = 3600)
+    {
+        $systemCode = $params['system_code'] ?? '';
+        $hostname = $params['hostname'] ?? '';
+        $username = $params['username'] ?? '';
+        $port = $params['port'] ?? '';
+        $database = $params['database_name'] ?? '';
+
+        // Validate required parameters for cache lookup
+        $missing = [];
+        if (empty($hostname)) {
+            $missing[] = 'hostname';
+        }
+        if (empty($username)) {
+            $missing[] = 'username';
+        }
+        if (empty($database)) {
+            $missing[] = 'database';
+        }
+        if (empty($port) && $port !== 0) {
+            $missing[] = 'port';
+        }
+
+        if (!empty($missing)) {
+            return [
+                'status' => 'error',
+                'message' => 'Missing required parameter(s) for cache lookup: ' . implode(', ', $missing),
+                'data' => [
+                    'system_code' => $systemCode,
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database,
+                ]
+            ];
+        }
+
+        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
+
+        $cachedData = self::getFromCache($cacheKey);
+
+        if ($cachedData === null) {
+            return [
+                'status' => 'error',
+                'message' => 'Cache not found for system_code: ' . $systemCode
+            ];
+        }
+
+        // Cek TTL
+        if (time() - $cachedData['cached_at'] >= $cacheTTL) {
+            return [
+                'status' => 'error',
+                'message' => 'Cache expired for system_code: ' . $systemCode,
+                'cache_info' => [
+                    'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                    'expired_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+                ]
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'message' => 'Successfully retrieved database info from cache',
+            'cache_info' => [
+                'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                'expires_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+            ],
+            'result' => $cachedData
+        ];
+    }
+
     public static function testConMysql($params)
     {
         // Ekstrak parameter dengan default values

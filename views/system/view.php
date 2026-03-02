@@ -247,6 +247,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php JSRegister::begin(); ?>
 <script>
-    alert('MASUUUKK');
+    
 </script>
 <?php JSRegister::end(); ?>

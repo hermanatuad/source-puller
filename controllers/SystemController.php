@@ -59,7 +59,11 @@ class SystemController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        // echo '<pre>';print_r(DBHelper::getDatabaseInfoFromCache($model->system_code));exit;
+
+        $dataCache = DBHelper::getDatabaseInfoFromCache($model);
+        if ($dataCache['status'] == 'success') {
+            echo '<pre>';print_r($dataCache['result']['data']);exit;
+        }
         return $this->render('view', [
             'model' => $model,
         ]);
