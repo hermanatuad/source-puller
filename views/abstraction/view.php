@@ -85,17 +85,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'id' => 'btn-add-bridge',
                 ]) ?>
             </div>
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div>Bridges for this System</div>
-
-                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', [
-                    'class' => 'btn btn-success btn-sm',
-                    'data-bs-toggle' => 'modal',
-                    'data-bs-target' => '#modal-bridge',
-                    'id' => 'btn-add-bridge',
-                ]) ?>
-            </div>
-
             <div class="card-body">
                 <div class="row">
 
