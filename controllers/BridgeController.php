@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\MyHelper;
 use app\models\Bridge;
 use app\models\BridgeSearch;
 use yii\web\Controller;
@@ -90,6 +91,7 @@ class BridgeController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'uuid' => MyHelper::genuuid(),
         ]);
     }
 
