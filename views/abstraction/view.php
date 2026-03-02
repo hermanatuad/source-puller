@@ -78,6 +78,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <i class="ri-server-line me-2"></i>Abstraction <?= Html::encode($model->table_name) ?>
                 </h4>
 
+                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Column', [
+                    'class' => 'btn btn-success btn-sm',
+                    'data-bs-toggle' => 'modal',
+                    'data-bs-target' => '#modal-bridge',
+                    'id' => 'btn-add-bridge',
+                ]) ?>
+
                 <div class="modal fade" id="modal-bridge" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -141,12 +148,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
-                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Column', [
-                    'class' => 'btn btn-success btn-sm',
-                    'data-bs-toggle' => 'modal',
-                    'data-bs-target' => '#modal-bridge',
-                    'id' => 'btn-add-bridge',
-                ]) ?>
             </div>
             <div class="card-body">
                 <div class="row">
