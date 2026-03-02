@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th scope="row">
                                         <i class="ri-code-s-slash-line me-2 text-muted"></i>Last Update
                                     </th>
-                                    <td><?= Html::encode($model->updated_at) ?></td>
+                                    <td><?= Yii::$app->formatter->asDatetime($model->updated_at) ?> <?= Html::encode($model->updated_at) ?></td>
                                 </tr>
                             </tbody>
                         </table>
