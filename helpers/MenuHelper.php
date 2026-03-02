@@ -135,6 +135,12 @@ class MenuHelper
             ];
 
             $menuItems[] = [
+                'label' => '<i class="ri-shuffle-line"></i> <span>Bridge</span>',
+                'url' => ['bridge/index'],
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
+            $menuItems[] = [
                 'type' => 'title',
                 'label' => '<strong>Data Warehouse</strong>',
                 'visible' => Yii::$app->user->can('admin')
@@ -147,7 +153,7 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-database-2-line"></i> <span>Patient Data</span>',
+                'label' => '<i class="ri-global-line"></i> <span>Patient Data</span>',
                 'url' => ['entity/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
@@ -160,7 +166,7 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-database-2-line"></i> <span>Master</span>',
+                'label' => '<i class="ri-cog-line"></i> <span>Master</span>',
                 'visible' => Yii::$app->user->can('admin'),
                 'items' => [
                     [
