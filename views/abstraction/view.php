@@ -160,7 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="card-body p-0">
                             <?php
                             $searchModel = new AbstractionColumnSearch();
-                            $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['AbstractionColumnSearch' => ['abstraction_id' => $model->abstraction_id]]));
+                            $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['AbstractionColumnSearch' => ['abstraction_id' => $model->id]]));
                             ?>
 
                             <div class="table-responsive">
