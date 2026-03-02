@@ -113,6 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <th>#</th>
                             <th>Username</th>
                             <th>Email</th>
+                            <th>Name</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -122,8 +123,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <td><?= $index + 1 ?></td>
                                     <td><?= Html::encode($user->username) ?></td>
                                     <td><?= Html::encode($user->email) ?></td>
+                                    <td><?= Html::encode($user->name) ?></td>
                                     <td>
-                                        <?= Html::a('View', ['user/view', 'id' => $user->   id], ['class' => 'btn btn-sm btn-info']) ?>
+                                        <?= Html::a('View', ['user/view', 'id' => $user->id], ['class' => 'btn btn-sm btn-info']) ?>
                                         <?= Html::a('Edit', ['user/update', 'id' => $user->id], ['class' => 'btn btn-sm btn-primary']) ?>
                                         <?= Html::a('Delete', ['user/delete', 'id' => $user->id], [
                                             'class' => 'btn btn-sm btn-danger',
