@@ -148,7 +148,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'label' => '<i class="ri-database-2-line"></i> <span>Patient Data</span>',
-                'url' => ['entity/datawarehouse-patient'],
+                'url' => ['entity/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
 
