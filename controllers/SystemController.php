@@ -133,6 +133,7 @@ class SystemController extends Controller
         }
 
         $params = [
+            'system_code' => $model->system_code,
             'hostname' => $model->hostname,
             'port' => $model->port,
             'username' => $model->username,
