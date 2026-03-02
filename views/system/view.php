@@ -246,9 +246,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php \richardfan\widget\JSRegister::begin(); ?>
 <script>
-$('#btn-add-bridge').off('click').on('click', function() {
     alert('MASUUUKK');
-});
-
+    $('#btn-add-bridge').off('click').on('click', function() {});
 </script>
 <?php \richardfan\widget\JSRegister::end(); ?>
