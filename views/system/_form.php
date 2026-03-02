@@ -134,9 +134,3 @@ use yii\widgets\ActiveForm;
     <?php JSRegister::end(); ?>
 
 </div>
-
-<?php JSRegister::begin(); ?>
-<script>
-
-</script>
-<?php JSRegister::end(); ?>
