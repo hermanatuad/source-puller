@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <table class="table table-borderless mb-0">
                             <tbody>
                                 <tr>
@@ -44,13 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </th>
                                     <td><?= Html::encode($model->table_warehouse) ?></td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="col-md-6">
-                        <table class="table table-borderless mb-0">
-                            <tbody>
                                 <tr>
                                     <th scope="row">
                                         <i class="ri-code-s-slash-line me-2 text-muted"></i>Type
