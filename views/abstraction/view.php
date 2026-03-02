@@ -73,16 +73,27 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-            <div class="card-header align-items-center d-flex">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0 flex-grow-1">
                     <i class="ri-server-line me-2"></i>Abstraction <?= Html::encode($model->table_name) ?>
-                    <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Column', [
-                        'class' => 'btn btn-success btn-sm',
-                        'data-bs-toggle' => 'modal',
-                        'data-bs-target' => '#modal-bridge',
-                        'id' => 'btn-add-bridge',
-                    ]) ?>
                 </h4>
+
+                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Column', [
+                    'class' => 'btn btn-success btn-sm',
+                    'data-bs-toggle' => 'modal',
+                    'data-bs-target' => '#modal-bridge',
+                    'id' => 'btn-add-bridge',
+                ]) ?>
+            </div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>Bridges for this System</div>
+
+                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', [
+                    'class' => 'btn btn-success btn-sm',
+                    'data-bs-toggle' => 'modal',
+                    'data-bs-target' => '#modal-bridge',
+                    'id' => 'btn-add-bridge',
+                ]) ?>
             </div>
 
             <div class="card-body">
