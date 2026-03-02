@@ -69,6 +69,7 @@ class DBHelper
         // Cek cache jika diaktifkan
         if ($useCache) {
             $cachedData = self::getFromCache($cacheKey);
+            echo '<pre>';print_r($cachedData);exit;
             if ($cachedData !== null) {
                 // Cek apakah cache masih valid (belum expired)
                 if (time() - $cachedData['cached_at'] < $cacheTTL) {
