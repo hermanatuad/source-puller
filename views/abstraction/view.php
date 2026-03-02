@@ -149,8 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'abstraction_id',
                                 'column_type',
                                 'column_warehouse',
-                                'description',
-                                'created_at:datetime',
+                                'description'
                                 ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
                             ],
                         ]) ?>
