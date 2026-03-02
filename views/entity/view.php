@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             </div>
                             <h5 class="mb-1"><?= Html::encode($model->entity_id) ?></h5>
-                            <p class="text-muted mb-2"><?= Html::encode($model->id) ?></p>
+                            <p class="text-muted mb-3"><?= Html::encode($model->id) ?></p>
                             <span class="badge bg-info-subtle text-info mb-3">
                                 <?= Html::encode($model->is_alive) ?>
                             </span>
