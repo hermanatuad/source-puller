@@ -89,6 +89,7 @@ YiiAsset::register($this);
 
     <?php echo $this->render('vendor-scripts'); ?>
 
+    <script src="/js/pages/form-wizard.init.js"></script>
     <script src="/libs/prismjs/prism.js"></script>
 
     <!-- App js -->
