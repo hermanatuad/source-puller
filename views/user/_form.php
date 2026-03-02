@@ -138,7 +138,7 @@ if (!$model->isNewRecord) {
     <div class="col-lg-6">
         <div class="mb-3">
             <?php
-                $affiliations = ArrayHelper::map(Affiliation::find()->orderBy('affiliation_name')->all(), 'code', 'affiliation_name');
+                $affiliations = ArrayHelper::map(Affiliation::find()->orderBy('affiliation_name')->all(), 'affiliation_code', 'affiliation_name');
             ?>
             <?= $form->field($model, 'affiliation_code')->dropDownList($affiliations, [
                 'class' => 'form-select',

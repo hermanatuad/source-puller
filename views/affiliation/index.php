@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= Html::encode($model->affiliation_code) ?></td>
-                                        <td><?= Html::encode($model->affiliation_name) ?></td>
+                                        <td> <?=  Html::a(Html::encode($model->affiliation_name), ['view', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode($model->address) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
