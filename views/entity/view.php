@@ -54,12 +54,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tr>
                                 <tr>
                                     <th scope="row">
-                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Last Update
+                                        <i class="ri-code-s-slash-line me-2 text-muted"></i>Last Data Update
                                     </th>
                                     <td><?= Yii::$app->formatter->asDatetime($model->updated_at) ?></td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">
+                    <i class="ri-server-line me-2"></i>Data Sources
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        Affiliation
+                    </div>
+                    <div class="col-md-6">
+                        Sources
                     </div>
                 </div>
             </div>
