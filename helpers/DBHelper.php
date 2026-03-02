@@ -105,8 +105,8 @@ class DBHelper
             ];
         }
 
-        // Buat cache key unik berdasarkan parameter koneksi
-        $cacheKey = 'mysql_schema_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $systemCode);
+        // Buat cache key unik berdasarkan systemCode (consistent with other helpers)
+        $cacheKey = 'mysql_schema_' . md5($systemCode);
 
         // Cache settings (safe defaults)
         $useCache = $params['useCache'] ?? false;
@@ -177,10 +177,15 @@ class DBHelper
 
             // Simpan ke cache
             if ($useCache) {
-                self::saveToCache($cacheKey, [
+                $saved = self::saveToCache($cacheKey, [
                     'data' => $result['data'],
                     'cached_at' => time()
                 ]);
+                $result['cache_info'] = [
+                    'used_cache' => true,
+                    'saved' => (bool)$saved,
+                    'cached_at' => date('Y-m-d H:i:s')
+                ];
             }
 
             return $result;
