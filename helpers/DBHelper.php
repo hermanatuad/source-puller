@@ -20,19 +20,65 @@ class DBHelper
      * @return string Formatted currency string
      */
 
+    public static function getDatabaseInfoFromCache($systemCode, $cacheTTL = 3600)
+    {
+        if (empty($systemCode)) {
+            return [
+                'status' => 'error',
+                'message' => 'Missing required parameter: system_code'
+            ];
+        }
+
+        // Gunakan pola cache key yang sama seperti di testConMysql
+        $cacheKey = 'mysql_schema_' . md5($systemCode);
+
+        $cachedData = self::getFromCache($cacheKey);
+
+        if ($cachedData === null) {
+            return [
+                'status' => 'error',
+                'message' => 'Cache not found for system_code: ' . $systemCode
+            ];
+        }
+
+        // Cek TTL
+        if (time() - $cachedData['cached_at'] >= $cacheTTL) {
+            return [
+                'status' => 'error',
+                'message' => 'Cache expired for system_code: ' . $systemCode,
+                'cache_info' => [
+                    'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                    'expired_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+                ]
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'message' => 'Successfully retrieved database info from cache',
+            'data' => $cachedData['data']['database_info'] ?? null,
+            'cache_info' => [
+                'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                'expires_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+            ]
+        ];
+    }
+
     public static function testConMysql($params)
     {
         // Ekstrak parameter dengan default values
-        $hostname = $params['hostname'] ?? '';
-        $username = $params['username'] ?? '';
-        $port = $params['port'] ?? '';
-        $password = $params['password'] ?? '';
-        $database = $params['database'] ?? '';
-        $useCache = $params['use_cache'] ?? true; // Parameter untuk mengontrol cache
-        $cacheTTL = $params['cache_ttl'] ?? 3600; // Cache Time To Live dalam detik (default 1 jam)
+        $systemCode = $params['system_code'] ?? '';
+        $hostname   = $params['hostname'] ?? '';
+        $username   = $params['username'] ?? '';
+        $port       = $params['port'] ?? '';
+        $password   = $params['password'] ?? '';
+        $database   = $params['database'] ?? '';
 
         // Validasi parameter wajib
         $missing = [];
+        if (empty($systemCode)) {
+            $missing[] = 'system_code';
+        }
         if (empty($hostname)) {
             $missing[] = 'hostname';
         }
@@ -60,7 +106,11 @@ class DBHelper
         }
 
         // Buat cache key unik berdasarkan parameter koneksi
-        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
+        $cacheKey = 'mysql_schema_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $systemCode);
+
+        // Cache settings (safe defaults)
+        $useCache = $params['useCache'] ?? false;
+        $cacheTTL = isset($params['cacheTTL']) ? (int)$params['cacheTTL'] : 3600; // seconds
 
         // Cek cache jika diaktifkan
         if ($useCache) {
