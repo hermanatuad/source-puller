@@ -36,7 +36,7 @@ class Entity extends \yii\db\ActiveRecord
             [['id', 'entity_id', 'status', 'created_at_data'], 'required'],
             [['id'], 'integer'],
             [['created_at_data', 'updated_at_data', 'created_at', 'updated_at'], 'safe'],
-            [['entity_id', 'status'], 'string', 'max' => 20],
+            [['entity_id', 'is_alive', 'status'], 'string', 'max' => 20],
             [['id'], 'unique'],
         ];
     }
@@ -49,6 +49,7 @@ class Entity extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'entity_id' => 'Entity ID',
+            'is_alive' => 'Live Status',
             'status' => 'Status',
             'created_at_data' => 'Created At Data',
             'updated_at_data' => 'Updated At Data',

@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Entity ID</th>
+                                <th scope="col">Life Status</th>
                                 <th scope="col">Affiliation</th>
                                 <th scope="col">System</th>
                                 <th scope="col" class="text-center">Actions</th>
@@ -52,6 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td> <?=  Html::a(Html::encode($model->entity_id), ['view', 'id' => $model->id]) ?></td>
+                                        <td><?= Html::encode($model->is_alive) ?></td>
                                         <td></td>
                                         <td></td>
                                         <td class="text-center">

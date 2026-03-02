@@ -49,6 +49,7 @@ class MyHelper
             $id .= $characters[random_int(0, strlen($characters) - 1)];
         }
         return $id;
+        // return 821ASDQWE12349;
     }
 
     /**
