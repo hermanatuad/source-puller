@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <input type="text" class="form-control" id="table-id" value="">
                                         <input type="text" class="form-control" id="table-name" value="<?= Html::encode($model->id) ?>">
 
-                                        <div class="col-xxl-6">
+                                        <div class="col-xxl-12">
                                             <div>
                                                 <label for="column-type" class="form-label">Column Type</label>
                                                 <select class="form-select" id="column-type" aria-label="Default select example">
@@ -110,16 +110,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                             </div>
                                         </div><!--end col-->
-                                        <div class="col-xxl-6">
+                                        <div class="col-xxl-12">
                                             <div>
                                                 <label for="column-warehouse" class="form-label">Column Warehouse</label>
                                                 <input type="text" class="form-control" id="column-warehouse" placeholder="Enter column warehouse">
                                             </div>
                                         </div><!--end col-->
-                                        <div class="col-xxl-6">
+                                        <div class="col-xxl-12">
                                             <div>
                                                 <label for="description" class="form-label">Description</label>
-                                                <input type="text" class="form-control" id="description" placeholder="Enter description">
+                                                <textarea class="form-control" rows="2" id="description" placeholder="Enter description"></textarea>
                                             </div>
                                         </div><!--end col-->
                                         <div class="col-lg-12">
