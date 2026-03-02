@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\BridgeSearch;
+use richardfan\widget\JSRegister;
 
 /** @var yii\web\View $this */
 /** @var app\models\System $model */
@@ -244,9 +245,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<?php \richardfan\widget\JSRegister::begin(); ?>
+<?php JSRegister::begin(); ?>
 <script>
     alert('MASUUUKK');
-    $('#btn-add-bridge').off('click').on('click', function() {});
 </script>
-<?php \richardfan\widget\JSRegister::end(); ?>
+<?php JSRegister::end(); ?>
