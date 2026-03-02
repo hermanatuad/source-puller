@@ -146,43 +146,30 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
 
-                    <div class="card mt-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <div>Bridges for this System</div>
 
-                            <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', [
-                                'class' => 'btn btn-success btn-sm',
-                                'data-bs-toggle' => 'modal',
-                                'data-bs-target' => '#modal-bridge',
-                                'id' => 'btn-add-bridge',
-                            ]) ?>
-                        </div>
-                        <div class="card-body p-0">
-                            <?php
-                            $searchModel = new AbstractionColumnSearch();
-                            $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['AbstractionColumnSearch' => ['abstraction_id' => $model->id]]));
-                            ?>
+                    <?php
+                    $searchModel = new AbstractionColumnSearch();
+                    $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['AbstractionColumnSearch' => ['abstraction_id' => $model->id]]));
+                    ?>
 
-                            <div class="table-responsive">
-                                <?php Pjax::begin(['id' => 'bridges-pjax']); ?>
-                                <?= GridView::widget([
-                                    'dataProvider' => $dataProvider,
-                                    // 'filterModel' => $searchModel,
-                                    'summary' => false,
-                                    'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
-                                    'columns' => [
-                                        ['class' => 'yii\\grid\\SerialColumn'],
-                                        'abstraction_id',
-                                        'column_type',
-                                        'column_warehouse',
-                                        'description',
-                                        'created_at:datetime',
-                                        ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
-                                    ],
-                                ]) ?>
-                                <?php Pjax::end(); ?>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <?php Pjax::begin(['id' => 'bridges-pjax']); ?>
+                        <?= GridView::widget([
+                            'dataProvider' => $dataProvider,
+                            // 'filterModel' => $searchModel,
+                            'summary' => false,
+                            'tableOptions' => ['class' => 'table table-hover align-middle mb-0'],
+                            'columns' => [
+                                ['class' => 'yii\\grid\\SerialColumn'],
+                                'abstraction_id',
+                                'column_type',
+                                'column_warehouse',
+                                'description',
+                                'created_at:datetime',
+                                ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
+                            ],
+                        ]) ?>
+                        <?php Pjax::end(); ?>
                     </div>
                 </div>
             </div>
