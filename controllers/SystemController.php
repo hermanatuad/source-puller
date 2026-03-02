@@ -62,7 +62,7 @@ class SystemController extends Controller
 
         $dataCache = DBHelper::getDatabaseInfoFromCache($model);
         if ($dataCache['status'] == 'success') {
-            echo '<pre>';print_r($dataCache['result']['data']);exit;
+            // echo '<pre>';print_r($dataCache['result']['data']);exit;
         }
         return $this->render('view', [
             'model' => $model,
