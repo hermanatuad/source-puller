@@ -55,7 +55,6 @@ class DBHelper
                 'status' => 'error',
                 'message' => 'Missing required parameter(s): ' . implode(', ', $missing),
                 'data' => [
-                    'system_code' => $systemCode,
                     'hostname' => $hostname,
                     'port' => $port,
                     'username' => $username,
@@ -65,12 +64,12 @@ class DBHelper
         }
 
         // Buat cache key unik berdasarkan parameter koneksi
-        $cacheKey = 'mysql_schema_' . md5("$systemCode:$hostname:$port:$username:$database");
+        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
 
         // Cek cache jika diaktifkan
         if ($useCache) {
             $cachedData = self::getFromCache($cacheKey);
-            echo '<pre>';print_r($cachedData);exit;
+            // echo '<pre>';print_r();exit;
             if ($cachedData !== null) {
                 // Cek apakah cache masih valid (belum expired)
                 if (time() - $cachedData['cached_at'] < $cacheTTL) {
