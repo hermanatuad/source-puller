@@ -92,3 +92,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">
+                    <i class="ri-server-line me-2"></i>Pulling Data History
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -38,9 +38,9 @@ class System extends \yii\db\ActiveRecord
     {
         return [
             [['hostname', 'username', 'password', 'port', 'path', 'description'], 'default', 'value' => null],
-            [['id', 'system_code', 'system_name', 'system_type', 'database_name'], 'required'],
+            [['id', 'system_code', 'system_name', 'system_type', 'database_name', 'affiliation_code'], 'required'],
             [['id'], 'string', 'max' => 36],
-            [['system_code'], 'string', 'max' => 20],
+            [['system_code', 'affiliation_code'], 'string', 'max' => 20],
             [['system_name', 'system_type', 'database_name', 'hostname', 'username', 'password', 'port', 'path', 'description'], 'string', 'max' => 255],
             [['system_code'], 'unique'],
             [['id'], 'unique'],
