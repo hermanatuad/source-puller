@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\widgets\LinkPager;
 
 /** @var yii\web\View $this */
 /** @var app\models\BridgeSearch $searchModel */
@@ -13,6 +14,7 @@ use yii\grid\GridView;
 $this->title = 'Bridges';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="bridge-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -29,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            // 'id',
             'system_code',
             'bridge_type',
             'bridge_source',
