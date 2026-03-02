@@ -608,6 +608,29 @@
         <section class="section bg-light" id="plans">
             <div class="bg-overlay bg-overlay-pattern"></div>
             <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="text-center mb-5">
+                            <h3 class="mb-3 fw-semibold">Choose the plan that's right for you</h3>
+                            <p class="text-muted mb-4">Simple pricing. No hidden fees. Advanced features for you business.</p>
+
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div>
+                                    <h5 class="fs-14 mb-0">Month</h5>
+                                </div>
+                                <div class="form-check form-switch fs-20 ms-3 " onclick="check()">
+                                    <input class="form-check-input" type="checkbox" id="plan-switch">
+                                    <label class="form-check-label" for="plan-switch"></label>
+                                </div>
+                                <div>
+                                    <h5 class="fs-14 mb-0">Annual <span class="badge bg-success-subtle text-success">Save 20%</span></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
 
                 <div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-md-2 row-cols-1">
                     <div class="col">
