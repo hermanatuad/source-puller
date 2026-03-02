@@ -89,14 +89,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalgridLabel">Abstraction Column <?= $model->id ?></h5>
+                                <h5 class="modal-title" id="exampleModalgridLabel">Abstraction Column <?= $model->table_name ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <form action="javascript:void(0);">
                                     <div class="row g-3">
                                         <input type="text" class="form-control" id="table-id" value="">
-                                        <input type="text" class="form-control" id="table-name" value="<?= Html::encode($model->table_name) ?>">
+                                        <input type="text" class="form-control" id="table-name" value="<?= Html::encode($model->id) ?>">
 
                                         <div class="col-xxl-6">
                                             <div>
