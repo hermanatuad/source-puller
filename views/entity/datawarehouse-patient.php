@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th scope="col">#</th>
                                 <th scope="col">Entity ID</th>
                                 <th scope="col">Life Status</th>
-                                <th scope="col">Affiliation</th>
-                                <th scope="col">System</th>
+                                <th scope="col">Affiliations</th>
+                                <th scope="col">Sources</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
                         </thead>
