@@ -100,8 +100,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                         <div class="col-xxl-6">
                                             <div>
-                                                <label for="firstName" class="form-label">Column Type</label>
-                                                <input type="text" class="form-control" id="firstName" placeholder="Enter firstname">
+                                                <label for="column-type" class="form-label">Column Type</label>
+                                                <input type="text" class="form-select" id="column-type" placeholder="Enter column type" >
+                                                <select class="form-select" aria-label="Default select example">
+                                                    <option selected>Select column type</option>
+                                                    <option value="string">String</option>
+                                                    <option value="number">Number</option>
+                                                    <option value="time">Time</option>
+                                                </select>
+
                                             </div>
                                         </div><!--end col-->
                                         <div class="col-xxl-6">
@@ -149,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'abstraction_id',
                                 'column_type',
                                 'column_warehouse',
-                                'description'
+                                'description',
                                 ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
                             ],
                         ]) ?>
