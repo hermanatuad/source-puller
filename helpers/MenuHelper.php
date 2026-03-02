@@ -137,7 +137,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Datawarehouse',
+                'label' => '<strong>Data Management</strong>',
                 'visible' => Yii::$app->user->can('admin')
             ];
 
