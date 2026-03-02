@@ -168,16 +168,16 @@ class MenuHelper
                         'url' => ['affiliation/index'],
                         'visible' => Yii::$app->user->can('creator')
                     ],
-                    [
-                        'label' => '<i class="ri-shield-user-line"></i> <span>Auth Item</span>',
-                        'url' => ['auth-item/index'],
-                        'visible' => Yii::$app->user->can('creator')
-                    ],
-                    [
-                        'label' => '<i class="ri-links-line"></i> <span>Auth Item Child</span>',
-                        'url' => ['auth-item-child/index'],
-                        'visible' => Yii::$app->user->can('creator')
-                    ],
+                    // [
+                    //     'label' => '<i class="ri-shield-user-line"></i> <span>Auth Item</span>',
+                    //     'url' => ['auth-item/index'],
+                    //     'visible' => Yii::$app->user->can('creator')
+                    // ],
+                    // [
+                    //     'label' => '<i class="ri-links-line"></i> <span>Auth Item Child</span>',
+                    //     'url' => ['auth-item-child/index'],
+                    //     'visible' => Yii::$app->user->can('creator')
+                    // ],
                     [
                         'label' => '<i class="ri-user-line"></i> <span>Users</span>',
                         'url' => ['user/index'],
