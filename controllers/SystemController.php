@@ -58,8 +58,10 @@ class SystemController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        echo '<pre>';print_r(DBHelper::getDatabaseInfoFromCache($model->system_code));exit;
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
