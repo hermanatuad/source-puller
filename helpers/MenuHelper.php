@@ -166,7 +166,7 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-cog-line"></i> <span>Master</span>',
+                'label' => '<i class="ri-settings-3-line"></i> <span>Master</span>',
                 'visible' => Yii::$app->user->can('admin'),
                 'items' => [
                     [
