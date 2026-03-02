@@ -34,13 +34,15 @@ if (document.querySelectorAll(".form-steps"))
                     });
                 });
                 nextButton.addEventListener("click", function () {
-                    var innerForm = form.querySelector('form') || form;
-                    if (typeof innerForm.checkValidity === 'function' ? innerForm.checkValidity() : true) {
-                        var nextTab = nextButton.getAttribute('data-nexttab');
-                        document.getElementById(nextTab).click();
-                    } else {
-                        innerForm.classList.add('was-validated');
-                    }
+                    form.classList.add('was-validated');
+                    form.querySelectorAll(".tab-pane.show .form-control").forEach(function(elem){
+                        var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                        if(elem.value.length > 0 && elem.value.match(validRegex)){
+                            var nextTab = nextButton.getAttribute('data-nexttab');
+                            document.getElementById(nextTab).click();
+                            form.classList.remove('was-validated');
+                        }
+                    })
                 })
             });
         }
