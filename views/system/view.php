@@ -243,3 +243,12 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<?php \richardfan\widget\JSRegister::begin(); ?>
+<script>
+$('#btn-add-bridge').on('click', function() {
+    console.log('MASUUUKK');
+});
+
+</script>
+<?php \richardfan\widget\JSRegister::end(); ?>
