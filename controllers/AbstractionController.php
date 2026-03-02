@@ -79,6 +79,7 @@ class AbstractionController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'uuid' => MyHelper::genuuid(),
         ]);
     }
 
