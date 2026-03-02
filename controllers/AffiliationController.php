@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Affiliation;
 use app\models\AffiliationSearch;
+use app\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -55,8 +56,11 @@ class AffiliationController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $users = User::find()->where(['affiliation_code' => $model->affiliation_code])->all();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'users' => $users,
         ]);
     }
 
