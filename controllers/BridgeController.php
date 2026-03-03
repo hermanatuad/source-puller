@@ -10,6 +10,7 @@ use app\models\AbstractionColumn;
 use app\models\Bridge;
 use app\models\BridgeColumn;
 use app\models\BridgeSearch;
+use app\models\EntitySystem;
 use app\models\System;
 use Exception;
 use mysqli;
@@ -185,9 +186,21 @@ class BridgeController extends Controller
             Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
             // return $this->redirect(['view', 'id' => $id]);
         }
-        echo '<pre>';
-        print_r($RAW_DATA);
-        exit;
+        
+
+
+        foreach ($RAW_DATA as $data) {
+            echo '<pre>';print_r($data);exit;
+            $checkData = EntitySystem::find()->where([
+                'system_code' => $model->system_code,
+                'entity_reference' => $model->bridge_table_source,
+                'entity_value' => json_encode($data),
+            ])->one();
+        }
+
+
+
+
 
 
         if ($mysqli->connect_errno) {
