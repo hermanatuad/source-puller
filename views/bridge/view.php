@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?= $value->tes ?? 'N/A' ?>
                                         </td>
                                         <td style="width: 33%;">
-                                            <?=  Html::a('Edit', ['bridge-tables/update', 'bridge_id' => $model->id, 'abstraction_id' => $value->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?=  Html::a('Edit', ['bridge-column/update', 'bridge_id' => $model->id, 'abstraction_id' => $value->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
