@@ -89,9 +89,9 @@ class BridgeTablesController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($bride_i)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($bri);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -126,6 +126,15 @@ class BridgeTablesController extends Controller
     protected function findModel($id)
     {
         if (($model = BridgeTables::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findModelBridge($bridge_id, $abstraction_id)
+    {
+        if (($model = BridgeTables::findOne(['bridge_id' => $bridge_id, 'abstraction_id' => $abstraction_id])) !== null) {
             return $model;
         }
 
