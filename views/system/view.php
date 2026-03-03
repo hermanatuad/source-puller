@@ -222,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </td>
                                         <td><?= Html::encode($table['name'] ?: '-') ?></td>
                                         <td>
-                                            <?= Html::a('Config', ['update', 'id' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('Config', ['bridge/view', 'system_code' => $model->system_code, 'source_column_name' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

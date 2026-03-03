@@ -59,14 +59,15 @@ class BridgeController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
-        $model = $this->findModel($id);
-        $abstractionColumn = AbstractionColumn::findAll(['abstraction_id' => $model->bridge_target]);   
-        return $this->render('view', [
-            'model' => $model,
-            'abstractionColumn' => $abstractionColumn,
-        ]);
+        echo '<pre>';print_r($_GET);exit;
+        // $model = $this->findModel($id);
+        // $abstractionColumn = AbstractionColumn::findAll(['abstraction_id' => $model->bridge_target]);   
+        // return $this->render('view', [
+        //     'model' => $model,
+        //     'abstractionColumn' => $abstractionColumn,
+        // ]);
     }
 
     /**
