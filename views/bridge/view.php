@@ -33,7 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'system_code',
             'bridge_type',
             'bridge_source',
-            'bridge_target',
+            [
+                'label' => 'Abstraction Table',
+                'value' => function ($model) {
+                    $abstraction = \app\models\Abstraction::findOne(['id' => $model->bridge_target]);
+                    return $abstraction ? $abstraction->table_warehouse : 'N/A';
+                },
+            ],
             'created_at',
             'updated_at',
         ],
@@ -53,23 +59,31 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         Requirements
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         Sources
+                    </div>
+                    <div class="col-md-4">
+                        Actions
                     </div>
 
                     <div class="col-md-12">
 
                         <table class="table table-borderless mb-0">
                             <tbody>
-                                <?php foreach ($abstractionColumn as $key) : ?>
+                                <?php foreach ($abstractionColumn as $key => $value) : ?>
                                     <tr>
-                                        <th scope="row" style="width: 50%;">
+                                        <th scope="row" style="width: 33%;">
                                             <i class="ri-hashtag me-2 text-muted"></i><?= $key->column_warehouse ?>
                                         </th>
-                                        <td><input type="text" name="" id="" class="form-control"></td>
+                                        <td style="width: 33%;">
+                                            <?= $value->tes ?? 'N/A' ?>
+                                        </td>
+                                        <td style="width: 33%;">
+                                            <?=  Html::a('Edit', ['update-column', 'id' => $value->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
