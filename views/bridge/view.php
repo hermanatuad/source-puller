@@ -59,11 +59,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-6">
                         Sources
                     </div>
+
+                    <div class="col-md-12">
+
+                        <table class="table table-borderless mb-0">
+                            <tbody>
+                                <?php foreach ($abstractionColumn as $key) : ?>
+                                    <tr>
+                                        <th scope="row" style="width: 200px;">
+                                            <i class="ri-hashtag me-2 text-muted"></i><?= $key->column_warehouse ?>
+                                        </th>
+                                        <td><input type="text" name="" id="" class="form-control"></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-
-

@@ -60,8 +60,11 @@ class BridgeController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $abstractionColumn = AbstractionColumn::findAll(['abstraction_id' => $model->bridge_target]);   
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'abstractionColumn' => $abstractionColumn,
         ]);
     }
 
