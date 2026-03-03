@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\DBHelper;
 use app\helpers\DWHelper;
 use app\helpers\MyHelper;
 use app\models\Abstraction;
@@ -99,12 +100,14 @@ class BridgeController extends Controller
     {
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
-        $abstractionData = Abstraction::find()->all();
-        $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
-            return $model->table_warehouse;
-        });
+        
+        // $abstractionData = Abstraction::find()->all();
+        // $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
+        //     return $model->table_warehouse;
+        // });
 
-        $DWInfo = DWHelper::getDWInfoFromCache();
+        // $DWInfo = DWHelper::getDWInfoFromCache();
+        
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -129,8 +132,7 @@ class BridgeController extends Controller
             'model' => $model,
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
-            'bridgeType' => MyHelper::bridgeType(),
-            'abstraction' => $abstraction,
+            // 'abstraction' => $abstraction,
         ]);
     }
 
@@ -191,5 +193,67 @@ class BridgeController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Returns available warehouse tables for a given system_code.
+     * Used by dependent dropdowns via AJAX.
+     * @param string|null $system_code
+     * @return \yii\web\Response
+     */
+    public function actionGetTables($system_code = null)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        if (empty($system_code)) {
+            return ['status' => 'error', 'message' => 'Missing system_code'];
+        }
+
+        $system = System::find()->where(['system_code' => $system_code])->one();
+        if ($system === null) {
+            return ['status' => 'error', 'message' => 'System not found'];
+        }
+
+        $systemType = strtolower($system->system_type ?? '');
+
+        try {
+            if (strpos($systemType, 'mysql') !== false) {
+                $params = [
+                    'system_code' => $system->system_code,
+                    'hostname' => $system->hostname,
+                    'username' => $system->username,
+                    'password' => $system->password,
+                    'port' => $system->port,
+                    'database' => $system->database_name,
+                    'use_cache' => false,
+                ];
+
+                $res = \app\helpers\DBHelper::testConMysql($params);
+                if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
+                    return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
+                }
+
+                $tables = array_keys($res['data']['tables'] ?? []);
+            } else {
+                // Assume PostgreSQL-like: fetch via PDO
+                $host = $system->hostname;
+                $port = $system->port ?: 5432;
+                $dbname = $system->database_name;
+                $user = $system->username;
+                $pass = $system->password;
+
+                $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+                $pdo = new \PDO($dsn, $user, $pass, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+                $stmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name");
+                $tables = [];
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $tables[] = $row['table_name'];
+                }
+            }
+
+            return ['status' => 'success', 'tables' => $tables];
+        } catch (\Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
     }
 }

@@ -4,6 +4,7 @@ use app\models\Abstraction;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use app\models\System;
 
 /** @var yii\web\View $this */
@@ -34,16 +35,16 @@ use app\models\System;
                         'prompt' => 'Select system',
                         'class' => 'form-control',
                         'data-choices' => 'true',
-                        'id' => 'choices-single-default-3'
+                        'id' => 'bridge-system_code'
                     ]) ?>
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_table_source')->dropDownList($abstraction, [
+                    <?= $form->field($model, 'bridge_table_source')->dropDownList($model->bridge_table_source ? [$model->bridge_table_source => $model->bridge_table_source] : [], [
                         'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
                         'data-choices' => 'true',
-                        'id' => 'choices-single-default'
+                        'id' => 'bridge-bridge_table_source'
                     ])->label('Table Warehouse') ?>
                 </div>
 
@@ -58,3 +59,45 @@ use app\models\System;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+    <?php
+    $getTablesUrl = Url::to(['bridge/get-tables']);
+    $initialSelected = Html::encode($model->bridge_table_source ?? '');
+    $this->registerJs(<<<JS
+    (function(){
+        var getTablesUrl = '{$getTablesUrl}';
+        var sys = $('#bridge-system_code');
+        var tbl = $('#bridge-bridge_table_source');
+
+        function loadTables(systemCode, selected){
+            if(!systemCode){
+                tbl.html('<option value="">Select table warehouse</option>');
+                return;
+            }
+
+            $.get(getTablesUrl, {system_code: systemCode}, function(res){
+                tbl.empty();
+                tbl.append($('<option>').val('').text('Select table warehouse'));
+                if(res.status === 'success' && Array.isArray(res.tables)){
+                    res.tables.forEach(function(t){
+                        tbl.append($('<option>').val(t).text(t));
+                    });
+                    if(selected){ tbl.val(selected); }
+                } else {
+                    console.warn('getTables:', res);
+                }
+            }, 'json').fail(function(){
+                console.warn('Failed to fetch tables');
+            });
+        }
+
+        sys.on('change', function(){ loadTables($(this).val(), ''); });
+
+        var initialSystem = sys.val();
+        if(initialSystem){
+            loadTables(initialSystem, '{$initialSelected}');
+        }
+    })();
+    JS
+    );
+    ?>
