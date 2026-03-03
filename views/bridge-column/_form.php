@@ -34,36 +34,19 @@ use yii\widgets\ActiveForm;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'source_column_name')->textInput([
-                        'maxlength' => true,
-                        'placeholder' => 'Enter source column name',
-                        'class' => 'form-control'
-                    ]) ?>
+                    <?= $form->field($model, 'source_column_name')->dropDownList($listColumnSource, [
+                        'prompt' => 'Select source column name',
+                        'class' => 'form-control',
+                        'id' => 'source_column_name'
+                    ])->label('Column Source') ?>
                 </div>
 
             </div>
         </div>
         <div class="card-footer bg-white text-end">
-            <?= Html::a('<i class="ri-arrow-left-line"></i> Cancel', ['index'], ['class' => 'btn btn-outline-secondary me-2']) ?>
+            <?= Html::a('<i class="ri-arrow-left-line"></i> Cancel', ['bridge/view', 'id' => $model->bridge_id], ['class' => 'btn btn-outline-secondary me-2']) ?>
             <?= Html::submitButton('<i class="ri-save-line"></i> Save', ['class' => 'btn btn-primary']) ?>
         </div>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-
-</div>
-
-<div class="bridge-column-form">
-
-    <?php $form = ActiveForm::begin(); ?>
-
-
-    <?= $form->field($model, 'source_column_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'target_column_name')->textInput(['maxlength' => true]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

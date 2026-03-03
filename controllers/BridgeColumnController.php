@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use app\helpers\DBHelper;
 use app\helpers\MyHelper;
 use app\models\BridgeColumn;
 use app\models\BridgeColumnSearch;
+use app\models\System;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -94,6 +96,9 @@ class BridgeColumnController extends Controller
     public function actionUpdate($bridge_id, $target_column_name)
     {
         $model = $this->findModelBridge($bridge_id, $target_column_name);
+        $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
+        $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
+        echo '<pre>';print_r($dbInfo);exit;
 
         if (empty($model)) {
             $model = new BridgeColumn();
@@ -108,6 +113,7 @@ class BridgeColumnController extends Controller
         
         return $this->render('update', [
             'model' => $model,
+            'listColumnSource' 
         ]);
     }
 
