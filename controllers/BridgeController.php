@@ -214,7 +214,6 @@ class BridgeController extends Controller
             return ['status' => 'error', 'message' => 'System not found'];
         }
 
-        echo '<pre>';print_r($system);exit;
         $systemType = strtolower($system->system_type ?? '');
 
         try {
@@ -228,6 +227,8 @@ class BridgeController extends Controller
                     'database' => $system->database_name,
                     'use_cache' => false,
                 ];
+
+                echo '<pre>';print_r(DBHelper::getDatabaseInfoFromCache($params));exit;
 
                 $res = \app\helpers\DBHelper::testConMysql($params);
                 if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
