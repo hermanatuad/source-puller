@@ -9,14 +9,12 @@ use Yii;
  *
  * @property string $id
  * @property string $system_code
- * @property string $bridge_type
- * @property string $bridge_source
- * @property string $bridge_target
+ * @property string $bridge_table_source
  * @property string $created_at
  * @property string $updated_at
  *
- * @property BridgeLog[] $bridgeLogs
- * @property BridgeTables[] $bridgeTables
+ * @property BridgeColumn[] $bridgeColumns
+ * @property System $systemCode
  */
 class Bridge extends \yii\db\ActiveRecord
 {
@@ -36,12 +34,13 @@ class Bridge extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'system_code', 'bridge_type', 'bridge_source', 'bridge_target'], 'required'],
+            [['id', 'system_code', 'bridge_table_source'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['id'], 'string', 'max' => 36],
-            [['system_code', 'bridge_type'], 'string', 'max' => 20],
-            [['bridge_source', 'bridge_target'], 'string', 'max' => 50],
+            [['system_code'], 'string', 'max' => 20],
+            [['bridge_table_source'], 'string', 'max' => 255],
             [['id'], 'unique'],
+            [['system_code'], 'exist', 'skipOnError' => true, 'targetClass' => System::class, 'targetAttribute' => ['system_code' => 'system_code']],
         ];
     }
 
@@ -53,32 +52,30 @@ class Bridge extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'system_code' => 'System Code',
-            'bridge_type' => 'Bridge Type',
-            'bridge_source' => 'Bridge Source',
-            'bridge_target' => 'Bridge Target',
+            'bridge_table_source' => 'Bridge Table Source',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
     }
 
     /**
-     * Gets query for [[BridgeLogs]].
+     * Gets query for [[BridgeColumns]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBridgeLogs()
+    public function getBridgeColumns()
     {
-        return $this->hasMany(BridgeLog::class, ['bridge_id' => 'id']);
+        return $this->hasMany(BridgeColumn::class, ['bridge_id' => 'id']);
     }
 
     /**
-     * Gets query for [[BridgeTables]].
+     * Gets query for [[SystemCode]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getBridgeTables()
+    public function getSystemCode()
     {
-        return $this->hasMany(BridgeTables::class, ['bridge_id' => 'id']);
+        return $this->hasOne(System::class, ['system_code' => 'system_code']);
     }
 
 }

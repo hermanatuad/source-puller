@@ -9,8 +9,9 @@ use Yii;
  *
  * @property string $id
  * @property string $bridge_id
- * @property string $source_column_name
+ * @property string|null $source_column_name
  * @property string $target_column_name
+ * @property string|null $transformation_logic
  * @property string $created_at
  * @property string $updated_at
  *
@@ -34,7 +35,9 @@ class BridgeColumn extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'bridge_id', 'source_column_name', 'target_column_name'], 'required'],
+            [['source_column_name', 'transformation_logic'], 'default', 'value' => null],
+            [['id', 'bridge_id', 'target_column_name'], 'required'],
+            [['transformation_logic'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['id', 'bridge_id'], 'string', 'max' => 36],
             [['source_column_name', 'target_column_name'], 'string', 'max' => 255],
@@ -51,8 +54,9 @@ class BridgeColumn extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'bridge_id' => 'Bridge ID',
-            'source_column_name' => 'Source column Name',
-            'target_column_name' => 'Target column Name',
+            'source_column_name' => 'Source Column Name',
+            'target_column_name' => 'Target Column Name',
+            'transformation_logic' => 'Transformation Logic',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

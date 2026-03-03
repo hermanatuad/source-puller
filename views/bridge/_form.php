@@ -27,17 +27,19 @@ use app\models\System;
 
                 <div class="col-md-6">
                     <?= $form->field($model, 'bridge_target')->dropDownList($abstraction, [
-                        'prompt' => 'Select abstraction',
+                        'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
                         'data-choices' => 'true',
                         'id' => 'choices-single-default'
-                    ])->label('Abstraction') ?>
+                    ])->label('Table Warehouse') ?>
                 </div>
 
                 <div class="col-md-6">
                     <?= $form->field($model, 'bridge_type')->dropDownList($bridgeType, [
                         'prompt' => 'Select bridge type',
                         'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'choices-single-default-2'
                     ]) ?>
                 </div>
 
@@ -45,14 +47,18 @@ use app\models\System;
                     <?= $form->field($model, 'system_code')->dropDownList($system, [
                         'prompt' => 'Select system',
                         'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'choices-single-default-3'
                     ]) ?>
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_source')->textInput([
+                    <?= $form->field($model, 'bridge_source')->dropDownList($system, [
+                        'prompt' => 'Select system',
                         'class' => 'form-control',
-                        'placeholder' => 'Bridge Source'
-                    ])->label('Bridge Source') ?>
+                        'data-choices' => 'true',
+                        'id' => 'choices-single-default-4'
+                    ]) ?>
                 </div>
 
             </div>
