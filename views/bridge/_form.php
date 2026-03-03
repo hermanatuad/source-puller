@@ -40,7 +40,7 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_table_source')->dropDownList($model->bridge_table_source ? [$model->bridge_table_source => $model->bridge_table_source] : [], [
+                    <?= $form->field($model, 'bridge_table_source')->dropDownList($initialTables ?? [], [
                         'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
                         'data-choices' => 'true',
@@ -101,3 +101,9 @@ use app\models\System;
     JS
     );
     ?>
+
+<?php \richardfan\widget\JSRegister::begin(); ?>
+<script>
+
+</script>
+<?php \richardfan\widget\JSRegister::end(); ?>
