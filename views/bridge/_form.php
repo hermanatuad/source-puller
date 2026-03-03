@@ -64,22 +64,37 @@ use app\models\System;
 <script>
     $('#bridge-system_code').on('change', function() {
         var systemCode = $(this).val();
+
         $.ajax({
             url: '<?= Url::to(['bridge/get-tables']) ?>',
-            data: { system_code: systemCode },
+            data: {
+                system_code: systemCode
+            },
             success: function(response) {
                 if (response.status === 'success') {
-                    var tableSelect = $('#bridge-bridge_table_source');
-                    tableSelect.empty().append('<option value="">Select table warehouse</option>');
+
+                    var tableSelect = document.getElementById('bridge-bridge_table_source');
+
+                    // destroy dulu jika sudah ada
+                    if (tableSelect.choicesInstance) {
+                        tableSelect.choicesInstance.destroy();
+                    }
+
+                    tableSelect.innerHTML = '<option value="">Select table warehouse</option>';
+
                     response.tables.forEach(function(table) {
-                        tableSelect.append('<option value="' + table + '">' + table + '</option>');
+                        tableSelect.innerHTML += '<option value="' + table + '">' + table + '</option>';
                     });
+                    console.log();
+
+                    // init ulang
+                    tableSelect.choicesInstance = new Choices(tableSelect, {
+                        removeItemButton: true
+                    });
+
                 } else {
                     alert('Failed to load tables');
                 }
-            },
-            error: function() {
-                alert('Error fetching tables');
             }
         });
     });
