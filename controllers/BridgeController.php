@@ -99,11 +99,11 @@ class BridgeController extends Controller
     public function actionCreate()
     {
         $model = new Bridge();
+        $model->status = 'active';
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
-                echo '<pre>';print_r($model);exit;
+            if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
