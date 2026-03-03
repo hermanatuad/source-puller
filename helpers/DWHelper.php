@@ -21,7 +21,7 @@ class DWHelper
      * @return string Formatted currency string
      */
 
-    public static function getDatabaseInfoFromCache($params, $cacheTTL = 3600)
+    public static function getDWInfoFromCache($cacheTTL = 3600)
     {
         $hostname = getenv('postgres_host') ?? '';
         $username = getenv('postgres_user') ?? '';
@@ -90,7 +90,7 @@ class DWHelper
         ];
     }
 
-    public static function testConDW($params)
+    public static function testConDW()
     {
 
         $hostname = getenv('postgres_host') ?? '';

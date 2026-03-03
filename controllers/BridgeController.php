@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\DWHelper;
 use app\helpers\MyHelper;
 use app\models\Abstraction;
 use app\models\AbstractionColumn;
@@ -75,6 +76,8 @@ class BridgeController extends Controller
      */
     public function actionCreate()
     {
+        echo '<pre>';print_r(DWHelper::testConDW());exit;
+
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
         $abstractionData = Abstraction::find()->all();
