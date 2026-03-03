@@ -61,6 +61,9 @@ use app\models\System;
 
 <?php \richardfan\widget\JSRegister::begin(); ?>
 <script>
+    var tableChoices = new Choices('#bridge-bridge_table_source', {
+        allowHTML: false
+    });
     $('#bridge-system_code').on('change', function() {
         var systemCode = $(this).val();
 
