@@ -214,6 +214,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php
                             $dataInfo = DBHelper::getDatabaseInfoFromCache($model);
                             $tables = $dataInfo['result']['data']['tables'] ?? [];
+                            echo '<pre>';print_r($tables);exit;
                             if (!empty($tables)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
