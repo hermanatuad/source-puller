@@ -1,5 +1,7 @@
 <?php
 
+use app\helpers\DBHelper;
+use app\helpers\DWHelper;
 use app\models\BridgeColumn;
 use app\models\System;
 use yii\helpers\Html;
@@ -9,7 +11,7 @@ use yii\widgets\DetailView;
 /** @var app\models\Bridge $model */
 
 $system = System::find()->where(['system_code' => $model->system_code])->one();
-$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. ' x datawarehouse';
+$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source . ' x datawarehouse';
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $system->system_name, 'url' => ['system/view', 'id' => $system->id]];
 $this->params['breadcrumbs'][] = $this->title;
@@ -36,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'system_code',
             'bridge_table_source',
+            'bridge_table_target',
             'created_at:datetime',
             'updated_at:datetime',
         ],
@@ -54,25 +57,39 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
 
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        Requirements
-                    </div>
-                    <div class="col-md-4">
-                        Sources
-                    </div>
-                    <div class="col-md-4">
-                        Actions
-                    </div>
-
-                    <div class="col-md-12">
-
-                        <table class="table table-borderless mb-0">
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Column Warehouse</th>
+                                <th>Column Sources</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $dwInfo = DWHelper::getDWInfoFromCache();
+                            $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target] ?? [];
+                            echo '<pre>';print_r($columns);exit;
+                            if (!empty($columns)):
+                            ?>
+                                <?php foreach ($tables as $table): ?>
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td><?= Html::encode($table['name'] ?: '-') ?></td>
+                                        <td>
+                                            <?= Html::a('Config', ['bridge/view', 'system_code' => $model->system_code, 'bridge_table_source' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">No permissions assigned</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
