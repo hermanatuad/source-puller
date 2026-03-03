@@ -100,32 +100,20 @@ class BridgeController extends Controller
     {
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
-        
+
         // $abstractionData = Abstraction::find()->all();
         // $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
         //     return $model->table_warehouse;
         // });
 
         // $DWInfo = DWHelper::getDWInfoFromCache();
-        
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                if ($this->request->isAjax) {
-                    return $this->asJson(['status' => 'success', 'id' => $model->id]);
-                }
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // If AJAX and validation fails, return form HTML to show errors
-                if ($this->request->isAjax) {
-                        return $this->renderAjax('_form', ['model' => $model, 'system' => $system]);
-                    }
             }
         } else {
             $model->loadDefaultValues();
-            if ($this->request->isAjax) {
-                return $this->renderAjax('_form', ['model' => $model, 'system' => $system]);
-            }
         }
 
         return $this->render('create', [
