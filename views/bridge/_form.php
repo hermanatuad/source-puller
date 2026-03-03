@@ -46,7 +46,7 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_target')->dropDownList($abstractionTable, [
+                    <?= $form->field($model, 'bridge_target')->dropDownList($abstractionColumn, [
                         'prompt' => 'Select bridge type',
                         'class' => 'form-control',
                     ]) ?>
