@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\BridgeTables;
+use app\models\BridgeColumn;
 
 /**
- * BridgeTablesSearch represents the model behind the search form of `app\models\BridgeTables`.
+ * BridgeColumnSearch represents the model behind the search form of `app\models\BridgeColumn`.
  */
-class BridgeTablesSearch extends BridgeTables
+class BridgeColumnSearch extends BridgeColumn
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class BridgeTablesSearch extends BridgeTables
     public function rules()
     {
         return [
-            [['id', 'bridge_id', 'source_table_name', 'target_table_name'], 'safe'],
+            [['id', 'bridge_id', 'source_columnn_name', 'target_columnn_name', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class BridgeTablesSearch extends BridgeTables
      */
     public function search($params, $formName = null)
     {
-        $query = BridgeTables::find();
+        $query = BridgeColumn::find();
 
         // add conditions that should always apply here
 
@@ -57,10 +57,15 @@ class BridgeTablesSearch extends BridgeTables
         }
 
         // grid filtering conditions
+        $query->andFilterWhere([
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ]);
+
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'bridge_id', $this->bridge_id])
-            ->andFilterWhere(['like', 'source_table_name', $this->source_table_name])
-            ->andFilterWhere(['like', 'target_table_name', $this->target_table_name]);
+            ->andFilterWhere(['like', 'source_columnn_name', $this->source_columnn_name])
+            ->andFilterWhere(['like', 'target_columnn_name', $this->target_columnn_name]);
 
         return $dataProvider;
     }

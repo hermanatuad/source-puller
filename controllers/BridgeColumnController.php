@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\BridgeTables;
-use app\models\BridgeTablesSearch;
+use app\models\BridgeColumn;
+use app\models\BridgeColumnSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BridgeTablesController implements the CRUD actions for BridgeTables model.
+ * BridgeColumnController implements the CRUD actions for BridgeColumn model.
  */
-class BridgeTablesController extends Controller
+class BridgeColumnController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,13 +32,13 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Lists all BridgeTables models.
+     * Lists all BridgeColumn models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new BridgeTablesSearch();
+        $searchModel = new BridgeColumnSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -48,7 +48,7 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Displays a single BridgeTables model.
+     * Displays a single BridgeColumn model.
      * @param string $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -61,13 +61,13 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Creates a new BridgeTables model.
+     * Creates a new BridgeColumn model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new BridgeTables();
+        $model = new BridgeColumn();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -83,12 +83,13 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Updates an existing BridgeTables model.
+     * Updates an existing BridgeColumn model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+    
     public function actionUpdate($bridge_id, $abstraction_id)
     {
         $model = $this->findModelBridge($bridge_id, $abstraction_id);
@@ -103,7 +104,7 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Deletes an existing BridgeTables model.
+     * Deletes an existing BridgeColumn model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id ID
      * @return \yii\web\Response
@@ -117,24 +118,23 @@ class BridgeTablesController extends Controller
     }
 
     /**
-     * Finds the BridgeTables model based on its primary key value.
+     * Finds the BridgeColumn model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id ID
-     * @return BridgeTables the loaded model
+     * @return BridgeColumn the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = BridgeTables::findOne(['id' => $id])) !== null) {
+        if (($model = BridgeColumn::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-
     protected function findModelBridge($bridge_id, $abstraction_id)
     {
-        if (($model = BridgeTables::findOne(['bridge_id' => $bridge_id, 'abstraction_id' => $abstraction_id])) !== null) {
+        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'abstraction_id' => $abstraction_id])) !== null) {
             return $model;
         }
 

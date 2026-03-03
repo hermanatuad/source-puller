@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\BridgeTables $model */
+/** @var app\models\BridgeColumn $model */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Bridge Tables', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Bridge Columns', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="bridge-tables-view">
+<div class="bridge-column-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -31,8 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'bridge_id',
-            'source_table_name',
-            'target_table_name',
+            'source_columnn_name',
+            'target_columnn_name',
+            'created_at',
+            'updated_at',
         ],
     ]) ?>
 

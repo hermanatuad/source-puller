@@ -5,16 +5,18 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "bridge_tables".
+ * This is the model class for table "bridge_column".
  *
  * @property string $id
  * @property string $bridge_id
- * @property string $source_table_name
- * @property string $target_table_name
+ * @property string $source_columnn_name
+ * @property string $target_columnn_name
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @property Bridge $bridge
  */
-class BridgeTables extends \yii\db\ActiveRecord
+class BridgeColumn extends \yii\db\ActiveRecord
 {
 
 
@@ -23,7 +25,7 @@ class BridgeTables extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bridge_tables';
+        return 'bridge_column';
     }
 
     /**
@@ -32,9 +34,10 @@ class BridgeTables extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'bridge_id', 'source_table_name', 'target_table_name'], 'required'],
+            [['id', 'bridge_id', 'source_columnn_name', 'target_columnn_name'], 'required'],
+            [['created_at', 'updated_at'], 'safe'],
             [['id', 'bridge_id'], 'string', 'max' => 36],
-            [['source_table_name', 'target_table_name'], 'string', 'max' => 255],
+            [['source_columnn_name', 'target_columnn_name'], 'string', 'max' => 255],
             [['id'], 'unique'],
             [['bridge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bridge::class, 'targetAttribute' => ['bridge_id' => 'id']],
         ];
@@ -48,8 +51,10 @@ class BridgeTables extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'bridge_id' => 'Bridge ID',
-            'source_table_name' => 'Source Table Name',
-            'target_table_name' => 'Target Table Name',
+            'source_columnn_name' => 'Source Columnn Name',
+            'target_columnn_name' => 'Target Columnn Name',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
     }
 

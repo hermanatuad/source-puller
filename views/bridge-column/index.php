@@ -1,24 +1,24 @@
 <?php
 
-use app\models\BridgeTables;
+use app\models\BridgeColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\BridgeTablesSearch $searchModel */
+/** @var app\models\BridgeColumnSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Bridge Tables';
+$this->title = 'Bridge Columns';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="bridge-tables-index">
+<div class="bridge-column-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Bridge Tables', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Bridge Column', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,11 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'bridge_id',
-            'source_table_name',
-            'target_table_name',
+            'source_columnn_name',
+            'target_columnn_name',
+            'created_at',
+            //'updated_at',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, BridgeTables $model, $key, $index, $column) {
+                'urlCreator' => function ($action, BridgeColumn $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

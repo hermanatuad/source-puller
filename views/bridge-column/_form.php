@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\BridgeTables $model */
+/** @var app\models\BridgeColumn $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="bridge-tables-form">
+<div class="bridge-column-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
@@ -16,9 +16,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'bridge_id')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'source_table_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'source_columnn_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'target_table_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'target_columnn_name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'created_at')->textInput() ?>
+
+    <?= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
