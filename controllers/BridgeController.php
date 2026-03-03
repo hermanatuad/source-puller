@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\helpers\MyHelper;
+use app\models\Abstraction;
+use app\models\AbstractionColumn;
 use app\models\Bridge;
 use app\models\BridgeSearch;
 use app\models\System;
@@ -72,6 +74,12 @@ class BridgeController extends Controller
     {
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
+        $abstractionColumnData = AbstractionColumn::find()->all();
+        $abstractionColumn = ArrayHelper::map($abstractionColumnData, 'id', function ($model) {
+            echo '<pre>';print_r($model->abstraction);exit;
+            return $model->abstraction->abstraction_name . ' - ' . $model->column_name;
+        });
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 if ($this->request->isAjax) {
@@ -96,6 +104,7 @@ class BridgeController extends Controller
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
             'bridgeType' => MyHelper::bridgeType(),
+            'abstractionColumn' => $abstractionColumn,
         ]);
     }
 

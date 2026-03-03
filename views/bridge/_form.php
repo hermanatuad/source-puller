@@ -46,10 +46,10 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_target')->input('number', [
+                    <?= $form->field($model, 'bridge_target')->dropDownList($abstractionTable, [
+                        'prompt' => 'Select bridge type',
                         'class' => 'form-control',
-                        'placeholder' => 'Bridge Target'
-                    ])->label('Bridge Target') ?>
+                    ]) ?>
                 </div>
 
             </div>
