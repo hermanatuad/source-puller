@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($abstractionColumn as $key => $value) : ?>
                                     <tr>
                                         <th scope="row" style="width: 33%;">
-                                            <i class="ri-hashtag me-2 text-muted"></i><?= $key->column_warehouse ?>
+                                            <i class="ri-hashtag me-2 text-muted"></i><?= $value->column_warehouse ?>
                                         </th>
                                         <td style="width: 33%;">
                                             <?= $value->tes ?? 'N/A' ?>
