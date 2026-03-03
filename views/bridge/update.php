@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = 'Update';
         'model' => $model,
         'system' => $system ?? null,
         'bridgeType' => $bridgeType ?? null,
+        'abstraction' => $abstraction ?? null,
     ]) ?>
 
 </div>

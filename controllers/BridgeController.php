@@ -118,6 +118,12 @@ class BridgeController extends Controller
     {
         $model = $this->findModel($id);
 
+        $abstractionData = Abstraction::find()->all();
+        $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
+            return $model->table_warehouse;
+        });
+
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -125,6 +131,8 @@ class BridgeController extends Controller
         return $this->render('update', [
             'model' => $model,
             'system' => ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name'),
+            'bridgeType' => MyHelper::bridgeType(),
+            'abstraction' => $abstraction,
         ]);
     }
 
