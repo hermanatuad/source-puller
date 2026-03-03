@@ -31,7 +31,7 @@ class Entity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'entity_id', 'status', 'created_at_data'], 'required'],
+            [['id', 'entity_id', 'status'], 'required'],
             [['id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['entity_id', 'is_alive', 'status'], 'string', 'max' => 20],

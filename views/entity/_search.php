@@ -21,9 +21,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status') ?>
 
-    <?= $form->field($model, 'created_at_data') ?>
-
-    <?= $form->field($model, 'updated_at_data') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 
