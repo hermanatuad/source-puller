@@ -85,18 +85,24 @@ class AbstractionColumnController extends Controller
 
     public function actionAjaxCreate()
     {
-        $model = new AbstractionColumn();
-        $genuuid = MyHelper::genuuid();
-        $model->id = $genuuid;
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return 'success';
-            } else {
-                return 'error';
-            }
+        $request = \Yii::$app->request;
+        if (!$request->isAjax || !$request->isPost) {
+            throw new \yii\web\BadRequestHttpException('Invalid request');
         }
 
-        return 'invalid request';
+        $model = new AbstractionColumn();
+        $model->id = MyHelper::genuuid();
+        $model->abstraction_id = $request->post('abstraction_id');
+        $model->column_type = $request->post('column_type');
+        $model->column_warehouse = $request->post('column_warehouse');
+        $model->description = $request->post('description');
+
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        if ($model->save()) {
+            return ['status' => 'success'];
+        }
+
+        return ['status' => 'error', 'errors' => $model->getErrors()];
     }
 
     /**

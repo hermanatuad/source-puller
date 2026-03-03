@@ -50,6 +50,7 @@ YiiAsset::register($this);
     echo $this->render('head-css');
     ?>
 
+    <?php $this->registerCsrfMetaTags(); ?>
     <?php $this->head(); ?>
 </head>
 

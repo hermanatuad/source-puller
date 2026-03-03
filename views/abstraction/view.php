@@ -1,6 +1,7 @@
 <?php
 
 use app\models\AbstractionColumnSearch;
+use richardfan\widget\JSRegister;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -125,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="col-lg-12">
                                             <div class="hstack gap-2 justify-content-end">
                                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary" id="submit-column">Submit</button>
+                                                <button type="button" class="btn btn-primary" id="submit-column">Submit</button>
                                             </div>
                                         </div><!--end col-->
                                     </div><!--end row-->
@@ -168,28 +169,51 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-<?php \richardfan\widget\JSRegister::begin(); ?>
+<?php JSRegister::begin(); ?>
 <script>
-    $('#submit-column').on('click', function() {
+    $(document).on('click', '#submit-column', function(e) {
+        e.preventDefault();
         var data = {
             abstraction_id: $('#table-name').val(),
             column_type: $('#column-type').val(),
             column_warehouse: $('#column-warehouse').val(),
             description: $('#description').val(),
         };
-
         $.ajax({
-            url: '<?= Yii::$app->urlManager->createUrl(['abstraction-column/ajax-create']) ?>',
+            url: '<?= yii\helpers\Url::to(['abstraction-column/ajax-create']) ?>',
             type: 'POST',
             data: data,
             success: function(response) {
-                $('#modal-bridge').modal('hide');
-                $.pjax.reload({ container: '#bridges-pjax' });
+                if (response && response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved',
+                        text: 'Column added successfully',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(function() {
+                        $('#modal-bridge').modal('hide');
+                        $.pjax.reload({ container: '#bridges-pjax' });
+                    });
+                } else {
+                    var msg = response && response.errors ? JSON.stringify(response.errors) : JSON.stringify(response);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error adding column: ' + msg
+                    });
+                }
             },
             error: function(xhr, status, error) {
-                alert('Error adding column: ' + error);
+                console.error('AJAX error', xhr, status, error);
+                var errMsg = xhr && xhr.responseText ? xhr.responseText : error;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'AJAX Error',
+                    text: errMsg
+                });
             }
         });
     });
 </script>
-<?php \richardfan\widget\JSRegister::end(); ?>
+<?php JSRegister::end(); ?>
