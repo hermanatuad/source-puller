@@ -217,13 +217,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (!empty($tables)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
-                                    <?php echo '<pre>';print_r($table);exit; ?>
                                     <tr>
                                         <td>
                                         </td>
-                                        <td><?= Html::encode($table->description ?: '-') ?></td>
+                                        <td><?= Html::encode($table['name'] ?: '-') ?></td>
                                         <td>
-                                            <?= Html::a('Edit', ['update', 'id' => $table->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('Config', ['update', 'id' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
