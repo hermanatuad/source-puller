@@ -13,6 +13,20 @@ use yii\db\mssql\PDO;
 class DWHelper
 {
     /**
+     * Configuration for data warehouse connection.
+     * Centralized here so variables are declared only once.
+     *
+     * @var array
+     */
+    private static $dwConfig = [
+        'hostname' => '34.71.143.136',
+        'username' => 'appuser',
+        'password' => 'AppPass!123',
+        'port' => 5432,
+        'database' => 'datawarehouse',
+    ];
+
+    /**
      * Format number to Indonesian Rupiah currency format
      * 
      * @param float|int $amount The amount to format
@@ -24,10 +38,11 @@ class DWHelper
     public static function getDWInfoFromCache($cacheTTL = 3600)
     {
 
-        $hostname = '34.71.143.136';
-        $username = 'appuser';
-        $port     = 5432;
-        $database = 'datawarehouse';
+        $cfg = self::$dwConfig;
+        $hostname = $cfg['hostname'];
+        $username = $cfg['username'];
+        $port = $cfg['port'];
+        $database = $cfg['database'];
 
         // Validate required parameters for cache lookup
         $missing = [];
@@ -57,7 +72,7 @@ class DWHelper
             ];
         }
 
-        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
+        $cacheKey = 'mysql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         $cachedData = self::getFromCache($cacheKey);
 
@@ -94,11 +109,12 @@ class DWHelper
     public static function testConDW()
     {
 
-        $hostname = '34.71.143.136';
-        $username = 'appuser';
-        $port     = 5432;
-        $password = 'AppPass!123';
-        $database = 'datawarehouse';
+        $cfg = self::$dwConfig;
+        $hostname = $cfg['hostname'];
+        $username = $cfg['username'];
+        $port = $cfg['port'];
+        $password = $cfg['password'];
+        $database = $cfg['database'];
 
         $useCache = true;
         $cacheTTL = 3600;
@@ -117,7 +133,7 @@ class DWHelper
             ];
         }
 
-        $cacheKey = 'pgsql_schema_' . md5("$hostname:$port:$username:$database");
+        $cacheKey = 'pgsql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         if ($useCache) {
             $cachedData = self::getFromCache($cacheKey);
@@ -306,14 +322,15 @@ class DWHelper
         return null;
     }
 
-    public static function clearCache($params)
+    public static function clearCache()
     {
-        $hostname = $params['hostname'] ?? '';
-        $port = $params['port'] ?? '';
-        $username = $params['username'] ?? '';
-        $database = $params['database'] ?? '';
+        $cfg = self::$dwConfig;
+        $hostname = $cfg['hostname'];
+        $username = $cfg['username'];
+        $port = $cfg['port'];
+        $database = $cfg['database'];
 
-        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
+        $cacheKey = 'mysql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
         $cacheFile = Yii::getAlias('@runtime') . '/db_cache/' . $cacheKey . '.cache';
 
         if (file_exists($cacheFile)) {

@@ -76,7 +76,6 @@ class BridgeController extends Controller
      */
     public function actionCreate()
     {
-        echo '<pre>';print_r(DWHelper::testConDW());exit;
 
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
