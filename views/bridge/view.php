@@ -6,8 +6,8 @@ use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\Bridge $model */
-$table_warehouse = \app\models\Abstraction::findOne(['id' => $model->bridge_target])->table_warehouse ?? 'N/A';
-$this->title = '[' . $model->system_code . '] ' . $model->bridge_source . ' -> ' . $table_warehouse;
+
+$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. '-> datawarehouse';
 $this->params['breadcrumbs'][] = ['label' => 'Bridges', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
