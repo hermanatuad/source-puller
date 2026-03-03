@@ -110,7 +110,7 @@ class BridgeColumnController extends Controller
         $listColumnSource = array_combine($names, $names);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['bridge/view', 'id' => $model->bridge_id]);
         }
 
         return $this->render('update', [
