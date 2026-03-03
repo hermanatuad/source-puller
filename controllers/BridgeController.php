@@ -225,7 +225,6 @@ class BridgeController extends Controller
                 }
 
                 $tables = array_keys($res['result']['tables'] ?? []);
-                echo '<pre>';print_r($tables);exit;
             } else {
                 // Assume PostgreSQL-like: fetch via PDO
                 $host = $system->hostname;
