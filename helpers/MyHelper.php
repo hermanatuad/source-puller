@@ -19,6 +19,30 @@ class MyHelper
      * @param int $decimals Number of decimal places (default: 0)
      * @return string Formatted currency string
      */
+
+    public static function bridgeType()
+    {
+        $list = [
+            'primary' => 'Primary',
+            'data' => 'Data',
+            'datetime' => 'Datetime'
+        ];
+        return $list;
+    }
+
+    public static function abstractionType()
+    {
+        $list = [
+            'main' => 'Main',
+            'secondary' => 'Secondary',
+            'data' => 'Data'
+        ];
+        return $list;
+    }
+
+
+
+
     public static function idr($amount, $showSymbol = true, $decimals = 0)
     {
         $formatted = number_format($amount, $decimals, ',', '.');

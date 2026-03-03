@@ -32,12 +32,10 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_type')->textInput([
-                        'maxlength' => true,
+                    <?= $form->field($model, 'bridge_type')->dropDownList($bridgeType, [
+                        'prompt' => 'Select bridge type',
                         'class' => 'form-control',
-                        'id' => 'bridge-type',
-                        'placeholder' => 'Bridge Type'
-                    ])->label('Bridge Type') ?>
+                    ]) ?>
                 </div>
 
                 <div class="col-md-6">

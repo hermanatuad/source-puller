@@ -95,6 +95,7 @@ class BridgeController extends Controller
             'model' => $model,
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
+            'bridgeType' => MyHelper::bridgeType(),
         ]);
     }
 

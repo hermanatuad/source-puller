@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'uuid' => $uuid ?? null,
         'system' => $system ?? null,
+        'bridgeType' => $bridgeType ?? null,
     ]) ?>
 
 </div>
