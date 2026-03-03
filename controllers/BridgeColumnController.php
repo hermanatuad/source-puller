@@ -106,8 +106,8 @@ class BridgeColumnController extends Controller
 
         $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
         $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
-        echo '<pre>';print_r($dbInfo);exit;
-        
+        echo '<pre>';print_r($dbInfo['result']['tables'][$model->bridge->bridge_table_source]);exit;
+
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
