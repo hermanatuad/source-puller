@@ -10,6 +10,7 @@ use Yii;
  * @property string $id
  * @property string $system_code
  * @property string $bridge_table_source
+ * @property string $status
  * @property string $created_at
  * @property string $updated_at
  *
@@ -34,10 +35,10 @@ class Bridge extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'system_code', 'bridge_table_source'], 'required'],
+            [['id', 'system_code', 'bridge_table_source', 'status'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['id'], 'string', 'max' => 36],
-            [['system_code'], 'string', 'max' => 20],
+            [['system_code', 'status'], 'string', 'max' => 20],
             [['bridge_table_source'], 'string', 'max' => 255],
             [['id'], 'unique'],
             [['system_code'], 'exist', 'skipOnError' => true, 'targetClass' => System::class, 'targetAttribute' => ['system_code' => 'system_code']],
@@ -53,6 +54,7 @@ class Bridge extends \yii\db\ActiveRecord
             'id' => 'ID',
             'system_code' => 'System Code',
             'bridge_table_source' => 'Bridge Table Source',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

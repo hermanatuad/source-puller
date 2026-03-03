@@ -1,5 +1,6 @@
 <?php
 
+use app\helpers\DBHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
@@ -187,5 +188,56 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">
+                    <i class="ri-server-line me-2"></i>Data Sources
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Status</th>
+                                <th>Table Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $tables = DBHelper::getDatabaseInfoFromCache($model);
+                            echo '<pre>';print_r($tables);exit;
+                            if (!empty($tables)):
+                            ?>
+                                <?php foreach ($tables as $table): ?>
+                                    <tr>
+                                        <td>
+                                            <i class="ri-key-2-line me-2 text-muted"></i>
+                                            <?= Html::encode($table->name) ?>
+                                        </td>
+                                        <td><?= Html::encode($table->description ?: '-') ?></td>
+                                        <td>
+                                            <?= Html::a('Edit', ['update', 'id' => $table->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">No permissions assigned</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
