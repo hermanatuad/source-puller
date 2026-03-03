@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Bridge Name</th>
+                                <th scope="col">Bridge Table Target</th>
+                                <th scope="col">System Code</th>
                                 <th scope="col">Bridge Table Source</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
@@ -51,6 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td> <?= Html::a(Html::encode($model->bridge_name), ['view', 'id' => $model->id]) ?></td>
+                                        <td><?= Html::encode($model->bridge_table_target) ?></td>
+                                        <td><?= Html::encode($model->system_code) ?></td>
                                         <td><?= Html::encode($model->bridge_table_source) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
