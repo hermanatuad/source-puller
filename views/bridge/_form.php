@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use app\models\System;
 
 /** @var yii\web\View $this */
 /** @var app\models\Bridge $model */
@@ -14,7 +16,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
-    <?= $form->field($model, 'system_code')->textInput(['maxlength' => true]) ?>
+    <?php $systems = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name'); ?>
+    <?= $form->field($model, 'system_code')->dropDownList($systems, ['prompt' => 'Select system']) ?>
 
     <?= $form->field($model, 'bridge_type')->textInput(['maxlength' => true]) ?>
 
