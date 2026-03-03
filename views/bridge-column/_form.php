@@ -12,17 +12,13 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'id')->hiddenInput(['maxlength' => true])->label(false) ?>
 
-    <?= $form->field($model, 'bridge_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'bridge_id')->hiddenInput(['maxlength' => true])->label(false) ?>
 
     <?= $form->field($model, 'source_column_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'target_column_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

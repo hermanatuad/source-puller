@@ -1,5 +1,6 @@
 <?php
 
+use app\models\BridgeColumn;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -73,13 +74,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <table class="table table-borderless mb-0">
                             <tbody>
-                                <?php foreach ($abstractionColumn as $key => $value) : ?>
+                                <?php foreach ($abstractionColumn as $key => $value) : 
+                                    
+                                    $bridgeColumn = BridgeColumn::find()->where(['bridge_id' => $model->id, 'target_column_name' => $value->column_warehouse])->one();
+                                    ?>
                                     <tr>
                                         <th scope="row" style="width: 33%;">
                                             <i class="ri-hashtag me-2 text-muted"></i><?= $value->column_warehouse ?>
                                         </th>
                                         <td style="width: 33%;">
-                                            <?= $value->source_column_name ?? 'N/A' ?>
+                                            <?= $bridgeColumn->source_column_name ?? 'N/A' ?>
                                         </td>
                                         <td style="width: 33%;">
                                             <?=  Html::a('Edit', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $value->column_warehouse], ['class' => 'btn btn-sm btn-outline-primary']) ?>

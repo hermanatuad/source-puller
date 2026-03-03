@@ -142,10 +142,6 @@ class BridgeColumnController extends Controller
     }
     protected function findModelBridge($bridge_id, $target_column_name)
     {
-        if (($model = BridgeColumn::find()->where(['bridge_id' => $bridge_id, 'target_column_name' => $target_column_name])->one())) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        return BridgeColumn::find()->where(['bridge_id' => $bridge_id, 'target_column_name' => $target_column_name])->one();
     }
 }
