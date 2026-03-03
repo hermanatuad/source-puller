@@ -30,7 +30,7 @@ use app\models\System;
                     <?= $form->field($model, 'bridge_name')->textInput(['placeholder' => 'Enter bridge name']) ?>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <?= $form->field($model, 'system_code')->dropDownList($system, [
                         'prompt' => 'Select system',
                         'class' => 'form-control',
@@ -39,11 +39,19 @@ use app\models\System;
                     ]) ?>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <?= $form->field($model, 'bridge_table_source')->dropDownList([], [
-                        'prompt' => 'Select table warehouse',
+                        'prompt' => 'Select table source',
                         'class' => 'form-control',
                         'id' => 'bridge-bridge_table_source'
+                    ])->label('Table Source') ?>
+                </div>
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'bridge_table_target')->dropDownList($dwTables, [
+                        'prompt' => 'Select table warehouse',
+                        'class' => 'form-control',
+                        'id' => 'bridge-bridge_table_target'
                     ])->label('Table Warehouse') ?>
                 </div>
 
