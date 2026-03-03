@@ -19,9 +19,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'bridge_id') ?>
 
-    <?= $form->field($model, 'source_columnn_name') ?>
+    <?= $form->field($model, 'source_column_name') ?>
 
-    <?= $form->field($model, 'target_columnn_name') ?>
+    <?= $form->field($model, 'target_column_name') ?>
 
     <?= $form->field($model, 'created_at') ?>
 

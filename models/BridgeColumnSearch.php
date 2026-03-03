@@ -17,7 +17,7 @@ class BridgeColumnSearch extends BridgeColumn
     public function rules()
     {
         return [
-            [['id', 'bridge_id', 'source_columnn_name', 'target_columnn_name', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'bridge_id', 'source_column_name', 'target_column_name', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -64,8 +64,8 @@ class BridgeColumnSearch extends BridgeColumn
 
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'bridge_id', $this->bridge_id])
-            ->andFilterWhere(['like', 'source_columnn_name', $this->source_columnn_name])
-            ->andFilterWhere(['like', 'target_columnn_name', $this->target_columnn_name]);
+            ->andFilterWhere(['like', 'source_column_name', $this->source_column_name])
+            ->andFilterWhere(['like', 'target_column_name', $this->target_column_name]);
 
         return $dataProvider;
     }

@@ -16,9 +16,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'bridge_id')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'source_columnn_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'source_column_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'target_columnn_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'target_column_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 

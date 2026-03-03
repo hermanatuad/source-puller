@@ -31,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'bridge_id',
-            'source_columnn_name',
-            'target_columnn_name',
+            'source_column_name',
+            'target_column_name',
             'created_at',
             'updated_at',
         ],
