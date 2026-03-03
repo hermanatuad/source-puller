@@ -5,9 +5,11 @@ namespace app\controllers;
 use app\helpers\MyHelper;
 use app\models\Bridge;
 use app\models\BridgeSearch;
+use app\models\System;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * BridgeController implements the CRUD actions for Bridge model.
@@ -69,7 +71,7 @@ class BridgeController extends Controller
     public function actionCreate()
     {
         $model = new Bridge();
-
+        $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'id', 'system_name');
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 if ($this->request->isAjax) {
@@ -79,19 +81,20 @@ class BridgeController extends Controller
             } else {
                 // If AJAX and validation fails, return form HTML to show errors
                 if ($this->request->isAjax) {
-                    return $this->renderAjax('_form', ['model' => $model]);
+                    return $this->renderAjax('_form', ['model' => $model, 'system' => $system]);
                 }
             }
         } else {
             $model->loadDefaultValues();
             if ($this->request->isAjax) {
-                return $this->renderAjax('_form', ['model' => $model]);
+                return $this->renderAjax('_form', ['model' => $model, 'system' => $system]);
             }
         }
 
         return $this->render('create', [
             'model' => $model,
             'uuid' => MyHelper::genuuid(),
+            'system' => $system,
         ]);
     }
 
@@ -112,6 +115,7 @@ class BridgeController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'system' => ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'id', 'system_name'),
         ]);
     }
 

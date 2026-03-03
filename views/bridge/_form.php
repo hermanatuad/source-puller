@@ -14,21 +14,68 @@ use app\models\System;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
+    <div class="card shadow-sm">
+        <div class="card-header d-flex align-items-center bg-white">
+            <h5 class="mb-0"><i class="ri-settings-3-line me-2"></i> Bridge Configuration</h5>
+            <small class="text-muted ms-3">Manage connection and metadata</small>
+        </div>
+        <div class="card-body">
+            <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
-    <?php $systems = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name'); ?>
-    <?= $form->field($model, 'system_code')->dropDownList($systems, ['prompt' => 'Select system']) ?>
+            <div class="row g-3">
 
-    <?= $form->field($model, 'bridge_type')->textInput(['maxlength' => true]) ?>
+                <div class="col-md-6">
+                    <?= $form->field($model, 'bridge_source')->dropDownList($systems, [
+                        'prompt' => 'Select system',
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
 
-    <?= $form->field($model, 'bridge_source')->textInput(['maxlength' => true]) ?>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'bridge_type')->textInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'id' => 'bridge-type',
+                        'placeholder' => 'Bridge Type'
+                    ])->label('Bridge Type') ?>
+                </div>
 
-    <?= $form->field($model, 'bridge_target')->textInput(['maxlength' => true]) ?>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'bridge_target')->input('number', [
+                        'class' => 'form-control',
+                        'placeholder' => 'Bridge Target'
+                    ])->label('Bridge Target') ?>
+                </div>
 
-    <br>
+                <div class="col-md-4">
+                    <?= $form->field($model, 'database_name')->textInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'placeholder' => 'Database Name'
+                    ])->label('Database Name') ?>
+                </div>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                <div class="col-md-8">
+                    <?= $form->field($model, 'path')->hiddenInput([
+                        'maxlength' => true,
+                        'class' => 'form-control',
+                        'placeholder' => '/api/v1'
+                    ])->label(false) ?>
+                </div>
+
+                <div class="col-12">
+                    <?= $form->field($model, 'description')->textarea([
+                        'rows' => 3,
+                        'class' => 'form-control',
+                        'placeholder' => 'Optional notes about this system'
+                    ])->label('Description') ?>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-end">
+            <?= Html::a('<i class="ri-arrow-left-line"></i> Cancel', ['index'], ['class' => 'btn btn-outline-secondary me-2']) ?>
+            <?= Html::submitButton('<i class="ri-save-line"></i> Save', ['class' => 'btn btn-primary']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>
