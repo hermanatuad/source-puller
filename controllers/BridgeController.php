@@ -218,24 +218,14 @@ class BridgeController extends Controller
 
         try {
             if (strpos($systemType, 'mysql') !== false) {
-                $params = [
-                    'system_code' => $system->system_code,
-                    'hostname' => $system->hostname,
-                    'username' => $system->username,
-                    'password' => $system->password,
-                    'port' => $system->port,
-                    'database' => $system->database_name,
-                    'use_cache' => false,
-                ];
-                // echo '<pre>';print_r($system);exit;
-                echo '<pre>';print_r(DBHelper::getDatabaseInfoFromCache($system));exit;
 
-                $res = \app\helpers\DBHelper::testConMysql($params);
+                $res = DBHelper::getDatabaseInfoFromCache($system);
                 if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
                     return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
                 }
 
                 $tables = array_keys($res['data']['tables'] ?? []);
+                echo '<pre>';print_r($tables);exit;
             } else {
                 // Assume PostgreSQL-like: fetch via PDO
                 $host = $system->hostname;
