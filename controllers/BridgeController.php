@@ -224,8 +224,8 @@ class BridgeController extends Controller
                     return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
                 }
 
-                $tables = array_keys($res['data']['tables'] ?? []);
-                echo '<pre>';print_r($res);exit;
+                $tables = array_keys($res['result']['database_info']['tables'] ?? []);
+                echo '<pre>';print_r($tables);exit;
             } else {
                 // Assume PostgreSQL-like: fetch via PDO
                 $host = $system->hostname;
