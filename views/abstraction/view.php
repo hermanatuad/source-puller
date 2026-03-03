@@ -96,8 +96,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="modal-body">
                                 <form action="javascript:void(0);">
                                     <div class="row g-3">
-                                        <input type="text" class="form-control" id="table-id" value="">
-                                        <input type="text" class="form-control" id="table-name" value="<?= Html::encode($model->id) ?>">
+                                        <input type="hidden" class="form-control" id="table-id" value="">
+                                        <input type="hidden" class="form-control" id="table-name" value="<?= Html::encode($model->id) ?>">
 
                                         <div class="col-xxl-12">
                                             <div>
