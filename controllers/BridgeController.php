@@ -9,6 +9,8 @@ use app\models\AbstractionColumn;
 use app\models\Bridge;
 use app\models\BridgeSearch;
 use app\models\System;
+use PhpParser\Node\NullableType;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -59,15 +61,28 @@ class BridgeController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView()
+    public function actionView($id = null)
     {
-        echo '<pre>';print_r($_GET);exit;
-        // $model = $this->findModel($id);
-        // $abstractionColumn = AbstractionColumn::findAll(['abstraction_id' => $model->bridge_target]);   
-        // return $this->render('view', [
-        //     'model' => $model,
-        //     'abstractionColumn' => $abstractionColumn,
-        // ]);
+        if ($id == null) {
+            $system_code = Yii::$app->request->get('system_code');
+            $bridge_table_source = Yii::$app->request->get('bridge_table_source');
+
+            $model = Bridge::find()->where([
+                'system_code' => $system_code,
+                'bridge_table_source' => $bridge_table_source
+            ])->one();
+            if ($model == null) {
+                throw new NotFoundHttpException('The requested page does not exist.');
+            } else {
+                $id = $model->id ?? null;
+            }
+        } else {
+            $model = $this->findModel($id);
+        }
+
+        return $this->render('view', [
+            'model' => $model
+        ]);
     }
 
     /**
