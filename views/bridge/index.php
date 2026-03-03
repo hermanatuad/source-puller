@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </thead>
                         <tbody>
                             <?php if ($dataProvider->getCount() > 0): ?>
-                                <?php 
+                                <?php
                                 $pageSize = $dataProvider->pagination->pageSize;
                                 $page = $dataProvider->pagination->page;
                                 $no = $page * $pageSize + 1;
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($dataProvider->getModels() as $model): ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td> <?=  Html::a(Html::encode($model->bridge_name), ['view', 'id' => $model->id]) ?></td>
+                                        <td> <?= Html::a(Html::encode($model->bridge_name), ['view', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode($model->bridge_table_source) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
@@ -58,6 +58,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <i class="ri-more-fill"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <?= Html::a('<i class="ri-play-fill align-bottom me-2 text-primary"></i> Run', ['run', 'id' => $model->id], [
+                                                            'class' => 'dropdown-item'
+                                                        ]) ?>
+                                                    </li>
+                                                    <li class="dropdown-divider"></li>
                                                     <li>
                                                         <?= Html::a('<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View', ['view', 'id' => $model->id], [
                                                             'class' => 'dropdown-item'
@@ -71,9 +77,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     <li class="dropdown-divider"></li>
                                                     <li>
                                                         <?= Html::beginForm(['delete', 'id' => $model->id], 'post', ['style' => 'display:inline']) ?>
-                                                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this user?')">
-                                                                <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                                                            </button>
+                                                        <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this user?')">
+                                                            <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+                                                        </button>
                                                         <?= Html::endForm() ?>
                                                     </li>
                                                 </ul>
