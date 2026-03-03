@@ -10,6 +10,7 @@ use app\models\AbstractionColumn;
 use app\models\Bridge;
 use app\models\BridgeColumn;
 use app\models\BridgeSearch;
+use app\models\Entity;
 use app\models\EntitySystem;
 use app\models\System;
 use Exception;
@@ -186,22 +187,35 @@ class BridgeController extends Controller
             Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
             // return $this->redirect(['view', 'id' => $id]);
         }
-        
+
 
 
         foreach ($RAW_DATA as $data) {
-            echo '<pre>';print_r($data);exit;
             $checkData = EntitySystem::find()->where([
                 'system_code' => $model->system_code,
-                'entity_reference' => $model->bridge_table_source,
-                'entity_value' => json_encode($data),
+                'entity_reference' => $data['id']
             ])->one();
+            if ($checkData) {
+                # code...
+            } else {
+
+                $newEntity = new Entity();
+                $newEntity->id = MyHelper::genuuid();
+                $newEntity->entity_id = MyHelper::genEntityId();
+                $newEntity->status = 'active';
+                $newEntity->is_alive = 'unknown';
+                $newEntity->save();
+
+                $newEntitySystem = new EntitySystem();
+                $newEntitySystem->id = MyHelper::genuuid();
+                $newEntitySystem->entity_id = $newEntity->entity_id;
+                $newEntitySystem->system_code = $model->system_code;
+                $newEntitySystem->entity_reference = $data['id'];
+                $newEntitySystem->created_at_data = date('Y-m-d H:i:s');
+                $newEntitySystem->updated_at_data = date('Y-m-d H:i:s');
+                $newEntitySystem->save();
+            }
         }
-
-
-
-
-
 
         if ($mysqli->connect_errno) {
             Yii::$app->session->setFlash('error', 'Failed to connect to source database: ' . $mysqli->connect_error);
