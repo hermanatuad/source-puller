@@ -27,7 +27,7 @@ use app\models\System;
 
                 <div class="col-md-6">
                     <?= $form->field($model, 'bridge_target')->dropDownList($abstraction, [
-                        'prompt' => 'Select bridge type',
+                        'prompt' => 'Select abstraction',
                         'class' => 'form-control',
                     ])->label('Abstraction') ?>
                 </div>
@@ -47,7 +47,7 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_source')->input('number', [
+                    <?= $form->field($model, 'bridge_source')->textInput([
                         'class' => 'form-control',
                         'placeholder' => 'Bridge Source'
                     ])->label('Bridge Source') ?>
