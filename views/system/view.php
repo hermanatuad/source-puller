@@ -214,14 +214,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php
                             $dataInfo = DBHelper::getDatabaseInfoFromCache($model);
                             $tables = $dataInfo['result']['data']['tables'] ?? [];
-                            echo '<pre>';print_r($tables);exit;
                             if (!empty($tables)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
+                                    <?php echo '<pre>';print_r($table);exit; ?>
                                     <tr>
                                         <td>
-                                            <i class="ri-key-2-line me-2 text-muted"></i>
-                                            <?= Html::encode($table->name) ?>
                                         </td>
                                         <td><?= Html::encode($table->description ?: '-') ?></td>
                                         <td>
