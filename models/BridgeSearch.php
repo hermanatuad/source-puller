@@ -17,7 +17,7 @@ class BridgeSearch extends Bridge
     public function rules()
     {
         return [
-            [['id', 'system_code', 'bridge_name', 'bridge_table_source', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'system_code', 'bridge_name', 'bridge_table_source', 'bridge_table_target', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -65,7 +65,8 @@ class BridgeSearch extends Bridge
         $query->andFilterWhere(['like', 'id', $this->id])
             ->andFilterWhere(['like', 'system_code', $this->system_code])
             ->andFilterWhere(['like', 'bridge_name', $this->bridge_name])
-            ->andFilterWhere(['like', 'bridge_table_source', $this->bridge_table_source]);
+            ->andFilterWhere(['like', 'bridge_table_source', $this->bridge_table_source])
+            ->andFilterWhere(['like', 'bridge_table_target', $this->bridge_table_target]);
 
         return $dataProvider;
     }

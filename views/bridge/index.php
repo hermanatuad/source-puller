@@ -50,8 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($dataProvider->getModels() as $model): ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= Html::encode($model->bridge_name) ?></td>
-                                        <td> <?=  Html::a(Html::encode($model->bridge_table_source), ['view', 'id' => $model->id]) ?></td>
+                                        <td> <?=  Html::a(Html::encode($model->bridge_name), ['view', 'id' => $model->id]) ?></td>
+                                        <td><?= Html::encode($model->bridge_table_source) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
                                                 <button class="btn btn-soft-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
