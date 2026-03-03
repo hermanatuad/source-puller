@@ -156,6 +156,10 @@ class BridgeController extends Controller
             }
 
             $tableName = $model->bridge_table_source;
+            $columnList = BridgeColumn::find()->select('source_column_name')->where(['bridge_id' => $id])->all();
+            echo '<pre>';print_r($columnList);exit;
+
+            $tableName = $model->bridge_table_source;
 
             // validasi sederhana nama tabel
             if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
@@ -177,7 +181,7 @@ class BridgeController extends Controller
             $mysqli->close();
         } catch (Exception $e) {
             Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
-            return $this->redirect(['view', 'id' => $id]);
+            // return $this->redirect(['view', 'id' => $id]);
         }
         echo '<pre>';print_r($RAW_DATA);exit;
 
