@@ -96,9 +96,6 @@ class BridgeColumnController extends Controller
     public function actionUpdate($bridge_id, $target_column_name)
     {
         $model = $this->findModelBridge($bridge_id, $target_column_name);
-        $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
-        $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
-        echo '<pre>';print_r($dbInfo);exit;
 
         if (empty($model)) {
             $model = new BridgeColumn();
@@ -107,6 +104,10 @@ class BridgeColumnController extends Controller
             $model->target_column_name = $target_column_name;
         }
 
+        $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
+        $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
+        echo '<pre>';print_r($dbInfo);exit;
+        
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
