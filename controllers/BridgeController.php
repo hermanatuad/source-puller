@@ -103,6 +103,9 @@ class BridgeController extends Controller
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
         $DWInfo = DWHelper::getDWInfoFromCache();
 
+        $dwTables = array_keys($DWInfo['result']['data']['tables']);
+        $dwTables  = array_combine($dwTables, $dwTables);
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -115,7 +118,7 @@ class BridgeController extends Controller
             'model' => $model,
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
-            'dwTables' => array_keys($DWInfo['result']['data']['tables']),
+            'dwTables' => $dwTables,
         ]);
     }
 

@@ -69,8 +69,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <?php
                             $dwInfo = DWHelper::getDWInfoFromCache();
-                            $columns = $dwInfo['result']['data']['tables'] ?? [];
-                            echo '<pre>';print_r($columns['patient']);exit;
+                            $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target] ?? [];
+                            echo '<pre>';print_r($columns['columns']);exit;
                             if (!empty($columns)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
