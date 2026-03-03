@@ -9,7 +9,7 @@ use yii\widgets\DetailView;
 /** @var app\models\Bridge $model */
 
 $system = System::find()->where(['system_code' => $model->system_code])->one();
-$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. ' -> datawarehouse';
+$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. ' x datawarehouse';
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $system->system_name, 'url' => ['system/view', 'id' => $system->id]];
 $this->params['breadcrumbs'][] = $this->title;

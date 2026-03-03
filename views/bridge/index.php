@@ -35,9 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Affiliation Code</th>
-                                <th scope="col">Affiliation Name</th>
-                                <th scope="col">Address</th>
+                                <th scope="col">Bridge Name</th>
+                                <th scope="col">Bridge Table Source</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -51,9 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($dataProvider->getModels() as $model): ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= Html::encode($model->affiliation_code) ?></td>
-                                        <td> <?=  Html::a(Html::encode($model->affiliation_name), ['view', 'id' => $model->id]) ?></td>
-                                        <td><?= Html::encode($model->address) ?></td>
+                                        <td><?= Html::encode($model->bridge_name) ?></td>
+                                        <td> <?=  Html::a(Html::encode($model->bridge_table_source), ['view', 'id' => $model->id]) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
                                                 <button class="btn btn-soft-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
