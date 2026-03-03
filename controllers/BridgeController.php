@@ -111,14 +111,11 @@ class BridgeController extends Controller
             $model->loadDefaultValues();
         }
 
-        $dwTables = array_keys($DWInfo['result']['data']['tables']);
-
-        echo '<pre>';print_r($dwTables);exit;
         return $this->render('create', [
             'model' => $model,
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
-            'dwTables' => ArrayHelper::map($DWInfo['result']['data']['tables'] ?? [], 'table_name', 'table_name'),
+            'dwTables' => array_keys($DWInfo['result']['data']['tables']),
         ]);
     }
 
