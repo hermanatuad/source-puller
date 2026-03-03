@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php
                             $dwInfo = DWHelper::getDWInfoFromCache();
                             $columns = $dwInfo['result']['data']['tables'] ?? [];
-                            echo '<pre>';print_r($columns);exit;
+                            echo '<pre>';print_r($columns['patient']);exit;
                             if (!empty($columns)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
