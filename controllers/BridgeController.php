@@ -8,6 +8,7 @@ use app\helpers\MyHelper;
 use app\models\Abstraction;
 use app\models\AbstractionColumn;
 use app\models\Bridge;
+use app\models\BridgeColumn;
 use app\models\BridgeSearch;
 use app\models\System;
 use PhpParser\Node\NullableType;
@@ -64,6 +65,10 @@ class BridgeController extends Controller
      */
     public function actionView($id = null)
     {
+        $bridgeColumn = BridgeColumn::find()->where(['bridge_id' => $id])->all();
+
+        $bridgeColumnList = ArrayHelper::map($bridgeColumn, 'target_column_name', 'source_column_name');
+
         if ($id == null) {
             $system_code = Yii::$app->request->get('system_code');
             $bridge_table_source = Yii::$app->request->get('bridge_table_source');
@@ -87,7 +92,8 @@ class BridgeController extends Controller
         }
 
         return $this->render('view', [
-            'model' => $model
+            'model' => $model,
+            'bridgeColumnList' => $bridgeColumnList,
         ]);
     }
 

@@ -73,13 +73,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (!empty($columns)):
                             ?>
                                 <?php foreach ($columns as $column): ?>
-                                    <?php echo '<pre>';print_r($column);exit; ?>
                                     <tr>
                                         <td>
+                                            <?= Html::encode($column['name'] ?: 'N/A') ?></td>
                                         </td>
-                                        <td><?= Html::encode($table['name'] ?: '-') ?></td>
                                         <td>
-                                            <?= Html::a('Config', ['bridge/view', 'system_code' => $model->system_code, 'bridge_table_source' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= $bridgeColumnList[$column['name']] ?? 'N/A' ?>
+                                        </td>
+                                        <td>
+                                            <?= Html::a('Config', ['bridge-column/view', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
