@@ -93,11 +93,11 @@ class DWHelper
     public static function testConDW()
     {
 
-        $hostname = getenv('postgres_host') ?? '';
-        $username = getenv('postgres_user') ?? '';
+        $hostname = getenv('postgres_host') ?? '34.71.143.136';
+        $username = getenv('postgres_user') ?? 'appuser';
         $port     = getenv('postgres_port') ?? 5432;
-        $password = getenv('postgres_password') ?? '';
-        $database = getenv('postgres_db') ?? '';
+        $password = getenv('postgres_password') ?? 'AppPass!123';
+        $database = getenv('postgres_db') ?? 'datawarehouse';
 
         $useCache = true;
         $cacheTTL = 3600;
