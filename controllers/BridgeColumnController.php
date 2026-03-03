@@ -92,7 +92,7 @@ class BridgeColumnController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    
+
     public function actionUpdate($bridge_id, $target_column_name)
     {
         $model = $this->findModelBridge($bridge_id, $target_column_name);
@@ -106,15 +106,16 @@ class BridgeColumnController extends Controller
 
         $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
         $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
-        echo '<pre>';print_r($dbInfo['result']['tables'][$model->bridge->bridge_table_source]['columns']);exit;
+        $names = array_column($dbInfo['result']['tables'][$model->bridge->bridge_table_source]['columns'], 'name');
+        $listColumnSource = array_combine($names, $names);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        
+
         return $this->render('update', [
             'model' => $model,
-            'listColumnSource' 
+            'listColumnSource' => $listColumnSource,
         ]);
     }
 
