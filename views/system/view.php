@@ -213,10 +213,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <?php
                             $tables = DBHelper::getDatabaseInfoFromCache($model);
-                            echo '<pre>';print_r($tables);exit;
-                            if (!empty($tables)):
+                            echo '<pre>';print_r($tables['result']['data']);exit;
+                            if (!empty($tables['result'])):
                             ?>
-                                <?php foreach ($tables as $table): ?>
+                                <?php foreach ($tables['result']['data'] as $table): ?>
                                     <tr>
                                         <td>
                                             <i class="ri-key-2-line me-2 text-muted"></i>
