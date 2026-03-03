@@ -43,7 +43,6 @@ use app\models\System;
                     <?= $form->field($model, 'bridge_table_source')->dropDownList([], [
                         'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
-                        'data-choices' => 'true',
                         'id' => 'bridge-bridge_table_source'
                     ])->label('Table Warehouse') ?>
                 </div>
@@ -74,17 +73,7 @@ use app\models\System;
 
                 if (response.status === 'success') {
 
-                    var selectElement = document.getElementById('bridge-bridge_table_source');
-
-                    var choicesInstance = selectElement.choices;
-
-                    if (!choicesInstance) {
-                        console.error('Choices instance not found');
-                        return;
-                    }
-
-                    choicesInstance.clearChoices();
-                    choicesInstance.clearStore();
+                    tableChoices.clearChoices();
 
                     var newChoices = response.tables.map(function(table) {
                         return {
@@ -93,7 +82,7 @@ use app\models\System;
                         };
                     });
 
-                    choicesInstance.setChoices(newChoices, 'value', 'label', true);
+                    tableChoices.setChoices(newChoices, 'value', 'label', true);
                 }
             }
         });
