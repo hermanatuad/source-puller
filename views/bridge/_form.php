@@ -47,29 +47,6 @@ use app\models\System;
                     ])->label('Bridge Target') ?>
                 </div>
 
-                <div class="col-md-4">
-                    <?= $form->field($model, 'database_name')->textInput([
-                        'maxlength' => true,
-                        'class' => 'form-control',
-                        'placeholder' => 'Database Name'
-                    ])->label('Database Name') ?>
-                </div>
-
-                <div class="col-md-8">
-                    <?= $form->field($model, 'path')->hiddenInput([
-                        'maxlength' => true,
-                        'class' => 'form-control',
-                        'placeholder' => '/api/v1'
-                    ])->label(false) ?>
-                </div>
-
-                <div class="col-12">
-                    <?= $form->field($model, 'description')->textarea([
-                        'rows' => 3,
-                        'class' => 'form-control',
-                        'placeholder' => 'Optional notes about this system'
-                    ])->label('Description') ?>
-                </div>
             </div>
         </div>
         <div class="card-footer bg-white text-end">
