@@ -140,7 +140,7 @@ class BridgeColumnController extends Controller
     }
     protected function findModelBridge($bridge_id, $abstraction_id)
     {
-        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'abstraction_id' => $abstraction_id])) !== null) {
+        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'target_columnn_name' => $abstraction_id])) !== null) {
             return $model;
         }
 
