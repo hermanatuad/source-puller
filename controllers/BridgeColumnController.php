@@ -103,7 +103,7 @@ class BridgeColumnController extends Controller
         // if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
         //     return $this->redirect(['view', 'id' => $model->id]);
         // }
-
+echo '<pre>';print_r('tes');exit;
         return $this->render('update', [
             'model' => $model,
         ]);
