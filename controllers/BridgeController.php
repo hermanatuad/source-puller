@@ -74,9 +74,9 @@ class BridgeController extends Controller
     {
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
-        $abstractionColumnData = AbstractionColumn::find()->all();
-        $abstractionColumn = ArrayHelper::map($abstractionColumnData, 'id', function ($model) {
-            return $model->abstraction->table_warehouse . ' - ' . $model->column_warehouse;
+        $abstractionData = Abstraction::find()->all();
+        $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
+            return $model->table_warehouse;
         });
 
         if ($this->request->isPost) {
@@ -103,7 +103,7 @@ class BridgeController extends Controller
             'uuid' => MyHelper::genuuid(),
             'system' => $system,
             'bridgeType' => MyHelper::bridgeType(),
-            'abstractionColumn' => $abstractionColumn,
+            'abstraction' => $abstraction,
         ]);
     }
 

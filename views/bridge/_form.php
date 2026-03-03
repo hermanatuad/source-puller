@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Abstraction;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -25,10 +26,10 @@ use app\models\System;
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'system_code')->dropDownList($system, [
-                        'prompt' => 'Select system',
+                    <?= $form->field($model, 'bridge_target')->dropDownList($abstractionColumn, [
+                        'prompt' => 'Select bridge type',
                         'class' => 'form-control',
-                    ]) ?>
+                    ])->label('Abstraction') ?>
                 </div>
 
                 <div class="col-md-6">
@@ -39,17 +40,17 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-6">
+                    <?= $form->field($model, 'system_code')->dropDownList($system, [
+                        'prompt' => 'Select system',
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+                
+                <div class="col-md-6">
                     <?= $form->field($model, 'bridge_source')->input('number', [
                         'class' => 'form-control',
                         'placeholder' => 'Bridge Source'
                     ])->label('Bridge Source') ?>
-                </div>
-
-                <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_target')->dropDownList($abstractionColumn, [
-                        'prompt' => 'Select bridge type',
-                        'class' => 'form-control',
-                    ]) ?>
                 </div>
 
             </div>
