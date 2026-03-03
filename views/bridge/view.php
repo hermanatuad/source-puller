@@ -5,8 +5,8 @@ use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
 /** @var app\models\Bridge $model */
-
-$this->title = $model->id;
+$table_warehouse = \app\models\Abstraction::findOne(['id' => $model->bridge_target])->table_warehouse ?? 'N/A';
+$this->title = '[' . $model->system_code . '] ' . $model->bridge_source . ' -> ' . $table_warehouse;
 $this->params['breadcrumbs'][] = ['label' => 'Bridges', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tbody>
                                 <?php foreach ($abstractionColumn as $key) : ?>
                                     <tr>
-                                        <th scope="row" style="width: 200px;">
+                                        <th scope="row" style="width: 50%;">
                                             <i class="ri-hashtag me-2 text-muted"></i><?= $key->column_warehouse ?>
                                         </th>
                                         <td><input type="text" name="" id="" class="form-control"></td>

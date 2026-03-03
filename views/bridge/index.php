@@ -35,7 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'system_code',
             'bridge_type',
             'bridge_source',
-            'bridge_target',
+            [
+                'attribute' => 'bridge_target',
+                'value' => function ($model) {
+                    $abstraction = \app\models\Abstraction::findOne(['id' => $model->bridge_target]);
+                    return $abstraction ? $abstraction->table_warehouse : 'N/A';
+                },
+            ],
             //'created_at',
             //'updated_at',
             [
