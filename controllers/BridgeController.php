@@ -76,7 +76,7 @@ class BridgeController extends Controller
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
         $abstractionColumnData = AbstractionColumn::find()->all();
         $abstractionColumn = ArrayHelper::map($abstractionColumnData, 'id', function ($model) {
-            return $model->abstraction->table_warehouse . ' - ' . $model->column_name;
+            return $model->abstraction->table_warehouse . ' - ' . $model->column_warehouse;
         });
 
         if ($this->request->isPost) {
