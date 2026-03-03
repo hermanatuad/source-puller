@@ -51,6 +51,7 @@ use app\models\System;
                     <?= $form->field($model, 'bridge_table_target')->dropDownList($dwTables, [
                         'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
+                        'data-choices' => 'true',
                         'id' => 'bridge-bridge_table_target'
                     ])->label('Table Warehouse') ?>
                 </div>
