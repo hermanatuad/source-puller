@@ -98,11 +98,13 @@ class BridgeColumnController extends Controller
         if (empty($model)) {
             $model = new BridgeColumn();
             $model->id = MyHelper::genuuid();
+            $model->bridge_id = $bridge_id;
+            $model->target_columnn_name = $target_column_name;
         }
 
-        // if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-        //     return $this->redirect(['view', 'id' => $model->id]);
-        // }
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
         return $this->render('update', [
             'model' => $model,
         ]);
