@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\MyHelper;
 use app\models\AbstractionColumn;
 use app\models\AbstractionColumnSearch;
 use yii\web\Controller;
@@ -80,6 +81,22 @@ class AbstractionColumnController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+    public function actionAjaxCreate()
+    {
+        $model = new AbstractionColumn();
+        $genuuid = MyHelper::genuuid();
+        $model->id = $genuuid;
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return 'success';
+            } else {
+                return 'error';
+            }
+        }
+
+        return 'invalid request';
     }
 
     /**
