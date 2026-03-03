@@ -103,7 +103,6 @@ class BridgeColumnController extends Controller
         // if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
         //     return $this->redirect(['view', 'id' => $model->id]);
         // }
-echo '<pre>';print_r('tes');exit;
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -140,7 +139,7 @@ echo '<pre>';print_r('tes');exit;
     }
     protected function findModelBridge($bridge_id, $target_column_name)
     {
-        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'target_columnn_name' => $target_column_name])) !== null) {
+        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'target_column_name' => $target_column_name])) !== null) {
             return $model;
         }
 
