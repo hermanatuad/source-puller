@@ -191,13 +191,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card mt-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>Bridges for this System</div>
-
-                <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', [
-                    'class' => 'btn btn-success btn-sm',
-                    'data-bs-toggle' => 'modal',
-                    'data-bs-target' => '#modal-bridge',
-                    'id' => 'btn-add-bridge',
-                ]) ?>
             </div>
             <div class="card-body p-0">
                 <?php
@@ -216,9 +209,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['class' => 'yii\\grid\\SerialColumn'],
                             'bridge_type',
                             'bridge_source',
-                            'bridge_target',
+                            [
+                                'attribute' => 'bridge_target',
+                                'value' => function ($model) {
+                                    $abstraction = \app\models\Abstraction::findOne(['id' => $model->bridge_target]);
+                                    return $abstraction ? $abstraction->table_warehouse : 'N/A';
+                                },
+                            ],
                             'created_at:datetime',
-                            ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
                         ],
                     ]) ?>
                     <?php Pjax::end(); ?>
