@@ -40,3 +40,30 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">
+                    <i class="ri-server-line me-2"></i> Brige Column
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        Requirements
+                    </div>
+                    <div class="col-md-6">
+                        Sources
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
