@@ -99,6 +99,7 @@ class DWHelper
         $password = getenv('postgres_password') ?? 'AppPass!123';
         $database = getenv('postgres_db') ?? 'datawarehouse';
 
+        echo '<pre>';print_r('username=' . $username);exit;
         $useCache = true;
         $cacheTTL = 3600;
 
