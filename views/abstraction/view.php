@@ -76,17 +76,17 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0 flex-grow-1">
-                    <i class="ri-server-line me-2"></i>Abstraction <?= Html::encode($model->table_name) ?>
+                    <i class="ri-server-line me-2"></i>Abstraction Column <?= Html::encode($model->table_name) ?>
                 </h4>
 
                 <?= Html::button('<i class="ri-add-line align-bottom me-1"></i> Add Column', [
                     'class' => 'btn btn-success btn-sm',
                     'data-bs-toggle' => 'modal',
-                    'data-bs-target' => '#modal-bridge',
-                    'id' => 'btn-add-bridge',
+                    'data-bs-target' => '#modal-abstraction-column',
+                    'id' => 'btn-add-abstraction-column',
                 ]) ?>
 
-                <div class="modal fade" id="modal-bridge" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
+                <div class="modal fade" id="modal-abstraction-column" tabindex="-1" aria-labelledby="exampleModalgridLabel" aria-modal="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -145,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
 
                     <div class="table-responsive">
-                        <?php Pjax::begin(['id' => 'bridges-pjax']); ?>
+                        <?php Pjax::begin(['id' => 'abstraction-columns-pjax']); ?>
                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             // 'filterModel' => $searchModel,
@@ -157,7 +157,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'column_type',
                                 'column_warehouse',
                                 'description',
-                                ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'bridge'],
+                                ['class' => 'yii\\grid\\ActionColumn', 'controller' => 'abstraction-column', 'template' => '{view} {update} {delete}'],
                             ],
                         ]) ?>
                         <?php Pjax::end(); ?>
@@ -193,7 +193,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         showConfirmButton: false
                     }).then(function() {
                         $('#modal-bridge').modal('hide');
-                        $.pjax.reload({ container: '#bridges-pjax' });
+                        $.pjax.reload({ container: '#abstraction-columns-pjax' });
                     });
                 } else {
                     var msg = response && response.errors ? JSON.stringify(response.errors) : JSON.stringify(response);
