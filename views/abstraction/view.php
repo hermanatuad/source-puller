@@ -192,7 +192,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         timer: 1500,
                         showConfirmButton: false
                     }).then(function() {
-                        $('#modal-bridge').modal('hide');
+                        $('#modal-abstraction-column').modal('hide');
                         $.pjax.reload({ container: '#abstraction-columns-pjax' });
                     });
                 } else {
