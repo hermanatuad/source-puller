@@ -170,9 +170,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php \richardfan\widget\JSRegister::begin(); ?>
 <script>
-    $('#submit-column').on('click', function(e) {
-        e.preventDefault();
-        console.log('submit column');
-    })
+    $('#submit-column').on('click', function() {
+        alert('Submit column clicked');
+        // var data = {
+        //     abstraction_id: $('#table-name').val(),
+        //     column_type: $('#column-type').val(),
+        //     column_warehouse: $('#column-warehouse').val(),
+        //     description: $('#description').val(),
+        // };
+
+        // $.ajax({
+        //     url: '<?= Yii::$app->urlManager->createUrl(['abstraction-column/create']) ?>',
+        //     type: 'POST',
+        //     data: data,
+        //     success: function(response) {
+        //         $('#modal-bridge').modal('hide');
+        //         $.pjax.reload({ container: '#bridges-pjax' });
+        //     },
+        //     error: function(xhr, status, error) {
+        //         alert('Error adding column: ' + error);
+        //     }
+        // });
+    });
 </script>
 <?php \richardfan\widget\JSRegister::end(); ?>

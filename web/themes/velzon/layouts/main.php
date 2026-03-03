@@ -10,7 +10,8 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\web\YiiAsset;
 
-// Register YiiAsset to enable data-method and CSRF handling
+// Register AppAsset and YiiAsset to enable CSS/JS and CSRF handling
+AppAsset::register($this);
 YiiAsset::register($this);
 
 ?>
@@ -49,9 +50,11 @@ YiiAsset::register($this);
     echo $this->render('head-css');
     ?>
 
+    <?php $this->head(); ?>
 </head>
 
 <body>
+    <?php $this->beginBody(); ?>
 
     <!-- Begin page -->
     <div id="layout-wrapper">
@@ -95,5 +98,7 @@ YiiAsset::register($this);
     <!-- App js -->
     <script src="/js/app.js"></script>
 
-    </html>
-    <?php $this->endPage() ?>
+    <?php $this->endBody(); ?>
+
+</html>
+<?php $this->endPage() ?>
