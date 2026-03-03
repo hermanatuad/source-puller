@@ -101,6 +101,10 @@ class BridgeController extends Controller
         $model = new Bridge();
         $model->status = 'active';
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
+        $DWInfo = DWHelper::getDWInfoFromCache();
+
+        echo '<pre>';print_r($DWInfo['result']);exit;
+
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
