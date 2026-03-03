@@ -83,6 +83,22 @@ use app\models\System;
                         tbl.append($('<option>').val(t).text(t));
                     });
                     if(selected){ tbl.val(selected); }
+
+                    // Re-init Choices.js (if used by the theme) so the UI updates
+                    try {
+                        var el = tbl[0];
+                        var existing = el && (el._choicesInstance || el.choices || el._choices);
+                        if (existing && typeof existing.destroy === 'function') {
+                            existing.destroy();
+                        }
+                        if (window.Choices && el) {
+                            var instance = new Choices(el, { shouldSort: false, searchEnabled: false, itemSelectText: '' });
+                            el._choicesInstance = instance;
+                        }
+                    } catch (e) {
+                        console.warn('Choices re-init failed', e);
+                    }
+
                 } else {
                     console.warn('getTables:', res);
                 }
