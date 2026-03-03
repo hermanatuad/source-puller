@@ -22,7 +22,7 @@ use app\models\System;
             <small class="text-muted ms-3">Manage connection and metadata</small>
         </div>
         <div class="card-body">
-            <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
+            <?= $form->field($model, 'id')->textInput(['value' => $uuid ?? $model->id])->label(false) ?>
 
             <div class="row g-3">
 
