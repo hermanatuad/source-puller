@@ -11,6 +11,8 @@ use app\models\Bridge;
 use app\models\BridgeColumn;
 use app\models\BridgeSearch;
 use app\models\System;
+use Exception;
+use mysqli;
 use PhpParser\Node\NullableType;
 use Yii;
 use yii\web\Controller;
@@ -126,6 +128,68 @@ class BridgeController extends Controller
             'system' => $system,
             'dwTables' => $dwTables,
         ]);
+    }
+
+    public function actionRun($id)
+    {
+        $id = Yii::$app->request->get('id');
+        $model = $this->findModel($id);
+        $database = System::find()->where(['system_code' => $model->system_code])->one();
+
+        $RAW_DATA = [];
+
+
+        try {
+            // Buat koneksi
+
+            $mysqli = new mysqli(
+                $database->hostname,
+                $database->username,
+                $database->password,
+                $database->database_name,
+                $database->port
+            );
+
+            // Cek error koneksi
+            if ($mysqli->connect_error) {
+                throw new Exception("Connection failed: " . $mysqli->connect_error);
+            }
+
+            $tableName = $model->bridge_table_source;
+
+            // validasi sederhana nama tabel
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
+                throw new Exception("Invalid table name");
+            }
+
+            $sql = "SELECT * FROM `$tableName` LIMIT 100";
+
+            $result = $mysqli->query($sql);
+
+            if (!$result) {
+                throw new Exception("Query failed: " . $mysqli->error);
+            }
+            while ($row = $result->fetch_assoc()) {
+                $RAW_DATA[] = $row;
+            }
+
+            $result->free();
+            $mysqli->close();
+        } catch (Exception $e) {
+            Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
+            return $this->redirect(['view', 'id' => $id]);
+        }
+        echo '<pre>';print_r($RAW_DATA);exit;
+
+
+        if ($mysqli->connect_errno) {
+            Yii::$app->session->setFlash('error', 'Failed to connect to source database: ' . $mysqli->connect_error);
+            return $this->redirect(['view', 'id' => $id]);
+        }
+
+
+        Yii::$app->session->setFlash('success', 'Bridge execution started. Check logs for details.');
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
