@@ -180,7 +180,7 @@ $this->params['breadcrumbs'][] = $this->title;
         // };
 
         // $.ajax({
-        //     url: '<?= Yii::$app->urlManager->createUrl(['abstraction-column/create']) ?>',
+        //     url: '',
         //     type: 'POST',
         //     data: data,
         //     success: function(response) {
