@@ -71,8 +71,13 @@ class BridgeController extends Controller
                 'system_code' => $system_code,
                 'bridge_table_source' => $bridge_table_source
             ])->one();
+
             if ($model == null) {
-                throw new NotFoundHttpException('The requested page does not exist.');
+                $model = new Bridge();
+                $model->id = MyHelper::genuuid();
+                $model->system_code = $system_code;
+                $model->bridge_source = $bridge_table_source;
+                $model->save();
             } else {
                 $id = $model->id ?? null;
             }
