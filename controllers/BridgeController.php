@@ -214,6 +214,7 @@ class BridgeController extends Controller
             return ['status' => 'error', 'message' => 'System not found'];
         }
 
+        echo '<pre>';print_r($system);exit;
         $systemType = strtolower($system->system_type ?? '');
 
         try {
