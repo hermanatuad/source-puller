@@ -91,9 +91,9 @@ class BridgeColumnController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
     
-    public function actionUpdate($bridge_id, $abstraction_id)
+    public function actionUpdate($bridge_id, $target_column_name)
     {
-        $model = $this->findModelBridge($bridge_id, $abstraction_id);
+        $model = $this->findModelBridge($bridge_id, $target_column_name);
 
         if (empty($model)) {
             $model = new BridgeColumn();
@@ -138,9 +138,9 @@ class BridgeColumnController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-    protected function findModelBridge($bridge_id, $abstraction_id)
+    protected function findModelBridge($bridge_id, $target_column_name)
     {
-        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'target_columnn_name' => $abstraction_id])) !== null) {
+        if (($model = BridgeColumn::findOne(['bridge_id' => $bridge_id, 'target_columnn_name' => $target_column_name])) !== null) {
             return $model;
         }
 

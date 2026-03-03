@@ -74,16 +74,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-borderless mb-0">
                             <tbody>
                                 <?php foreach ($abstractionColumn as $key => $value) : ?>
-                                    <?php echo '<pre>';print_r($value);exit; ?>
                                     <tr>
                                         <th scope="row" style="width: 33%;">
                                             <i class="ri-hashtag me-2 text-muted"></i><?= $value->column_warehouse ?>
                                         </th>
                                         <td style="width: 33%;">
-                                            <?= $value->tes ?? 'N/A' ?>
+                                            <?= $value->source_column_name ?? 'N/A' ?>
                                         </td>
                                         <td style="width: 33%;">
-                                            <?=  Html::a('Edit', ['bridge-column/update', 'bridge_id' => $model->id, 'abstraction_id' => $value->id], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?=  Html::a('Edit', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $value->column_warehouse], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
