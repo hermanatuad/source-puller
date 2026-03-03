@@ -25,7 +25,7 @@ use app\models\System;
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_source')->dropDownList($systems, [
+                    <?= $form->field($model, 'bridge_source')->dropDownList($system, [
                         'prompt' => 'Select system',
                         'class' => 'form-control',
                     ]) ?>
