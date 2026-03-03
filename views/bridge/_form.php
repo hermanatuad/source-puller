@@ -25,13 +25,13 @@ use app\models\System;
             <div class="row g-3">
 
                 <div class="col-md-6">
-                    <?= $form->field($model, 'bridge_source')->dropDownList($system, [
+                    <?= $form->field($model, 'system_code')->dropDownList($system, [
                         'prompt' => 'Select system',
                         'class' => 'form-control',
                     ]) ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'bridge_type')->textInput([
                         'maxlength' => true,
                         'class' => 'form-control',
@@ -40,7 +40,14 @@ use app\models\System;
                     ])->label('Bridge Type') ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <?= $form->field($model, 'bridge_source')->input('number', [
+                        'class' => 'form-control',
+                        'placeholder' => 'Bridge Source'
+                    ])->label('Bridge Source') ?>
+                </div>
+
+                <div class="col-md-6">
                     <?= $form->field($model, 'bridge_target')->input('number', [
                         'class' => 'form-control',
                         'placeholder' => 'Bridge Target'

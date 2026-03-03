@@ -71,7 +71,7 @@ class BridgeController extends Controller
     public function actionCreate()
     {
         $model = new Bridge();
-        $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'id', 'system_name');
+        $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 if ($this->request->isAjax) {
@@ -115,7 +115,7 @@ class BridgeController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'system' => ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'id', 'system_name'),
+            'system' => ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name'),
         ]);
     }
 
