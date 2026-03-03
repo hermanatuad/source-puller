@@ -76,7 +76,7 @@ class BridgeController extends Controller
                 $model = new Bridge();
                 $model->id = MyHelper::genuuid();
                 $model->system_code = $system_code;
-                $model->bridge_source = $bridge_table_source;
+                $model->bridge_table_source = $bridge_table_source;
                 $model->save();
             } else {
                 $id = $model->id ?? null;
