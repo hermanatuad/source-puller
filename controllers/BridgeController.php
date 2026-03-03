@@ -110,7 +110,6 @@ class BridgeController extends Controller
         
 
         if ($this->request->isPost) {
-            echo '<pre>';print_r($_POST);exit;
             if ($model->load($this->request->post()) && $model->save()) {
                 if ($this->request->isAjax) {
                     return $this->asJson(['status' => 'success', 'id' => $model->id]);
