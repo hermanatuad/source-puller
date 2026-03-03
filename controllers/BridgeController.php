@@ -84,6 +84,7 @@ class BridgeController extends Controller
         });
 
         $DWInfo = DWHelper::getDWInfoFromCache();
+        echo '<pre>';print_r($DWInfo);exit;
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
