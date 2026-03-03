@@ -71,29 +71,29 @@ use app\models\System;
                 system_code: systemCode
             },
             success: function(response) {
+
                 if (response.status === 'success') {
 
-                    var tableSelect = document.getElementById('bridge-bridge_table_source');
+                    var selectElement = document.getElementById('bridge-bridge_table_source');
 
-                    // destroy dulu jika sudah ada
-                    if (tableSelect.choicesInstance) {
-                        tableSelect.choicesInstance.destroy();
+                    var choicesInstance = selectElement.choices;
+
+                    if (!choicesInstance) {
+                        console.error('Choices instance not found');
+                        return;
                     }
 
-                    tableSelect.innerHTML = '<option value="">Select table warehouse</option>';
+                    choicesInstance.clearChoices();
+                    choicesInstance.clearStore();
 
-                    response.tables.forEach(function(table) {
-                        tableSelect.innerHTML += '<option value="' + table + '">' + table + '</option>';
-                    });
-                    console.log();
-
-                    // init ulang
-                    tableSelect.choicesInstance = new Choices(tableSelect, {
-                        removeItemButton: true
+                    var newChoices = response.tables.map(function(table) {
+                        return {
+                            value: table,
+                            label: table
+                        };
                     });
 
-                } else {
-                    alert('Failed to load tables');
+                    choicesInstance.setChoices(newChoices, 'value', 'label', true);
                 }
             }
         });
