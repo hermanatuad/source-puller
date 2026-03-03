@@ -146,18 +146,17 @@ class MenuHelper
                 'visible' => Yii::$app->user->can('admin')
             ];
 
-            $menuItems[] = [
-                'label' => '<i class="ri-tools-line"></i> <span>Abstraction</span>',
-                'url' => ['abstraction/index'],
-                'visible' => Yii::$app->user->can('admin')
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-tools-line"></i> <span>Abstraction</span>',
+            //     'url' => ['abstraction/index'],
+            //     'visible' => Yii::$app->user->can('admin')
+            // ];
 
             $menuItems[] = [
                 'label' => '<i class="ri-global-line"></i> <span>Patient Data</span>',
                 'url' => ['entity/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
-
 
             $menuItems[] = [
                 'type' => 'title',
