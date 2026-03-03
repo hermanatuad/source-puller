@@ -74,6 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-borderless mb-0">
                             <tbody>
                                 <?php foreach ($abstractionColumn as $key => $value) : ?>
+                                    <?php echo '<pre>';print_r($value);exit; ?>
                                     <tr>
                                         <th scope="row" style="width: 33%;">
                                             <i class="ri-hashtag me-2 text-muted"></i><?= $value->column_warehouse ?>
