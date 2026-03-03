@@ -11,6 +11,7 @@ use app\models\Bridge;
 use app\models\BridgeColumn;
 use app\models\BridgeSearch;
 use app\models\Entity;
+use app\models\EntityAffiliation;
 use app\models\EntitySystem;
 use app\models\System;
 use Exception;
@@ -134,15 +135,12 @@ class BridgeController extends Controller
 
     public function actionRun($id)
     {
-        $id = Yii::$app->request->get('id');
         $model = $this->findModel($id);
-        $database = System::find()->where(['system_code' => $model->system_code])->one();
+        $database = System::findOne(['system_code' => $model->system_code]);
 
         $RAW_DATA = [];
 
-
         try {
-            // Buat koneksi
 
             $mysqli = new mysqli(
                 $database->hostname,
@@ -152,31 +150,31 @@ class BridgeController extends Controller
                 $database->port
             );
 
-            // Cek error koneksi
             if ($mysqli->connect_error) {
-                throw new Exception("Connection failed: " . $mysqli->connect_error);
+                throw new Exception($mysqli->connect_error);
             }
 
             $tableName = $model->bridge_table_source;
-            $bridgeColumn =  BridgeColumn::find()->select('source_column_name')->where(['bridge_id' => $id])->all();
-            $columnList = array_map(function ($model) {
-                return $model->source_column_name;
-            }, $bridgeColumn);
 
-            $tableName = $model->bridge_table_source;
-
-            // validasi sederhana nama tabel
             if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
                 throw new Exception("Invalid table name");
             }
 
-            $sql = "SELECT `" . implode('`, `', $columnList) . "` FROM `$tableName` LIMIT 100";
+            $columnList = BridgeColumn::find()
+                ->select('source_column_name')
+                ->where(['bridge_id' => $id])
+                ->column();
+
+            $sql = "SELECT `" . implode('`, `', $columnList) . "` 
+                FROM `$tableName` 
+                LIMIT 100";
 
             $result = $mysqli->query($sql);
 
             if (!$result) {
-                throw new Exception("Query failed: " . $mysqli->error);
+                throw new Exception($mysqli->error);
             }
+
             while ($row = $result->fetch_assoc()) {
                 $RAW_DATA[] = $row;
             }
@@ -184,46 +182,69 @@ class BridgeController extends Controller
             $result->free();
             $mysqli->close();
         } catch (Exception $e) {
-            Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
-            // return $this->redirect(['view', 'id' => $id]);
-        }
-
-
-
-        foreach ($RAW_DATA as $data) {
-            $checkData = EntitySystem::find()->where([
-                'system_code' => $model->system_code,
-                'entity_reference' => $data['id']
-            ])->one();
-            if ($checkData) {
-                # code...
-            } else {
-
-                $newEntity = new Entity();
-                $newEntity->id = MyHelper::genuuid();
-                $newEntity->entity_id = MyHelper::genEntityId();
-                $newEntity->status = 'active';
-                $newEntity->is_alive = 'unknown';
-                $newEntity->save();
-
-                $newEntitySystem = new EntitySystem();
-                $newEntitySystem->id = MyHelper::genuuid();
-                $newEntitySystem->entity_id = $newEntity->entity_id;
-                $newEntitySystem->system_code = $model->system_code;
-                $newEntitySystem->entity_reference = $data['id'];
-                $newEntitySystem->created_at_data = date('Y-m-d H:i:s');
-                $newEntitySystem->updated_at_data = date('Y-m-d H:i:s');
-                $newEntitySystem->save();
-            }
-        }
-
-        if ($mysqli->connect_errno) {
-            Yii::$app->session->setFlash('error', 'Failed to connect to source database: ' . $mysqli->connect_error);
+            Yii::$app->session->setFlash('error', $e->getMessage());
             return $this->redirect(['view', 'id' => $id]);
         }
 
+        if (empty($RAW_DATA)) {
+            Yii::$app->session->setFlash('info', 'No data found.');
+            return $this->redirect(['view', 'id' => $id]);
+        }
 
-        Yii::$app->session->setFlash('success', 'Bridge execution started. Check logs for details.');
+        $existingReferences = EntitySystem::find()
+            ->select('entity_reference')
+            ->where(['system_code' => $model->system_code])
+            ->column();
+
+        $existingMap = array_flip($existingReferences);
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            foreach ($RAW_DATA as $data) {
+
+                if (isset($existingMap[$data['id']])) {
+                    continue;
+                }
+
+                $entityId = MyHelper::genEntityId();
+
+                $entity = new Entity([
+                    'id' => MyHelper::genuuid(),
+                    'entity_id' => $entityId,
+                    'status' => 'active',
+                    'is_alive' => 'unknown',
+                ]);
+                $entity->save(false);
+
+                $entitySystem = new EntitySystem([
+                    'id' => MyHelper::genuuid(),
+                    'entity_id' => $entityId,
+                    'system_code' => $model->system_code,
+                    'entity_reference' => $data['id'],
+                    'created_at_data' => date('Y-m-d H:i:s'),
+                    'updated_at_data' => date('Y-m-d H:i:s'),
+                ]);
+                $entitySystem->save(false);
+
+                $entityAffiliation = new EntityAffiliation([
+                    'id' => MyHelper::genuuid(),
+                    'entity_id' => $entityId,
+                    'entity_reference' => $data['id'],
+                    'affiliation_code' => 'IJN',
+                ]);
+                $entityAffiliation->save(false);
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', $e->getMessage());
+            return $this->redirect(['view', 'id' => $id]);
+        }
+
+        Yii::$app->session->setFlash('success', 'Bridge execution completed.');
         return $this->redirect(['view', 'id' => $id]);
     }
 
