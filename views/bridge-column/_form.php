@@ -37,6 +37,7 @@ use yii\widgets\ActiveForm;
                     <?= $form->field($model, 'source_column_name')->dropDownList($listColumnSource, [
                         'prompt' => 'Select source column name',
                         'class' => 'form-control',
+                        'data-choices' => 'true',
                         'id' => 'source_column_name'
                     ])->label('Column Source') ?>
                 </div>
