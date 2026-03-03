@@ -227,7 +227,7 @@ class BridgeController extends Controller
                     'database' => $system->database_name,
                     'use_cache' => false,
                 ];
-
+                echo '<pre>';print_r($system);exit;
                 echo '<pre>';print_r(DBHelper::getDatabaseInfoFromCache($params));exit;
 
                 $res = \app\helpers\DBHelper::testConMysql($params);
