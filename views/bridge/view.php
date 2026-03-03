@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Bridge $model */
 
-$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. '-> datawarehouse';
+$this->title = '[' . $model->system_code . '] ' . $model->bridge_table_source. ' -> datawarehouse';
 $this->params['breadcrumbs'][] = ['label' => 'Bridges', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -32,17 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'system_code',
-            'bridge_type',
-            'bridge_source',
-            [
-                'label' => 'Abstraction Table',
-                'value' => function ($model) {
-                    $abstraction = \app\models\Abstraction::findOne(['id' => $model->bridge_target]);
-                    return $abstraction ? $abstraction->table_warehouse : 'N/A';
-                },
-            ],
-            'created_at',
-            'updated_at',
+            'bridge_table_source',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 
