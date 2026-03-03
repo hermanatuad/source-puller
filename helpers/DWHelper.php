@@ -23,10 +23,11 @@ class DWHelper
 
     public static function getDWInfoFromCache($cacheTTL = 3600)
     {
-        $hostname = getenv('postgres_host') ?? '';
-        $username = getenv('postgres_user') ?? '';
-        $port     = getenv('postgres_port') ?? 5432;
-        $database = getenv('postgres_db') ?? '';
+
+        $hostname = '34.71.143.136';
+        $username = 'appuser';
+        $port     = 5432;
+        $database = 'datawarehouse';
 
         // Validate required parameters for cache lookup
         $missing = [];
