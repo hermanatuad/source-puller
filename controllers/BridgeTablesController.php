@@ -89,9 +89,9 @@ class BridgeTablesController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($bride_i)
+    public function actionUpdate($bridge_id, $abstraction_id)
     {
-        $model = $this->findModel($bri);
+        $model = $this->findModelBridge($bridge_id, $abstraction_id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
