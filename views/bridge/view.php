@@ -69,11 +69,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <tbody>
                             <?php
                             $dwInfo = DWHelper::getDWInfoFromCache();
-                            $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target] ?? [];
-                            echo '<pre>';print_r($columns['columns']);exit;
+                            $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target]['columns'] ?? [];
                             if (!empty($columns)):
                             ?>
-                                <?php foreach ($tables as $table): ?>
+                                <?php foreach ($columns as $column): ?>
+                                    <?php echo '<pre>';print_r($column);exit; ?>
                                     <tr>
                                         <td>
                                         </td>
