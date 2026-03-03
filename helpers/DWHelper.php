@@ -72,27 +72,43 @@ class DWHelper
             ];
         }
 
-        $cacheKey = 'mysql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
+        $cacheKey = 'pgsql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         $cachedData = self::getFromCache($cacheKey);
 
+        $needRefresh = false;
         if ($cachedData === null) {
-            return [
-                'status' => 'error',
-                'message' => 'Cache not found for system_code: datawarehouse'
-            ];
+            $needRefresh = true;
+        } else {
+            if (time() - $cachedData['cached_at'] >= $cacheTTL) {
+                $needRefresh = true;
+            }
         }
 
-        // Cek TTL
-        if (time() - $cachedData['cached_at'] >= $cacheTTL) {
-            return [
-                'status' => 'error',
-                'message' => 'Cache expired for system_code: ',
-                'cache_info' => [
-                    'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
-                    'expired_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
-                ]
-            ];
+        if ($needRefresh) {
+            $fresh = self::testConDW();
+            if (!is_array($fresh) || ($fresh['status'] ?? '') !== 'success') {
+                if ($cachedData === null) {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Failed to retrieve live data and no cache available',
+                        'details' => $fresh
+                    ];
+                }
+
+                return [
+                    'status' => 'warning',
+                    'message' => 'Using stale cache; failed to refresh live data',
+                    'cache_info' => [
+                        'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                    ],
+                    'result' => $cachedData['data']
+                ];
+            }
+
+            $cachePayload = ['data' => $fresh['data'], 'cached_at' => time()];
+            self::saveToCache($cacheKey, $cachePayload);
+            $cachedData = $cachePayload;
         }
 
         return [
@@ -330,7 +346,7 @@ class DWHelper
         $port = $cfg['port'];
         $database = $cfg['database'];
 
-        $cacheKey = 'mysql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
+        $cacheKey = 'pgsql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
         $cacheFile = Yii::getAlias('@runtime') . '/db_cache/' . $cacheKey . '.cache';
 
         if (file_exists($cacheFile)) {

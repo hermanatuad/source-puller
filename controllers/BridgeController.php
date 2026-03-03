@@ -76,13 +76,14 @@ class BridgeController extends Controller
      */
     public function actionCreate()
     {
-
         $model = new Bridge();
         $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
         $abstractionData = Abstraction::find()->all();
         $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
             return $model->table_warehouse;
         });
+
+        $DWInfo = DWHelper::getDWInfoFromCache();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
