@@ -156,8 +156,10 @@ class BridgeController extends Controller
             }
 
             $tableName = $model->bridge_table_source;
-            $columnList = BridgeColumn::find()->select('source_column_name')->where(['bridge_id' => $id])->all();
-            echo '<pre>';print_r($columnList);exit;
+            $bridgeColumn =  BridgeColumn::find()->select('source_column_name')->where(['bridge_id' => $id])->all();
+            $columnList = array_map(function ($model) {
+                return $model->source_column_name;
+            }, $bridgeColumn);
 
             $tableName = $model->bridge_table_source;
 
@@ -166,7 +168,7 @@ class BridgeController extends Controller
                 throw new Exception("Invalid table name");
             }
 
-            $sql = "SELECT * FROM `$tableName` LIMIT 100";
+            $sql = "SELECT `" . implode('`, `', $columnList) . "` FROM `$tableName` LIMIT 100";
 
             $result = $mysqli->query($sql);
 
@@ -183,7 +185,9 @@ class BridgeController extends Controller
             Yii::$app->session->setFlash('error', 'Error during bridge execution: ' . $e->getMessage());
             // return $this->redirect(['view', 'id' => $id]);
         }
-        echo '<pre>';print_r($RAW_DATA);exit;
+        echo '<pre>';
+        print_r($RAW_DATA);
+        exit;
 
 
         if ($mysqli->connect_errno) {
