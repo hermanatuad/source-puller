@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\helpers\MyHelper;
 use app\models\BridgeColumn;
 use app\models\BridgeColumnSearch;
 use yii\web\Controller;
@@ -93,6 +94,11 @@ class BridgeColumnController extends Controller
     public function actionUpdate($bridge_id, $abstraction_id)
     {
         $model = $this->findModelBridge($bridge_id, $abstraction_id);
+
+        if (empty($model)) {
+            $model = new BridgeColumn();
+            $model->id = MyHelper::genuuid();
+        }
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
