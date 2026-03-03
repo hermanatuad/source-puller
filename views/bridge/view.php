@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?= $bridgeColumnList[$column['name']] ?? 'N/A' ?>
                                         </td>
                                         <td>
-                                            <?= Html::a('Config', ['bridge-column/view', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('Config', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
