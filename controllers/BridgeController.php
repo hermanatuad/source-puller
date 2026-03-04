@@ -264,8 +264,22 @@ class BridgeController extends Controller
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]);
 
-            echo '<pre>';print_r($pdo);exit;
-            
+            foreach ($execute_list as $key => $value) {
+                $columns = array_keys($value);
+                $placeholders = array_map(function ($col) {
+                    return ':' . $col;
+                }, $columns);
+
+                $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
+                $stmt = $pdo->prepare($sql);
+
+                foreach ($value as $col => $val) {
+                    $stmt->bindValue(':' . $col, $val);
+                }
+
+                $stmt->execute();
+            }
+
             $result = [
                 'status' => 'success',
                 'message' => 'Successfully connected to PostgreSQL',
