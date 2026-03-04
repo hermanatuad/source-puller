@@ -54,4 +54,14 @@ class Entity extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getAffiliations()
+    {
+        return $this->hasMany(EntityAffiliation::class, ['entity_id' => 'entity_id']);
+    }
+
+    public function getSystems()
+    {
+        return $this->hasMany(EntitySystem::class, ['entity_id' => 'entity_id']);
+    }
+
 }

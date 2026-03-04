@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </thead>
                         <tbody>
                             <?php if ($dataProvider->getCount() > 0): ?>
-                                <?php 
+                                <?php
                                 $pageSize = $dataProvider->pagination->pageSize;
                                 $page = $dataProvider->pagination->page;
                                 $no = $page * $pageSize + 1;
@@ -48,10 +48,26 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($dataProvider->getModels() as $model): ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td> <?=  Html::a(Html::encode($model->entity_id), ['view', 'id' => $model->id]) ?></td>
+                                        <td> <?= Html::a(Html::encode($model->entity_id), ['view', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode($model->is_alive) ?></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <?php if (!empty($model->affiliations)): ?>
+                                                <?php foreach ($model->affiliations as $aff): ?>
+                                                    <?= Html::tag('span', Html::encode($aff->affiliation_code), ['class' => 'badge bg-secondary me-1']) ?>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($model->systems)): ?>
+                                                <?php foreach ($model->systems as $sys): ?>
+                                                    <?= Html::tag('span', Html::encode($sys->system_code), ['class' => 'badge bg-info text-dark me-1', 'title' => Html::encode($sys->entity_reference)]) ?>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
