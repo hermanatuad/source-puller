@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
             <div class="row g-3">
 
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <?= $form->field($model, 'target_column_name')->textInput([
                         'maxlength' => true,
                         'placeholder' => 'Enter target column name',
@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
                     ]) ?>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <?= $form->field($model, 'source_column_name')->dropDownList($listColumnSource, [
                         'prompt' => 'Select source column name',
                         'class' => 'form-control',
