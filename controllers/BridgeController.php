@@ -147,7 +147,7 @@ class BridgeController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->bride_type == 'independent') {
+        if ($model->bridge_type == 'independent') {
             # code...
             $database = System::findOne(['system_code' => $model->system_code]);
 
