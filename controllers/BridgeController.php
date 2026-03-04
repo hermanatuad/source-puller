@@ -325,9 +325,11 @@ class BridgeController extends Controller
 
             foreach ($execute_list as $row) {
                 $mapped = [];
+                echo '<pre>';print_r($mapTargetToSource);exit;
                 foreach ($mapTargetToSource as $targetCol => $sourceCol) {
                     $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
-                    if ($type === 'patient id') {
+                    // Accept variations like 'patient_id', 'patient id', 'patient-id'
+                    if (preg_match('/patient[_\s-]?id/i', $type)) {
                         // For patient id columns, store the generated entity_id
                         $mapped[$targetCol] = $sourceIdToEntityId[$row['id']] ?? null;
                     } else {
