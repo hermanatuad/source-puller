@@ -73,10 +73,15 @@ class BridgeController extends Controller
     {
         $bridgeColumn = BridgeColumn::find()->where(['bridge_id' => $id])->all();
 
-        $bridgeColumnList = ArrayHelper::map($bridgeColumn, 'target_column_name', function($data){
-            echo '<pre>';print_r($data);exit;
-            return $data->source_column_name;
-        });
+        $bridgeColumnList = [];
+        foreach ($bridgeColumn as $key => $value) {
+            $bridgeColumnList[$value->target_column_name] = $value->source_column_name;
+        }
+
+        $bridgeColumnTypeList = [];
+        foreach ($bridgeColumn as $key => $value) {
+            $bridgeColumnTypeList[$value->target_column_name] = $value->column_type;
+        }
 
         if ($id == null) {
             $system_code = Yii::$app->request->get('system_code');
@@ -103,6 +108,7 @@ class BridgeController extends Controller
         return $this->render('view', [
             'model' => $model,
             'bridgeColumnList' => $bridgeColumnList,
+            'bridgeColumnTypeList' => $bridgeColumnTypeList,
         ]);
     }
 
