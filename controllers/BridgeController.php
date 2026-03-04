@@ -221,7 +221,8 @@ class BridgeController extends Controller
                 $uuid,
                 $entityId,
                 'active',
-                'unknown'
+                'unknown',
+                $model->bridge_table_target
             ];
 
             $entitySystemRows[] = [
@@ -251,7 +252,7 @@ class BridgeController extends Controller
 
                 Yii::$app->db->createCommand()->batchInsert(
                     Entity::tableName(),
-                    ['id', 'entity_id', 'status', 'is_alive'],
+                    ['id', 'entity_id', 'status', 'is_alive', 'table_target'],
                     $entityRows
                 )->execute();
 
