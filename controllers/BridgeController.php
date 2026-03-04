@@ -390,67 +390,21 @@ class BridgeController extends Controller
     {
         $model = $this->findModel($id);
 
-        $abstractionData = Abstraction::find()->all();
-        $abstraction = ArrayHelper::map($abstractionData, 'id', function ($model) {
-            return $model->table_warehouse;
-        });
+        $system = ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name');
+        $DWInfo = DWHelper::getDWInfoFromCache();
+
+        $dwTables = array_keys($DWInfo['result']['data']['tables']);
+        $dwTables  = array_combine($dwTables, $dwTables);
 
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        // prepare initial tables for the selected system
-        $initialTables = [];
-        $selectedSystemCode = $model->system_code ?? '';
-        if ($selectedSystemCode) {
-            $sysModel = System::find()->where(['system_code' => $selectedSystemCode])->one();
-            if ($sysModel) {
-                try {
-                    if (strpos(strtolower($sysModel->system_type ?? ''), 'mysql') !== false) {
-                        $params = [
-                            'system_code' => $sysModel->system_code,
-                            'hostname' => $sysModel->hostname,
-                            'username' => $sysModel->username,
-                            'password' => $sysModel->password,
-                            'port' => $sysModel->port,
-                            'database' => $sysModel->database_name,
-                            'use_cache' => false,
-                        ];
-                        $res = \app\helpers\DBHelper::testConMysql($params);
-                        if (is_array($res) && ($res['status'] ?? '') === 'success') {
-                            $initialTables = array_combine(array_values($res['data']['tables'] ?? []), array_values($res['data']['tables'] ?? []));
-                        }
-                    } else {
-                        $host = $sysModel->hostname;
-                        $port = $sysModel->port ?: 5432;
-                        $dbname = $sysModel->database_name;
-                        $user = $sysModel->username;
-                        $pass = $sysModel->password;
-
-                        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
-                        $pdo = new \PDO($dsn, $user, $pass, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
-                        $stmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name");
-                        $tables = [];
-                        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                            $tables[] = $row['table_name'];
-                        }
-                        if (!empty($tables)) {
-                            $initialTables = array_combine($tables, $tables);
-                        }
-                    }
-                } catch (\Exception $e) {
-                    // ignore and let JS fetch on client
-                }
-            }
-        }
-
         return $this->render('update', [
             'model' => $model,
-            'system' => ArrayHelper::map(System::find()->orderBy('system_name')->all(), 'system_code', 'system_name'),
-            'bridgeType' => MyHelper::bridgeType(),
-            'abstraction' => $abstraction,
-            'initialTables' => $initialTables,
+            'system' => $system,
+            'dwTables' => $dwTables,
         ]);
     }
 
