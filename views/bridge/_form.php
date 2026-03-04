@@ -26,8 +26,20 @@ use app\models\System;
 
             <div class="row g-3">
 
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <?= $form->field($model, 'bridge_name')->textInput(['placeholder' => 'Enter bridge name']) ?>
+                </div>
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'bridge_type')->dropDownList([], [
+                        'independent' => 'Independent',
+                        'dependent' => 'Dependent'
+                    ], [
+                        'prompt' => 'Select bridge type',
+                        'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'bridge-bridge_type'
+                    ])->label('Bridge Type') ?>
                 </div>
 
                 <div class="col-md-4">
