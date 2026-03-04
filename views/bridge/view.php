@@ -39,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'system_code',
             'bridge_table_source',
             'bridge_table_target',
+            [
+                'attribute' => 'bridge_type',
+                'value' => function ($model) {
+                    return ucfirst($model->bridge_type);
+                }
+            ],
             'created_at:datetime',
             'updated_at:datetime',
         ],
