@@ -50,7 +50,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Sources'
+                'label' => 'Sources (Existing Database System)'
             ];
 
             // // Landing
@@ -86,13 +86,6 @@ class MenuHelper
             //     'url' => ['rbac/index'],
             //     'visible' => Yii::$app->user->can('creator')
             // ];
-
-
-            $menuItems[] = [
-                'type' => 'title',
-                'label' => 'Sources',
-                'visible' => Yii::$app->user->can('admin')
-            ];
 
             // Components (Base UI simplified)
             // $menuItems[] = [
@@ -135,15 +128,8 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-shuffle-line"></i> <span>Bridge</span>',
-                'url' => ['bridge/index'],
-                'visible' => Yii::$app->user->can('admin')
-            ];
-
-            $menuItems[] = [
                 'type' => 'title',
-                'label' => '<strong>Data Warehouse</strong>',
-                'visible' => Yii::$app->user->can('admin')
+                'label' => '<strong>Destination (Data Warehouse)</strong>'
             ];
 
             // $menuItems[] = [
@@ -153,7 +139,7 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-global-line"></i> <span>Patient Data</span>',
+                'label' => '<i class="ri-global-line"></i> <span>Datawarehouse</span>',
                 'url' => ['entity/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
@@ -167,6 +153,12 @@ class MenuHelper
             $menuItems[] = [
                 'label' => '<i class="ri-links-line"></i> <span>Affiliations</span>',
                 'url' => ['affiliation/index'],
+                'visible' => Yii::$app->user->can('admin')
+            ];
+            
+            $menuItems[] = [
+                'label' => '<i class="ri-shuffle-line"></i> <span>Bridge</span>',
+                'url' => ['bridge/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
 
