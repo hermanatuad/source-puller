@@ -69,6 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <th>Column Warehouse</th>
                                 <th>Column Sources</th>
+                                <th>Column Type</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -85,6 +86,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </td>
                                         <td>
                                             <?= $bridgeColumnList[$column['name']] ?? 'N/A' ?>
+                                        </td>
+                                        <td>
+                                            <?= $bridgeColumnTypeList[$column['name']] ?? 'N/A' ?>
                                         </td>
                                         <td>
                                             <?= Html::a('Config', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>

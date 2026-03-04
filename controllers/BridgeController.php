@@ -73,7 +73,10 @@ class BridgeController extends Controller
     {
         $bridgeColumn = BridgeColumn::find()->where(['bridge_id' => $id])->all();
 
-        $bridgeColumnList = ArrayHelper::map($bridgeColumn, 'target_column_name', 'source_column_name');
+        $bridgeColumnList = ArrayHelper::map($bridgeColumn, 'target_column_name', function($data){
+            echo '<pre>';print_r($data);exit;
+            return $data->source_column_name;
+        });
 
         if ($id == null) {
             $system_code = Yii::$app->request->get('system_code');
