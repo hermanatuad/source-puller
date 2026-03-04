@@ -18,6 +18,7 @@ use Exception;
 use mysqli;
 use PhpParser\Node\NullableType;
 use Yii;
+use yii\db\mssql\PDO;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -139,6 +140,7 @@ class BridgeController extends Controller
         $database = System::findOne(['system_code' => $model->system_code]);
 
         $RAW_DATA = [];
+        $execute_list = [];
 
         try {
 
@@ -208,6 +210,8 @@ class BridgeController extends Controller
                     continue;
                 }
 
+                $execute_list[] = $data;
+
                 $entityId = MyHelper::genEntityId();
 
                 $entity = new Entity([
@@ -242,6 +246,46 @@ class BridgeController extends Controller
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', $e->getMessage());
             return $this->redirect(['view', 'id' => $id]);
+        }
+
+
+        $dwConfig = [
+            'hostname' => '34.71.143.136',
+            'username' => 'appuser',
+            'password' => 'AppPass!123',
+            'port' => 5432,
+            'database' => 'datawarehouse',
+        ];
+
+        try {
+            $dsn = "pgsql:host={$dwConfig['hostname']};port={$dwConfig['port']};dbname={$dwConfig['database']}";
+
+            $pdo = new PDO($dsn, $dwConfig['username'], $dwConfig['password'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ]);
+
+            echo '<pre>';print_r($pdo);exit;
+            
+            $result = [
+                'status' => 'success',
+                'message' => 'Successfully connected to PostgreSQL',
+                'data' => [
+                    'connection' => [
+                        'hostname' => $dwConfig['hostname'],
+                        'port' => $dwConfig['port'],
+                        'username' => $dwConfig['username'],
+                        'database' => $dwConfig['database'],
+                        'server_version' => $pdo->query("SHOW server_version")->fetchColumn()
+                    ]
+                ]
+            ];
+
+            return $result;
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');
