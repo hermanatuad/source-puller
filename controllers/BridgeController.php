@@ -353,22 +353,6 @@ class BridgeController extends Controller
             $colStmt->execute([':table' => $model->bridge_table_target]);
             $existingCols = $colStmt->fetchAll(\PDO::FETCH_COLUMN);
 
-            $values = [];
-            $params = [];
-
-            foreach ($pgRows as $i => $row) {
-
-                $placeholders = [];
-
-                foreach ($columns as $col) {
-                    $param = ":{$col}_{$i}";
-                    $placeholders[] = $param;
-                    $params[$param] = $row[$col];
-                }
-
-                $values[] = "(" . implode(',', $placeholders) . ")";
-            }
-
             // filter out any target columns that do not actually exist in the target table
             $missing = array_diff($columns, $existingCols ?: []);
             if (!empty($missing)) {
@@ -385,6 +369,19 @@ class BridgeController extends Controller
                     $r = array_intersect_key($r, array_flip($columns));
                 }
                 unset($r);
+            }
+
+            // Now build values and params based on the filtered columns
+            $values = [];
+            $params = [];
+            foreach ($pgRows as $i => $row) {
+                $placeholders = [];
+                foreach ($columns as $col) {
+                    $param = ":{$col}_{$i}";
+                    $placeholders[] = $param;
+                    $params[$param] = $row[$col] ?? null;
+                }
+                $values[] = "(" . implode(',', $placeholders) . ")";
             }
 
             $quotedCols = array_map(function ($c) {
