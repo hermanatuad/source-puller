@@ -271,36 +271,36 @@ class BridgeController extends Controller
 
         //  MYSQL BATCH INSERT
 
-        // $transaction = Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
 
-        // try {
+        try {
 
-        //     if (!empty($entityRows)) {
+            if (!empty($entityRows)) {
 
-        //         Yii::$app->db->createCommand()->batchInsert(
-        //             Entity::tableName(),
-        //             ['id', 'entity_id', 'status', 'is_alive', 'table_target'],
-        //             $entityRows
-        //         )->execute();
+                Yii::$app->db->createCommand()->batchInsert(
+                    Entity::tableName(),
+                    ['id', 'entity_id', 'status', 'is_alive', 'table_target'],
+                    $entityRows
+                )->execute();
 
-        //         Yii::$app->db->createCommand()->batchInsert(
-        //             EntitySystem::tableName(),
-        //             ['id', 'entity_id', 'system_code', 'entity_reference', 'created_at_data', 'updated_at_data'],
-        //             $entitySystemRows
-        //         )->execute();
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntitySystem::tableName(),
+                    ['id', 'entity_id', 'system_code', 'entity_reference', 'created_at_data', 'updated_at_data'],
+                    $entitySystemRows
+                )->execute();
 
-        //         Yii::$app->db->createCommand()->batchInsert(
-        //             EntityAffiliation::tableName(),
-        //             ['id', 'entity_id', 'entity_reference', 'affiliation_code'],
-        //             $entityAffiliationRows
-        //         )->execute();
-        //     }
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntityAffiliation::tableName(),
+                    ['id', 'entity_id', 'entity_reference', 'affiliation_code'],
+                    $entityAffiliationRows
+                )->execute();
+            }
 
-        //     $transaction->commit();
-        // } catch (\Throwable $e) {
-        //     $transaction->rollBack();
-        //     throw $e;
-        // }
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
 
         // BULK INSERT POSTGRES
 
@@ -326,7 +326,6 @@ class BridgeController extends Controller
             foreach ($execute_list as $row) {
                 $mapped = [];
                 foreach ($mapTargetToSource as $targetCol => $sourceCol) {
-                    echo '<pre>';print_r($targetTypeMap);exit;
                     $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
                     // Accept variations like 'patient_id', 'patient id', 'patient-id'
                     if (preg_match('/patient[_\s-]?id/i', $type)) {
