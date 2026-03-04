@@ -168,8 +168,8 @@ class BridgeController extends Controller
             ->column();
 
         $sql = "SELECT `" . implode('`, `', $columnList) . "` 
-            FROM `$tableName`;
-            // LIMIT 100";
+            FROM `$tableName`
+            LIMIT 100";
 
         $result = $mysqli->query($sql);
 
