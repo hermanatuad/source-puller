@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Bridge $model */
 
-$this->title = 'Create Bridge';
-$this->params['breadcrumbs'][] = ['label' => 'Bridges', 'url' => ['index']];
+$this->title = 'Create Extraction Pipeline';
+$this->params['breadcrumbs'][] = ['label' => 'Extraction Pipelines', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="bridge-create">
