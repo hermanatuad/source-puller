@@ -344,9 +344,14 @@ class BridgeController extends Controller
 
             $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
 
-            $pdo = new PDO($dsn, 'appuser', 'AppPass!123', [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             ]);
+
+            // Fetch actual columns present in the target table
+            $colStmt = $pdo->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
+            $colStmt->execute([':table' => $model->bridge_table_target]);
+            $existingCols = $colStmt->fetchAll(\PDO::FETCH_COLUMN);
 
             $values = [];
             $params = [];
@@ -364,13 +369,29 @@ class BridgeController extends Controller
                 $values[] = "(" . implode(',', $placeholders) . ")";
             }
 
+            // filter out any target columns that do not actually exist in the target table
+            $missing = array_diff($columns, $existingCols ?: []);
+            if (!empty($missing)) {
+                Yii::warning('Missing target columns: ' . implode(', ', $missing), __METHOD__);
+                Yii::$app->session->setFlash('warning', 'Some target columns do not exist in warehouse table and will be skipped: ' . implode(', ', $missing));
+
+                // remove missing columns from columns list and from pgRows
+                $columns = array_values(array_intersect($columns, $existingCols ?: []));
+                if (empty($columns)) {
+                    Yii::$app->session->setFlash('info', 'No valid target columns remain after filtering.');
+                    return $this->redirect(['view', 'id' => $id]);
+                }
+                foreach ($pgRows as &$r) {
+                    $r = array_intersect_key($r, array_flip($columns));
+                }
+                unset($r);
+            }
+
             $quotedCols = array_map(function ($c) {
                 return '"' . $c . '"';
             }, $columns);
 
-            $sql = "INSERT INTO {$model->bridge_table_target} 
-                (" . implode(',', $quotedCols) . ")
-                VALUES " . implode(',', $values);
+            $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
 
             $pdo->beginTransaction();
 
