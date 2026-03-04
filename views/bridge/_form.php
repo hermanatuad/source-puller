@@ -31,7 +31,7 @@ use app\models\System;
                 </div>
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'bridge_type')->dropDownList([], [
+                    <?= $form->field($model, 'bridge_type')->dropDownList([
                         'independent' => 'Independent',
                         'dependent' => 'Dependent'
                     ], [
