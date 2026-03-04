@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
                 </h4>
                 <div class="flex-shrink-0">
-                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Bridge', ['create'], [
+                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Add Extraction Pipeline', ['create'], [
                         'class' => 'btn btn-primary'
                     ]) ?>
                 </div>
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Bridge Name</th>
+                                <th scope="col">Pipeline Name</th>
                                 <th scope="col">Warehouse Table</th>
                                 <th scope="col">Database Source</th>
                                 <th scope="col">Table Source</th>

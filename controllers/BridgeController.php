@@ -146,14 +146,12 @@ class BridgeController extends Controller
     public function actionRun($id)
     {
         $model = $this->findModel($id);
+        $database = System::findOne(['system_code' => $model->system_code]);
 
+        if (!$database) {
+            throw new Exception("System configuration not found.");
+        }
         if ($model->bridge_type == 'independent') {
-            # code...
-            $database = System::findOne(['system_code' => $model->system_code]);
-
-            if (!$database) {
-                throw new Exception("System configuration not found.");
-            }
 
             $RAW_DATA = [];
             $execute_list = [];
@@ -416,7 +414,13 @@ class BridgeController extends Controller
                 }
             }
         } else {
-            echo '<pre>';print_r('dependen');exit;
+
+            $RAW_DATA = [];
+            $execute_list = [];
+
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
+                throw new Exception("Invalid source table name.");
+            }
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');

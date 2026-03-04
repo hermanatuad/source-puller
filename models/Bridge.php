@@ -54,11 +54,11 @@ class Bridge extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'bridge_name' => 'Bridge Name',
+            'bridge_name' => 'Pipeline Name',
             'system_code' => 'System Code',
-            'bridge_table_source' => 'Bridge Table Source',
-            'bridge_table_target' => 'Bridge Table Target',
-            'bridge_type' => 'Bridge Type',
+            'bridge_table_source' => 'Table Source',
+            'bridge_table_target' => 'Table Target',
+            'bridge_type' => 'Extraction Table Type',
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
