@@ -36,7 +36,7 @@ use app\models\System;
                         'class' => 'form-control',
                         'data-choices' => 'true',
                         'id' => 'bridge-system_code'
-                    ]) ?>
+                    ])->label('Database Source') ?>
                 </div>
 
                 <div class="col-md-4">
