@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th scope="col">#</th>
                                 <th scope="col">Bridge Name</th>
                                 <th scope="col">Bridge Table Target</th>
-                                <th scope="col">System Code</th>
+                                <th scope="col">Database Source</th>
                                 <th scope="col">Bridge Table Source</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
