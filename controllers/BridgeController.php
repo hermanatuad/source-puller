@@ -142,9 +142,7 @@ class BridgeController extends Controller
         $RAW_DATA = [];
         $execute_list = [];
 
-        /* ==========================
-       SOURCE MYSQL
-    ========================== */
+        // SOURCE MYSQL
 
         $mysqli = new mysqli(
             $database->hostname,
@@ -170,8 +168,8 @@ class BridgeController extends Controller
             ->column();
 
         $sql = "SELECT `" . implode('`, `', $columnList) . "` 
-            FROM `$tableName`
-            LIMIT 100";
+            FROM `$tableName`;
+            // LIMIT 100";
 
         $result = $mysqli->query($sql);
 
@@ -187,9 +185,7 @@ class BridgeController extends Controller
             return $this->redirect(['view', 'id' => $id]);
         }
 
-        /* ==========================
-       FILTER EXISTING
-    ========================== */
+        // FILTER EXISTING
 
         $sourceIds = array_column($RAW_DATA, 'id');
 
@@ -203,9 +199,7 @@ class BridgeController extends Controller
 
         $existingMap = array_flip($existingReferences);
 
-        /* ==========================
-       PREPARE BATCH DATA
-    ========================== */
+        // PREPARE BATCH DATA
 
         $entityRows = [];
         $entitySystemRows = [];
@@ -247,9 +241,7 @@ class BridgeController extends Controller
             ];
         }
 
-        /* ==========================
-       BATCH INSERT MYSQL
-    ========================== */
+        // BATCH INSERT MYSQL
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -282,9 +274,7 @@ class BridgeController extends Controller
             throw $e;
         }
 
-        /* ==========================
-       BULK INSERT POSTGRES
-    ========================== */
+        // BULK INSERT POSTGRES
 
         if (!empty($execute_list)) {
 

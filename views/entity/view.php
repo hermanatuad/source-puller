@@ -81,10 +81,24 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        Affiliation
+                        <h6 class="mb-2">Affiliations</h6>
+                        <?php if (!empty($model->affiliations)): ?>
+                            <?php foreach ($model->affiliations as $aff): ?>
+                                <?= Html::tag('span', Html::encode($aff->affiliation_code), ['class' => 'badge bg-secondary me-1 mb-1']) ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <span class="text-muted">No affiliations</span>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-6">
-                        Sources
+                        <h6 class="mb-2">Sources</h6>
+                        <?php if (!empty($model->systems)): ?>
+                            <?php foreach ($model->systems as $sys): ?>
+                                <?= Html::tag('span', Html::encode($sys->system_code), ['class' => 'badge bg-info text-dark me-1 mb-1', 'title' => Html::encode($sys->entity_reference)]) ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <span class="text-muted">No systems</span>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
