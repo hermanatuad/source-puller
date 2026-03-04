@@ -142,164 +142,182 @@ class BridgeController extends Controller
         $RAW_DATA = [];
         $execute_list = [];
 
-        try {
+        /* ==========================
+       SOURCE MYSQL
+    ========================== */
 
-            $mysqli = new mysqli(
-                $database->hostname,
-                $database->username,
-                $database->password,
-                $database->database_name,
-                $database->port
-            );
+        $mysqli = new mysqli(
+            $database->hostname,
+            $database->username,
+            $database->password,
+            $database->database_name,
+            $database->port
+        );
 
-            if ($mysqli->connect_error) {
-                throw new Exception($mysqli->connect_error);
-            }
-
-            $tableName = $model->bridge_table_source;
-
-            if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
-                throw new Exception("Invalid table name");
-            }
-
-            $columnList = BridgeColumn::find()
-                ->select('source_column_name')
-                ->where(['bridge_id' => $id])
-                ->column();
-
-            $sql = "SELECT `" . implode('`, `', $columnList) . "` 
-                FROM `$tableName` 
-                LIMIT 100";
-
-            $result = $mysqli->query($sql);
-
-            if (!$result) {
-                throw new Exception($mysqli->error);
-            }
-
-            while ($row = $result->fetch_assoc()) {
-                $RAW_DATA[] = $row;
-            }
-
-            $result->free();
-            $mysqli->close();
-        } catch (Exception $e) {
-            Yii::$app->session->setFlash('error', $e->getMessage());
-            return $this->redirect(['view', 'id' => $id]);
+        if ($mysqli->connect_error) {
+            throw new Exception($mysqli->connect_error);
         }
+
+        $tableName = $model->bridge_table_source;
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $tableName)) {
+            throw new Exception("Invalid table name");
+        }
+
+        $columnList = BridgeColumn::find()
+            ->select('source_column_name')
+            ->where(['bridge_id' => $id])
+            ->column();
+
+        $sql = "SELECT `" . implode('`, `', $columnList) . "` 
+            FROM `$tableName`
+            LIMIT 100";
+
+        $result = $mysqli->query($sql);
+
+        while ($row = $result->fetch_assoc()) {
+            $RAW_DATA[] = $row;
+        }
+
+        $result->free();
+        $mysqli->close();
 
         if (empty($RAW_DATA)) {
             Yii::$app->session->setFlash('info', 'No data found.');
             return $this->redirect(['view', 'id' => $id]);
         }
 
+        /* ==========================
+       FILTER EXISTING
+    ========================== */
+
+        $sourceIds = array_column($RAW_DATA, 'id');
+
         $existingReferences = EntitySystem::find()
             ->select('entity_reference')
-            ->where(['system_code' => $model->system_code])
+            ->where([
+                'system_code' => $model->system_code,
+                'entity_reference' => $sourceIds
+            ])
             ->column();
 
         $existingMap = array_flip($existingReferences);
+
+        /* ==========================
+       PREPARE BATCH DATA
+    ========================== */
+
+        $entityRows = [];
+        $entitySystemRows = [];
+        $entityAffiliationRows = [];
+
+        foreach ($RAW_DATA as $data) {
+
+            if (isset($existingMap[$data['id']])) {
+                continue;
+            }
+
+            $execute_list[] = $data;
+
+            $entityId = MyHelper::genEntityId();
+            $uuid = MyHelper::genuuid();
+            $now = date('Y-m-d H:i:s');
+
+            $entityRows[] = [
+                $uuid,
+                $entityId,
+                'active',
+                'unknown'
+            ];
+
+            $entitySystemRows[] = [
+                MyHelper::genuuid(),
+                $entityId,
+                $model->system_code,
+                $data['id'],
+                $now,
+                $now
+            ];
+
+            $entityAffiliationRows[] = [
+                MyHelper::genuuid(),
+                $entityId,
+                $data['id'],
+                'IJN'
+            ];
+        }
+
+        /* ==========================
+       BATCH INSERT MYSQL
+    ========================== */
 
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
 
-            foreach ($RAW_DATA as $data) {
+            if (!empty($entityRows)) {
 
-                if (isset($existingMap[$data['id']])) {
-                    continue;
-                }
+                Yii::$app->db->createCommand()->batchInsert(
+                    Entity::tableName(),
+                    ['id', 'entity_id', 'status', 'is_alive'],
+                    $entityRows
+                )->execute();
 
-                $execute_list[] = $data;
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntitySystem::tableName(),
+                    ['id', 'entity_id', 'system_code', 'entity_reference', 'created_at_data', 'updated_at_data'],
+                    $entitySystemRows
+                )->execute();
 
-                $entityId = MyHelper::genEntityId();
-
-                $entity = new Entity([
-                    'id' => MyHelper::genuuid(),
-                    'entity_id' => $entityId,
-                    'status' => 'active',
-                    'is_alive' => 'unknown',
-                ]);
-                $entity->save(false);
-
-                $entitySystem = new EntitySystem([
-                    'id' => MyHelper::genuuid(),
-                    'entity_id' => $entityId,
-                    'system_code' => $model->system_code,
-                    'entity_reference' => $data['id'],
-                    'created_at_data' => date('Y-m-d H:i:s'),
-                    'updated_at_data' => date('Y-m-d H:i:s'),
-                ]);
-                $entitySystem->save(false);
-
-                $entityAffiliation = new EntityAffiliation([
-                    'id' => MyHelper::genuuid(),
-                    'entity_id' => $entityId,
-                    'entity_reference' => $data['id'],
-                    'affiliation_code' => 'IJN',
-                ]);
-                $entityAffiliation->save(false);
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntityAffiliation::tableName(),
+                    ['id', 'entity_id', 'entity_reference', 'affiliation_code'],
+                    $entityAffiliationRows
+                )->execute();
             }
 
             $transaction->commit();
         } catch (\Throwable $e) {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', $e->getMessage());
-            return $this->redirect(['view', 'id' => $id]);
+            throw $e;
         }
 
+        /* ==========================
+       BULK INSERT POSTGRES
+    ========================== */
 
-        $dwConfig = [
-            'hostname' => '34.71.143.136',
-            'username' => 'appuser',
-            'password' => 'AppPass!123',
-            'port' => 5432,
-            'database' => 'datawarehouse',
-        ];
+        if (!empty($execute_list)) {
 
-        try {
-            $dsn = "pgsql:host={$dwConfig['hostname']};port={$dwConfig['port']};dbname={$dwConfig['database']}";
+            $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
 
-            $pdo = new PDO($dsn, $dwConfig['username'], $dwConfig['password'], [
+            $pdo = new PDO($dsn, 'appuser', 'AppPass!123', [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]);
 
-            foreach ($execute_list as $key => $value) {
-                $columns = array_keys($value);
-                $placeholders = array_map(function ($col) {
-                    return ':' . $col;
-                }, $columns);
+            $columns = array_keys($execute_list[0]);
 
-                $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(', ', $columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
-                $stmt = $pdo->prepare($sql);
+            $values = [];
+            $params = [];
 
-                foreach ($value as $col => $val) {
-                    $stmt->bindValue(':' . $col, $val);
+            foreach ($execute_list as $i => $row) {
+
+                $placeholders = [];
+
+                foreach ($columns as $col) {
+                    $param = ":{$col}_{$i}";
+                    $placeholders[] = $param;
+                    $params[$param] = $row[$col];
                 }
 
-                $stmt->execute();
+                $values[] = "(" . implode(',', $placeholders) . ")";
             }
 
-            $result = [
-                'status' => 'success',
-                'message' => 'Successfully connected to PostgreSQL',
-                'data' => [
-                    'connection' => [
-                        'hostname' => $dwConfig['hostname'],
-                        'port' => $dwConfig['port'],
-                        'username' => $dwConfig['username'],
-                        'database' => $dwConfig['database'],
-                        'server_version' => $pdo->query("SHOW server_version")->fetchColumn()
-                    ]
-                ]
-            ];
+            $sql = "INSERT INTO {$model->bridge_table_target} 
+                (" . implode(',', $columns) . ")
+                VALUES " . implode(',', $values);
 
-            return $result;
-        } catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');
