@@ -65,7 +65,7 @@ class MenuHelper
 
 
             $menuItems[] = [
-                'label' => '<i class="ri-hospital-line"></i> <span>Patient</span>',
+                'label' => '<i class="ri-hospital-line"></i> <span>Bridge</span>',
                 'url' => ['entity/index']
             ];
 
@@ -155,7 +155,7 @@ class MenuHelper
                 'url' => ['affiliation/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
-            
+
             $menuItems[] = [
                 'label' => '<i class="ri-shuffle-line"></i> <span>Bridge</span>',
                 'url' => ['bridge/index'],
