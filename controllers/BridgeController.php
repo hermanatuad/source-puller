@@ -284,13 +284,22 @@ class BridgeController extends Controller
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]);
 
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_target)) {
+                throw new Exception("Invalid table name");
+            }
+
             $columns = array_keys($execute_list[0]);
+
+            foreach ($execute_list as $row) {
+                if (array_keys($row) !== $columns) {
+                    throw new Exception("Inconsistent column structure");
+                }
+            }
 
             $values = [];
             $params = [];
 
             foreach ($execute_list as $i => $row) {
-
                 $placeholders = [];
 
                 foreach ($columns as $col) {
@@ -303,11 +312,24 @@ class BridgeController extends Controller
             }
 
             $sql = "INSERT INTO {$model->bridge_table_target} 
-                (" . implode(',', $columns) . ")
-                VALUES " . implode(',', $values);
+            (" . implode(',', $columns) . ")
+            VALUES " . implode(',', $values);
 
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($params);
+            $pdo->beginTransaction();
+
+            try {
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+
+                if ($stmt->rowCount() !== count($execute_list)) {
+                    throw new Exception("Insert count mismatch");
+                }
+
+                $pdo->commit();
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                throw $e;
+            }
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');
