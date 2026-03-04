@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /** @var app\models\BridgeSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Bridges';
+$this->title = 'Extraction Pipelines';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
