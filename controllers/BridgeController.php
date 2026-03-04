@@ -286,8 +286,6 @@ class BridgeController extends Controller
 
             $columns = array_keys($execute_list[0]);
 
-            echo '<pre>';print_r($execute_list);exit;
-
             $values = [];
             $params = [];
 
