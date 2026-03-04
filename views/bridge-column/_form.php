@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
 
             <div class="row g-3">
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <?= $form->field($model, 'target_column_name')->textInput([
                         'maxlength' => true,
                         'placeholder' => 'Enter target column name',
@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
                     ]) ?>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <?= $form->field($model, 'source_column_name')->dropDownList($listColumnSource, [
                         'prompt' => 'Select source column name',
                         'class' => 'form-control',
@@ -42,7 +42,33 @@ use yii\widgets\ActiveForm;
                     ])->label('Column Source') ?>
                 </div>
 
+                <div class="col-md-4">
+                    <?= $form->field($model, 'column_type')->dropDownList([
+                        'patient_id' => 'Patient ID',
+                        'datetime' => 'Datetime',
+                        'custom' => 'Custom'
+                    ], [
+                        'prompt' => 'Select column type',
+                        'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'column_type'
+                    ])->label('Column Type') ?>
+                </div>
+
+                <?php if ($model->column_type === 'cs'): ?>
+
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'transformation_logic')->textarea([
+                            'rows' => 4,
+                            'placeholder' => 'Enter transformation logic (optional) [example]: ',
+                            'class' => 'form-control'
+                        ]) ?>
+                    </div>
+
+                <?php endif; ?>
+
             </div>
+
         </div>
         <div class="card-footer bg-white text-end">
             <?= Html::a('<i class="ri-arrow-left-line"></i> Cancel', ['bridge/view', 'id' => $model->bridge_id], ['class' => 'btn btn-outline-secondary me-2']) ?>
