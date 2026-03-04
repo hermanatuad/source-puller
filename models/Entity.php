@@ -31,10 +31,11 @@ class Entity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'entity_id', 'status'], 'required'],
+            [['id', 'entity_id', 'status', 'table_target'], 'required'],
             [['id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['entity_id', 'is_alive', 'status'], 'string', 'max' => 20],
+            [['table_target'], 'string', 'max' => 255],
             [['id'], 'unique'],
         ];
     }
@@ -49,6 +50,7 @@ class Entity extends \yii\db\ActiveRecord
             'entity_id' => 'Entity ID',
             'is_alive' => 'Live Status',
             'status' => 'Status',
+            'table_target' => 'Table Target',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
