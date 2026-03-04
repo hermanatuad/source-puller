@@ -279,30 +279,6 @@ class BridgeController extends Controller
 
         if (!empty($execute_list)) {
 
-            // Build mapping from target column -> source column using BridgeColumn
-            $bridgeCols = BridgeColumn::find()->where(['bridge_id' => $id])->all();
-            $mapTargetToSource = [];
-            foreach ($bridgeCols as $bc) {
-                $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
-            }
-
-            // Map execute_list rows to use target column names
-            $pgRows = [];
-            foreach ($execute_list as $row) {
-                $mapped = [];
-                foreach ($mapTargetToSource as $targetCol => $sourceCol) {
-                    $mapped[$targetCol] = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
-                }
-                if (!empty($mapped)) {
-                    $pgRows[] = $mapped;
-                }
-            }
-
-            if (empty($pgRows)) {
-                Yii::$app->session->setFlash('info', 'No mapped data to insert into warehouse.');
-                return $this->redirect(['view', 'id' => $id]);
-            }
-
             $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
 
             $pdo = new PDO($dsn, 'appuser', 'AppPass!123', [
@@ -313,25 +289,18 @@ class BridgeController extends Controller
                 throw new Exception("Invalid table name");
             }
 
-            $columns = array_keys($pgRows[0]);
+            $columns = array_keys($execute_list[0]);
 
-            // validate column names
-            foreach ($columns as $col) {
-                if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
-                    throw new Exception("Invalid column name: {$col}");
-                }
-            }
-
-            foreach ($pgRows as $row) {
+            foreach ($execute_list as $row) {
                 if (array_keys($row) !== $columns) {
-                    throw new Exception("Inconsistent column structure after mapping");
+                    throw new Exception("Inconsistent column structure");
                 }
             }
 
             $values = [];
             $params = [];
 
-            foreach ($pgRows as $i => $row) {
+            foreach ($execute_list as $i => $row) {
                 $placeholders = [];
 
                 foreach ($columns as $col) {
@@ -343,8 +312,9 @@ class BridgeController extends Controller
                 $values[] = "(" . implode(',', $placeholders) . ")";
             }
 
-            $quotedCols = array_map(function($c){ return $c; }, $columns);
-            $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
+            $sql = "INSERT INTO {$model->bridge_table_target} 
+            (" . implode(',', $columns) . ")
+            VALUES " . implode(',', $values);
 
             $pdo->beginTransaction();
 
@@ -352,7 +322,10 @@ class BridgeController extends Controller
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
 
-                // rowCount with pg may be unreliable for multi-row insert; don't strict-check count
+                if ($stmt->rowCount() !== count($execute_list)) {
+                    throw new Exception("Insert count mismatch");
+                }
+
                 $pdo->commit();
             } catch (Exception $e) {
                 $pdo->rollBack();
