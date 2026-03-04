@@ -163,8 +163,8 @@ class BridgeController extends Controller
 
         $columnList = BridgeColumn::find()
             ->select(
-                'source_column_name',
-                'column_type'
+                ['source_column_name',
+                'column_type']
             )
             ->where(['bridge_id' => $id])
             ->column();
