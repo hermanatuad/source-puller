@@ -146,11 +146,7 @@ class BridgeController extends Controller
         $RAW_DATA = [];
         $execute_list = [];
 
-        /*
-     * =========================
-     * SOURCE MYSQL
-     * =========================
-     */
+        // SOURCE MYSQL
 
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
             throw new Exception("Invalid source table name.");
@@ -207,11 +203,7 @@ class BridgeController extends Controller
             return $this->redirect(['view', 'id' => $id]);
         }
 
-        /*
-     * =========================
-     * FILTER EXISTING ENTITY
-     * =========================
-     */
+        // FILTER EXISTING ENTITY
 
         $sourceIds = array_column($RAW_DATA, 'id');
 
@@ -266,11 +258,7 @@ class BridgeController extends Controller
             ];
         }
 
-        /*
-     * =========================
-     * MYSQL BATCH INSERT
-     * =========================
-     */
+        //  MYSQL BATCH INSERT
 
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -303,11 +291,7 @@ class BridgeController extends Controller
             throw $e;
         }
 
-        /*
-     * =========================
-     * BULK INSERT POSTGRES
-     * =========================
-     */
+        // BULK INSERT POSTGRES
 
         if (!empty($execute_list)) {
 
