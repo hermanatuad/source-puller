@@ -55,7 +55,7 @@ use yii\widgets\ActiveForm;
                     ])->label('Column Type') ?>
                 </div>
 
-                <?php if ($model->column_type === 'cs'): ?>
+                <?php if ($model->column_type === 'custom'): ?>
 
                     <div class="col-md-12">
                         <?= $form->field($model, 'transformation_logic')->textarea([
