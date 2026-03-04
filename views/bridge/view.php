@@ -2,6 +2,7 @@
 
 use app\helpers\DBHelper;
 use app\helpers\DWHelper;
+use app\helpers\MyHelper;
 use app\models\BridgeColumn;
 use app\models\System;
 use yii\helpers\Html;
@@ -88,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?= $bridgeColumnList[$column['name']] ?? 'N/A' ?>
                                         </td>
                                         <td>
-                                            <?= $bridgeColumnTypeList[$column['name']] ?? 'N/A' ?>
+                                            <?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$column['name']]] ?? 'N/A' ?>
                                         </td>
                                         <td>
                                             <?= Html::a('Config', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>

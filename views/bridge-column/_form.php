@@ -1,5 +1,6 @@
 <?php
 
+use app\helpers\MyHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -43,11 +44,7 @@ use yii\widgets\ActiveForm;
                 </div>
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'column_type')->dropDownList([
-                        'patient_id' => 'Patient ID',
-                        'datetime' => 'Datetime',
-                        'custom' => 'Custom'
-                    ], [
+                    <?= $form->field($model, 'column_type')->dropDownList(MyHelper::ColumnTypeList(), [
                         'prompt' => 'Select column type',
                         'class' => 'form-control',
                         'data-choices' => 'true',

@@ -64,6 +64,16 @@ class MyHelper
         );
     }
 
+    public static function ColumnTypeList()
+    {
+        $data = [
+            'patient_id' => 'Patient ID',
+            'datetime' => 'Datetime',
+            'custom' => 'Custom'
+        ];
+        return $data;
+    }
+
     public static function genEntityId()
     {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';

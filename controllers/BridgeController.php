@@ -82,7 +82,6 @@ class BridgeController extends Controller
         foreach ($bridgeColumn as $key => $value) {
             $bridgeColumnTypeList[$value->target_column_name] = $value->column_type;
         }
-        echo '<pre>';print_r($bridgeColumnTypeList);exit;
 
         if ($id == null) {
             $system_code = Yii::$app->request->get('system_code');
