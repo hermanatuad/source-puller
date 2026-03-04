@@ -157,7 +157,7 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-shuffle-line"></i> <span>Bridge</span>',
+                'label' => '<i class="ri-shuffle-line"></i> <span>Extraction Pipeline</span>',
                 'url' => ['bridge/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
