@@ -162,16 +162,10 @@ class BridgeController extends Controller
         }
 
         $columnList = BridgeColumn::find()
-            ->select(
-                ['source_column_name',
-                'column_type']
-            )
+            ->select('source_column_name')
             ->where(['bridge_id' => $id])
             ->column();
 
-        echo '<pre>';
-        print_r($columnList);
-        exit;
         if (empty($columnList)) {
             throw new Exception("No source columns defined.");
         }
@@ -235,6 +229,7 @@ class BridgeController extends Controller
         $entityRows = [];
         $entitySystemRows = [];
         $entityAffiliationRows = [];
+        $sourceIdToEntityId = [];
 
         foreach ($RAW_DATA as $data) {
 
@@ -245,6 +240,7 @@ class BridgeController extends Controller
             $execute_list[] = $data;
 
             $entityId = MyHelper::genEntityId();
+            $sourceIdToEntityId[$data['id']] = $entityId;
             $uuid = MyHelper::genuuid();
             $now = date('Y-m-d H:i:s');
 
@@ -319,8 +315,10 @@ class BridgeController extends Controller
                 ->all();
 
             $mapTargetToSource = [];
+            $targetTypeMap = [];
             foreach ($bridgeCols as $bc) {
                 $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
+                $targetTypeMap[$bc->target_column_name] = $bc->column_type;
             }
 
             $pgRows = [];
@@ -328,9 +326,15 @@ class BridgeController extends Controller
             foreach ($execute_list as $row) {
                 $mapped = [];
                 foreach ($mapTargetToSource as $targetCol => $sourceCol) {
-                    $mapped[$targetCol] = array_key_exists($sourceCol, $row)
-                        ? $row[$sourceCol]
-                        : null;
+                    $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
+                    if ($type === 'patient id') {
+                        // For patient id columns, store the generated entity_id
+                        $mapped[$targetCol] = $sourceIdToEntityId[$row['id']] ?? null;
+                    } else {
+                        $mapped[$targetCol] = array_key_exists($sourceCol, $row)
+                            ? $row[$sourceCol]
+                            : null;
+                    }
                 }
                 $pgRows[] = $mapped;
             }
