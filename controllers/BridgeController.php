@@ -146,7 +146,6 @@ class BridgeController extends Controller
     public function actionRun($id)
     {
         $model = $this->findModel($id);
-        
         $database = System::findOne(['system_code' => $model->system_code]);
 
         if (!$database) {
