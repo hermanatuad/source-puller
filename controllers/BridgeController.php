@@ -146,10 +146,6 @@ class BridgeController extends Controller
     public function actionRun($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->bride_type == 'independent') {
-            # code...
-        }
         $database = System::findOne(['system_code' => $model->system_code]);
 
         if (!$database) {
