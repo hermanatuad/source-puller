@@ -35,45 +35,63 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (empty($tables)) {
                     echo '<div class="alert alert-info">No datawarehouse tables available in cache.</div>';
                 } else {
-                    foreach ($tables as $tableName => $meta) {
-                        $cols = $meta['columns'] ?? [];
-                        ?>
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <h5 class="mb-0"><?= Html::encode($tableName) ?></h5>
-                                    <div class="text-muted small"><?= Html::encode($meta['columns_count'] ?? count($cols)) ?> columns • <?= Html::encode($meta['total_size_mb'] ?? '') ?> MB</div>
-                                </div>
-                                <div>
-                                    <?= Html::a('View', ['datawarehouse/view', 'table' => $tableName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
-                                </div>
-                            </div>
+                    $accordionId = 'dwAccordion';
+                    ?>
+                    <div class="accordion" id="<?= $accordionId ?>">
+                        <?php foreach ($tables as $tableName => $meta) {
+                            $cols = $meta['columns'] ?? [];
+                            $safeId = 't_' . md5($tableName);
+                            ?>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-<?= $safeId ?>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $safeId ?>" aria-expanded="false" aria-controls="collapse-<?= $safeId ?>">
+                                        <div class="me-3">
+                                            <strong><?= Html::encode($tableName) ?></strong>
+                                        </div>
+                                        <div class="text-muted small ms-2">
+                                            <?= Html::encode($meta['columns_count'] ?? count($cols)) ?> col • <?= Html::encode($meta['total_size_mb'] ?? '') ?> MB
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="collapse-<?= $safeId ?>" class="accordion-collapse collapse" aria-labelledby="heading-<?= $safeId ?>" data-bs-parent="#<?= $accordionId ?>">
+                                    <div class="accordion-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <div class="small text-muted">Columns: <?= Html::encode(count($cols)) ?></div>
+                                            </div>
+                                            <div>
+                                                <?= Html::a('View Schema', ['datawarehouse/view', 'table' => $tableName], ['class' => 'btn btn-sm btn-outline-primary me-2']) ?>
+                                            </div>
+                                        </div>
 
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Nullable</th>
-                                        <th>Default</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach ($cols as $c): ?>
-                                        <tr>
-                                            <td><?= Html::encode($c['name'] ?? '') ?></td>
-                                            <td><?= Html::encode($c['data_type'] ?? '') ?></td>
-                                            <td><?= (!empty($c['nullable']) ? 'YES' : 'NO') ?></td>
-                                            <td><?= Html::encode($c['default'] ?? '') ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered mb-0">
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Nullable</th>
+                                                    <th>Default</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <?php foreach ($cols as $c): ?>
+                                                    <tr>
+                                                        <td><?= Html::encode($c['name'] ?? '') ?></td>
+                                                        <td><?= Html::encode($c['data_type'] ?? '') ?></td>
+                                                        <td><?= (!empty($c['nullable']) ? 'YES' : 'NO') ?></td>
+                                                        <td><?= Html::encode($c['default'] ?? '') ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <?php
-                    }
+                        <?php } ?>
+                    </div>
+                    <?php
                 }
                 ?>
             </div>
