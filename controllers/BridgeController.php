@@ -236,11 +236,14 @@ class BridgeController extends Controller
                 continue;
             }
 
-            $execute_list[] = $data;
-
             $entityId = MyHelper::genEntityId();
             $uuid = MyHelper::genuuid();
             $now = date('Y-m-d H:i:s');
+
+            // include the generated entity id with the execute row so we can
+            // use it later when mapping bridge columns (e.g. patient id)
+            $data['_entity_id'] = $entityId;
+            $execute_list[] = $data;
 
             $entityRows[] = [
                 $uuid,
@@ -313,8 +316,13 @@ class BridgeController extends Controller
                 ->all();
 
             $mapTargetToSource = [];
+            $mapTargetToType = [];
             foreach ($bridgeCols as $bc) {
                 $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
+
+                // normalize bridge type for comparisons (e.g. "patient id", "patient_id")
+                $rawType = strtolower(trim((string)($bc->bridge_type ?? $bc->column_type ?? '')));
+                $mapTargetToType[$bc->target_column_name] = preg_replace('/[\s_]+/', '', $rawType);
             }
 
             $pgRows = [];
@@ -322,9 +330,15 @@ class BridgeController extends Controller
             foreach ($execute_list as $row) {
                 $mapped = [];
                 foreach ($mapTargetToSource as $targetCol => $sourceCol) {
-                    $mapped[$targetCol] = array_key_exists($sourceCol, $row)
-                        ? $row[$sourceCol]
-                        : null;
+                    $isPatientId = (isset($mapTargetToType[$targetCol]) && $mapTargetToType[$targetCol] === 'patientid');
+                    if ($isPatientId) {
+                        // store the generated entity id for patient-id bridge columns
+                        $mapped[$targetCol] = $row['_entity_id'] ?? null;
+                    } else {
+                        $mapped[$targetCol] = array_key_exists($sourceCol, $row)
+                            ? $row[$sourceCol]
+                            : null;
+                    }
                 }
                 $pgRows[] = $mapped;
             }
