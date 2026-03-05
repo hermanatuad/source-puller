@@ -146,277 +146,260 @@ class BridgeController extends Controller
     public function actionRun($id)
     {
         $model = $this->findModel($id);
+        $database = System::findOne(['system_code' => $model->system_code]);
 
-        if ($model->bride_type == 'independent') {
-            # code...
-            $database = System::findOne(['system_code' => $model->system_code]);
+        if (!$database) {
+            throw new Exception("System configuration not found.");
+        }
 
-            if (!$database) {
-                throw new Exception("System configuration not found.");
+        $RAW_DATA = [];
+        $execute_list = [];
+
+        // SOURCE MYSQL
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
+            throw new Exception("Invalid source table name.");
+        }
+
+        $columnList = BridgeColumn::find()
+            ->select('source_column_name')
+            ->where(['bridge_id' => $id])
+            ->column();
+
+        if (empty($columnList)) {
+            throw new Exception("No source columns defined.");
+        }
+
+        if (!in_array('id', $columnList)) {
+            throw new Exception("Source column 'id' is required for entity mapping.");
+        }
+
+        $mysqli = new mysqli(
+            $database->hostname,
+            $database->username,
+            $database->password,
+            $database->database_name,
+            $database->port
+        );
+
+        if ($mysqli->connect_error) {
+            throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
+        }
+
+        $escapedColumns = array_map(function ($col) {
+            return "`" . $col . "`";
+        }, $columnList);
+
+        $sql = "SELECT " . implode(',', $escapedColumns) . "
+            FROM `{$model->bridge_table_source}`
+            LIMIT 100";
+
+        $result = $mysqli->query($sql);
+
+        if (!$result) {
+            throw new Exception("MySQL query error: " . $mysqli->error);
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            $RAW_DATA[] = $row;
+        }
+
+        $result->free();
+        $mysqli->close();
+
+        if (empty($RAW_DATA)) {
+            Yii::$app->session->setFlash('info', 'No data found.');
+            return $this->redirect(['view', 'id' => $id]);
+        }
+
+        // FILTER EXISTING ENTITY
+
+        $sourceIds = array_column($RAW_DATA, 'id');
+
+        $existingReferences = EntitySystem::find()
+            ->select('entity_reference')
+            ->where([
+                'system_code' => $model->system_code,
+                'entity_reference' => $sourceIds
+            ])
+            ->column();
+
+        $existingMap = array_flip($existingReferences);
+
+        $entityRows = [];
+        $entitySystemRows = [];
+        $entityAffiliationRows = [];
+
+        foreach ($RAW_DATA as $data) {
+
+            if (isset($existingMap[$data['id']])) {
+                continue;
             }
 
-            $RAW_DATA = [];
-            $execute_list = [];
+            $execute_list[] = $data;
 
-            // SOURCE MYSQL
+            $entityId = MyHelper::genEntityId();
+            $uuid = MyHelper::genuuid();
+            $now = date('Y-m-d H:i:s');
 
-            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
-                throw new Exception("Invalid source table name.");
+            $entityRows[] = [
+                $uuid,
+                $entityId,
+                'active',
+                'unknown',
+                $model->bridge_table_target
+            ];
+
+            $entitySystemRows[] = [
+                MyHelper::genuuid(),
+                $entityId,
+                $model->system_code,
+                $data['id'],
+                $now,
+                $now
+            ];
+
+            $entityAffiliationRows[] = [
+                MyHelper::genuuid(),
+                $entityId,
+                $data['id'],
+                'IJN'
+            ];
+        }
+
+        //  MYSQL BATCH INSERT
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            if (!empty($entityRows)) {
+
+                Yii::$app->db->createCommand()->batchInsert(
+                    Entity::tableName(),
+                    ['id', 'entity_id', 'status', 'is_alive', 'table_target'],
+                    $entityRows
+                )->execute();
+
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntitySystem::tableName(),
+                    ['id', 'entity_id', 'system_code', 'entity_reference', 'created_at_data', 'updated_at_data'],
+                    $entitySystemRows
+                )->execute();
+
+                Yii::$app->db->createCommand()->batchInsert(
+                    EntityAffiliation::tableName(),
+                    ['id', 'entity_id', 'entity_reference', 'affiliation_code'],
+                    $entityAffiliationRows
+                )->execute();
             }
 
-            $columnList = BridgeColumn::find()
-                ->select('source_column_name')
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        // BULK INSERT POSTGRES
+
+        if (!empty($execute_list)) {
+
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_target)) {
+                throw new Exception("Invalid target table name.");
+            }
+
+            $bridgeCols = BridgeColumn::find()
                 ->where(['bridge_id' => $id])
-                ->column();
+                ->all();
 
-            if (empty($columnList)) {
-                throw new Exception("No source columns defined.");
+            $mapTargetToSource = [];
+            foreach ($bridgeCols as $bc) {
+                $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
             }
 
-            if (!in_array('id', $columnList)) {
-                throw new Exception("Source column 'id' is required for entity mapping.");
+            $pgRows = [];
+
+            foreach ($execute_list as $row) {
+                $mapped = [];
+                foreach ($mapTargetToSource as $targetCol => $sourceCol) {
+                    $mapped[$targetCol] = array_key_exists($sourceCol, $row)
+                        ? $row[$sourceCol]
+                        : null;
+                }
+                $pgRows[] = $mapped;
             }
 
-            $mysqli = new mysqli(
-                $database->hostname,
-                $database->username,
-                $database->password,
-                $database->database_name,
-                $database->port
-            );
-
-            if ($mysqli->connect_error) {
-                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
-            }
-
-            $escapedColumns = array_map(function ($col) {
-                return "`" . $col . "`";
-            }, $columnList);
-
-            $sql = "SELECT " . implode(',', $escapedColumns) . "
-                FROM `{$model->bridge_table_source}`
-                LIMIT 100";
-
-            $result = $mysqli->query($sql);
-
-            if (!$result) {
-                throw new Exception("MySQL query error: " . $mysqli->error);
-            }
-
-            while ($row = $result->fetch_assoc()) {
-                $RAW_DATA[] = $row;
-            }
-
-            $result->free();
-            $mysqli->close();
-
-            if (empty($RAW_DATA)) {
-                Yii::$app->session->setFlash('info', 'No data found.');
+            if (empty($pgRows)) {
+                Yii::$app->session->setFlash('info', 'No mapped data to insert.');
                 return $this->redirect(['view', 'id' => $id]);
             }
 
-            // FILTER EXISTING ENTITY
+            $columns = array_keys($pgRows[0]);
 
-            $sourceIds = array_column($RAW_DATA, 'id');
-
-            $existingReferences = EntitySystem::find()
-                ->select('entity_reference')
-                ->where([
-                    'system_code' => $model->system_code,
-                    'entity_reference' => $sourceIds
-                ])
-                ->column();
-
-            $existingMap = array_flip($existingReferences);
-
-            $entityRows = [];
-            $entitySystemRows = [];
-            $entityAffiliationRows = [];
-            $sourceIdToEntityId = [];
-
-            foreach ($RAW_DATA as $data) {
-
-                if (isset($existingMap[$data['id']])) {
-                    continue;
+            foreach ($columns as $col) {
+                if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                    throw new Exception("Invalid column name: {$col}");
                 }
-
-                $execute_list[] = $data;
-
-                $entityId = MyHelper::genEntityId();
-                $sourceIdToEntityId[$data['id']] = $entityId;
-                $uuid = MyHelper::genuuid();
-                $now = date('Y-m-d H:i:s');
-
-                $entityRows[] = [
-                    $uuid,
-                    $entityId,
-                    'active',
-                    'unknown',
-                    $model->bridge_table_target
-                ];
-
-                $entitySystemRows[] = [
-                    MyHelper::genuuid(),
-                    $entityId,
-                    $model->system_code,
-                    $data['id'],
-                    $now,
-                    $now
-                ];
-
-                $entityAffiliationRows[] = [
-                    MyHelper::genuuid(),
-                    $entityId,
-                    $data['id'],
-                    'IJN'
-                ];
             }
 
-            //  MYSQL BATCH INSERT
+            $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
 
-            $transaction = Yii::$app->db->beginTransaction();
+            $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            ]);
 
-            try {
+            // Fetch actual columns present in the target table
+            $colStmt = $pdo->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
+            $colStmt->execute([':table' => $model->bridge_table_target]);
+            $existingCols = $colStmt->fetchAll(\PDO::FETCH_COLUMN);
 
-                if (!empty($entityRows)) {
+            // filter out any target columns that do not actually exist in the target table
+            $missing = array_diff($columns, $existingCols ?: []);
+            if (!empty($missing)) {
+                Yii::warning('Missing target columns: ' . implode(', ', $missing), __METHOD__);
+                Yii::$app->session->setFlash('warning', 'Some target columns do not exist in warehouse table and will be skipped: ' . implode(', ', $missing));
 
-                    Yii::$app->db->createCommand()->batchInsert(
-                        Entity::tableName(),
-                        ['id', 'entity_id', 'status', 'is_alive', 'table_target'],
-                        $entityRows
-                    )->execute();
-
-                    Yii::$app->db->createCommand()->batchInsert(
-                        EntitySystem::tableName(),
-                        ['id', 'entity_id', 'system_code', 'entity_reference', 'created_at_data', 'updated_at_data'],
-                        $entitySystemRows
-                    )->execute();
-
-                    Yii::$app->db->createCommand()->batchInsert(
-                        EntityAffiliation::tableName(),
-                        ['id', 'entity_id', 'entity_reference', 'affiliation_code'],
-                        $entityAffiliationRows
-                    )->execute();
-                }
-
-                $transaction->commit();
-            } catch (\Throwable $e) {
-                $transaction->rollBack();
-                throw $e;
-            }
-
-            // BULK INSERT POSTGRES
-
-            if (!empty($execute_list)) {
-
-                if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_target)) {
-                    throw new Exception("Invalid target table name.");
-                }
-
-                $bridgeCols = BridgeColumn::find()
-                    ->where(['bridge_id' => $id])
-                    ->all();
-
-                $mapTargetToSource = [];
-                $targetTypeMap = [];
-                foreach ($bridgeCols as $bc) {
-                    $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
-                    $targetTypeMap[$bc->target_column_name] = $bc->column_type;
-                }
-
-                $pgRows = [];
-
-                foreach ($execute_list as $row) {
-                    $mapped = [];
-                    foreach ($mapTargetToSource as $targetCol => $sourceCol) {
-                        $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
-                        // Accept variations like 'patient_id', 'patient id', 'patient-id'
-                        if (preg_match('/patient[_\s-]?id/i', $type)) {
-                            // For patient id columns, store the generated entity_id
-                            $mapped[$targetCol] = $sourceIdToEntityId[$row['id']] ?? null;
-                        } else {
-                            $mapped[$targetCol] = array_key_exists($sourceCol, $row)
-                                ? $row[$sourceCol]
-                                : null;
-                        }
-                    }
-                    $pgRows[] = $mapped;
-                }
-
-                if (empty($pgRows)) {
-                    Yii::$app->session->setFlash('info', 'No mapped data to insert.');
+                // remove missing columns from columns list and from pgRows
+                $columns = array_values(array_intersect($columns, $existingCols ?: []));
+                if (empty($columns)) {
+                    Yii::$app->session->setFlash('info', 'No valid target columns remain after filtering.');
                     return $this->redirect(['view', 'id' => $id]);
                 }
-
-                $columns = array_keys($pgRows[0]);
-
-                foreach ($columns as $col) {
-                    if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
-                        throw new Exception("Invalid column name: {$col}");
-                    }
+                foreach ($pgRows as &$r) {
+                    $r = array_intersect_key($r, array_flip($columns));
                 }
-
-                $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
-
-                $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                ]);
-
-                // Fetch actual columns present in the target table
-                $colStmt = $pdo->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
-                $colStmt->execute([':table' => $model->bridge_table_target]);
-                $existingCols = $colStmt->fetchAll(\PDO::FETCH_COLUMN);
-
-                // filter out any target columns that do not actually exist in the target table
-                $missing = array_diff($columns, $existingCols ?: []);
-                if (!empty($missing)) {
-                    Yii::warning('Missing target columns: ' . implode(', ', $missing), __METHOD__);
-                    Yii::$app->session->setFlash('warning', 'Some target columns do not exist in warehouse table and will be skipped: ' . implode(', ', $missing));
-
-                    // remove missing columns from columns list and from pgRows
-                    $columns = array_values(array_intersect($columns, $existingCols ?: []));
-                    if (empty($columns)) {
-                        Yii::$app->session->setFlash('info', 'No valid target columns remain after filtering.');
-                        return $this->redirect(['view', 'id' => $id]);
-                    }
-                    foreach ($pgRows as &$r) {
-                        $r = array_intersect_key($r, array_flip($columns));
-                    }
-                    unset($r);
-                }
-
-                // Now build values and params based on the filtered columns
-                $values = [];
-                $params = [];
-                foreach ($pgRows as $i => $row) {
-                    $placeholders = [];
-                    foreach ($columns as $col) {
-                        $param = ":{$col}_{$i}";
-                        $placeholders[] = $param;
-                        $params[$param] = $row[$col] ?? null;
-                    }
-                    $values[] = "(" . implode(',', $placeholders) . ")";
-                }
-
-                $quotedCols = array_map(function ($c) {
-                    return '"' . $c . '"';
-                }, $columns);
-
-                $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
-
-                $pdo->beginTransaction();
-
-                try {
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($params);
-                    $pdo->commit();
-                } catch (\Throwable $e) {
-                    $pdo->rollBack();
-                    throw $e;
-                }
+                unset($r);
             }
-        } else {
-            echo '<pre>';print_r('dependen');exit;
+
+            // Now build values and params based on the filtered columns
+            $values = [];
+            $params = [];
+            foreach ($pgRows as $i => $row) {
+                $placeholders = [];
+                foreach ($columns as $col) {
+                    $param = ":{$col}_{$i}";
+                    $placeholders[] = $param;
+                    $params[$param] = $row[$col] ?? null;
+                }
+                $values[] = "(" . implode(',', $placeholders) . ")";
+            }
+
+            $quotedCols = array_map(function ($c) {
+                return '"' . $c . '"';
+            }, $columns);
+
+            $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
+
+            $pdo->beginTransaction();
+
+            try {
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+                $pdo->commit();
+            } catch (\Throwable $e) {
+                $pdo->rollBack();
+                throw $e;
+            }
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');
