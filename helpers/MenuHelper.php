@@ -140,7 +140,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'label' => '<i class="ri-global-line"></i> <span>Datawarehouse</span>',
-                'url' => ['entity/index'],
+                'url' => ['datawarehouse/index'],
                 'disable' => true,
                 'visible' => Yii::$app->user->can('admin')
             ];
