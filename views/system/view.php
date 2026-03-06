@@ -222,8 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ];
 
                             $dataInfo = DBHelper::getDatabaseInfoFromCache($params);
-                            echo '<pre>';print_r($dataInfo);exit;
-                            $tables = $dataInfo['result']['data']['tables'] ?? [];
+                            $tables = $dataInfo['result']['tables'] ?? [];
                             $status = $dataInfo['status'] ?? null;
                             $message = $dataInfo['message'] ?? ($dataInfo['result']['message'] ?? null);
 
