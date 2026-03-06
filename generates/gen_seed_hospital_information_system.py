@@ -67,10 +67,10 @@ def rand_digits(n=8):
 
 
 FIRST_NAMES = [
-    'Agus', 'Budi', 'Citra', 'Dewi', 'Eka', 'Fajar', 'Gita', 'Hendra', 'Indra', 'Joko',
-    'Kiki', 'Lia', 'Maya', 'Nina', 'Oka', 'Putri', 'Rina', 'Sari', 'Tono', 'Wati'
+    'Ahmad', 'Muhammad', 'Abdul', 'Azlan', 'Haziq', 'Nur', 'Siti', 'Aisyah', 'Farah', 'Hannah',
+    'Amir', 'Hafiz', 'Syafiq', 'Izzah', 'Roslan', 'Liyana', 'Zahid', 'Adilah', 'Maya', 'Nurul'
 ]
-LAST_NAMES = ['Santoso', 'Wijaya', 'Pratama', 'Setiawan', 'Susanto', 'Saputra', 'Hidayat']
+LAST_NAMES = ['Ismail', 'Hassan', 'Rahman', 'Ahmad', 'Ali', 'Tan', 'Lim', 'Wong', 'Singh', 'Raj', 'Kumar', 'Zainal', 'Othman', 'Abdul', 'Khan', 'Salleh']
 
 
 def random_name():
@@ -124,8 +124,8 @@ def seed(conn, args):
         gender = random.choice(['male', 'female'])
         religion = random.choice(['Islam', 'Christian', 'Hindu', 'Buddha', 'Other'])
         marital_status = random.choice(['single', 'married', 'divorced'])
-        city = random.choice(['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Yogyakarta'])
-        province = 'Some Province'
+        city = random.choice(['Kuala Lumpur', 'George Town', 'Johor Bahru', 'Kota Kinabalu', 'Kuching', 'Ipoh', 'Melaka', 'Alor Setar', 'Seremban', 'Shah Alam', 'Petaling Jaya', 'Putrajaya'])
+        province = random.choice(['Selangor', 'Kuala Lumpur', 'Johor', 'Sabah', 'Sarawak', 'Penang', 'Perak', 'Melaka', 'Kedah', 'Negeri Sembilan'])
         residential = f'{random.randint(1,200)} Jalan Example'
         race = 'Asian'
         address = f'{residential}, {city}'
