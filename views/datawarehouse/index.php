@@ -61,16 +61,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
 
-                    // create mermaid graph definition
+                    // create mermaid graph definition (sanitize labels to avoid syntax errors)
                     $mermaid = "graph LR\n";
                     foreach ($nodes as $t => $n) {
-                        $mermaid .= $n['id'] . '[' . str_replace("\n", ' ', addslashes($n['label'])) . "]\n";
+                        // sanitize label: remove problematic characters and newlines
+                        $safeLabel = str_replace(["\\", '"', "\n", "|", "[", "]"], ['', '', ' ', ' ', ' ', ' '], $n['label']);
+                        $mermaid .= $n['id'] . '["' . $safeLabel . '"]\n';
                     }
                     foreach ($edges as $e) {
                         list($from, $to, $col) = $e;
                         $fromId = $nodes[$from]['id'];
                         $toId = $nodes[$to]['id'];
-                        $mermaid .= "$fromId -->|" . addslashes($col) . "| $toId\n";
+                        // sanitize edge label
+                        $safeEdge = str_replace(["\\", '"', "|", "\n"], ['', '', ' ', ' '], $col);
+                        $mermaid .= "$fromId --|" . $safeEdge . "| $toId\n";
                     }
                 ?>
 
