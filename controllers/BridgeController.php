@@ -361,9 +361,14 @@ class BridgeController extends Controller
                 ]);
 
                 // Fetch actual columns present in the target table
-                $colStmt = $pdo->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
+                $colStmt = $pdo->prepare("SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
                 $colStmt->execute([':table' => $model->bridge_table_target]);
-                $existingCols = $colStmt->fetchAll(\PDO::FETCH_COLUMN);
+                $colInfoRows = $colStmt->fetchAll(\PDO::FETCH_ASSOC);
+                $existingCols = array_map(function($r){ return $r['column_name']; }, $colInfoRows);
+                $colMaxLenMap = [];
+                foreach ($colInfoRows as $ir) {
+                    $colMaxLenMap[$ir['column_name']] = isset($ir['character_maximum_length']) ? (int)$ir['character_maximum_length'] : null;
+                }
 
                 // filter out any target columns that do not actually exist in the target table
                 $missing = array_diff($columns, $existingCols ?: []);
@@ -391,7 +396,12 @@ class BridgeController extends Controller
                     foreach ($columns as $col) {
                         $param = ":{$col}_{$i}";
                         $placeholders[] = $param;
-                        $params[$param] = $row[$col] ?? null;
+                        $val = $row[$col] ?? null;
+                        if (is_string($val) && !empty($colMaxLenMap[$col]) && mb_strlen($val) > $colMaxLenMap[$col]) {
+                            Yii::warning("Truncating value for column {$col} from length " . mb_strlen($val) . " to {$colMaxLenMap[$col]}", __METHOD__);
+                            $val = mb_substr($val, 0, $colMaxLenMap[$col]);
+                        }
+                        $params[$param] = $val;
                     }
                     $values[] = "(" . implode(',', $placeholders) . ")";
                 }
