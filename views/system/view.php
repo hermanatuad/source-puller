@@ -205,7 +205,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table class="table table-hover align-middle table-nowrap mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Status</th>
                                 <th>Table Name</th>
                                 <th>Actions</th>
                             </tr>
@@ -230,11 +229,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                                 <?php foreach ($tables as $table): ?>
                                     <tr>
-                                        <td>
-                                        </td>
                                         <td><?= Html::encode($table['name'] ?: '-') ?></td>
                                         <td>
-                                            <?= Html::a('Config', ['bridge/view', 'system_code' => $model->system_code, 'bridge_table_source' => $table['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-show-table" data-url="<?= Html::encode(Url::to(['system/table-data', 'id' => $model->id, 'table' => $table['name']])) ?>">View</button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -257,3 +254,77 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<!-- Table data modal -->
+<div class="modal fade" id="modal-table-data" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Table Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-table-message" class="mb-2"></div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered" id="modal-table-preview">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+// Register JS to handle click and fetch table data
+$this->registerJs(<<<JS
+$(document).on('click', '.btn-show-table', function () {
+    var btn = $(this);
+    var url = btn.data('url');
+    var modal = new bootstrap.Modal(document.getElementById('modal-table-data'));
+    $('#modal-table-message').text('Loading...');
+    $('#modal-table-preview thead').empty();
+    $('#modal-table-preview tbody').empty();
+    modal.show();
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        dataType: 'json'
+    }).done(function (res) {
+        if (res.status === 'success') {
+            var cols = res.data.columns || [];
+            var rows = res.data.rows || [];
+            var thead = $('#modal-table-preview thead');
+            var tbody = $('#modal-table-preview tbody');
+            var trh = $('<tr/>');
+            cols.forEach(function (c) { trh.append($('<th/>').text(c)); });
+            thead.append(trh);
+
+            rows.forEach(function (r) {
+                var tr = $('<tr/>');
+                cols.forEach(function (c) {
+                    var val = r[c];
+                    if (val === null) val = 'NULL';
+                    tr.append($('<td/>').text(String(val)));
+                });
+                tbody.append(tr);
+            });
+
+            $('#modal-table-message').text(rows.length + ' row(s) shown.');
+        } else {
+            $('#modal-table-message').text(res.message || 'Failed to load data');
+        }
+    }).fail(function (xhr) {
+        var text = 'Request failed';
+        try { text = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText; } catch (e) {}
+        $('#modal-table-message').text(text);
+    });
+});
+JS
+);
+?>

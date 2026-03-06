@@ -210,6 +210,69 @@ class SystemController extends Controller
     }
 
     /**
+     * Return sample rows for a table from the system's database.
+     * @param string $id System id
+     * @param string $table Table name
+     * @return \yii\web\Response
+     */
+    public function actionTableData($id, $table)
+    {
+        $model = $this->findModel($id);
+        if (!$model) {
+            return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
+        }
+
+        // Basic whitelist validation for table names to avoid injection
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+            return $this->asJson(['status' => 'error', 'message' => 'Invalid table name.']);
+        }
+
+        if ($model->system_type !== 'mysql') {
+            return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for table preview.']);
+        }
+
+        $hostname = $model->hostname;
+        $username = $model->username;
+        $password = $model->password;
+        $database = $model->database_name;
+        $port = $model->port;
+
+        try {
+            $mysqli = new \mysqli($hostname, $username, $password, $database, $port);
+            if ($mysqli->connect_error) {
+                throw new \Exception('Connection failed: ' . $mysqli->connect_error);
+            }
+
+            $safeTable = $mysqli->real_escape_string($table);
+            $sql = "SELECT * FROM `" . $safeTable . "` LIMIT 50";
+            $res = $mysqli->query($sql);
+            if ($res === false) {
+                throw new \Exception('Query error: ' . $mysqli->error);
+            }
+
+            $rows = [];
+            $columns = [];
+            if ($res->field_count) {
+                $meta = $res->fetch_fields();
+                foreach ($meta as $m) {
+                    $columns[] = $m->name;
+                }
+            }
+
+            while ($r = $res->fetch_assoc()) {
+                $rows[] = $r;
+            }
+
+            $res->free();
+            $mysqli->close();
+
+            return $this->asJson(['status' => 'success', 'message' => 'OK', 'data' => ['columns' => $columns, 'rows' => $rows]]);
+        } catch (\Exception $e) {
+            return $this->asJson(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * Finds the System model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id ID
