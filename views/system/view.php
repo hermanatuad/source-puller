@@ -212,8 +212,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         </thead>
                         <tbody>
                             <?php
-                            $dataInfo = DBHelper::getDatabaseInfoFromCache($model);
+                            $params = [
+                                'system_code' => $model->system_code,
+                                'hostname' => $model->hostname,
+                                'username' => $model->username,
+                                'password' => $model->password,
+                                'port' => $model->port,
+                                'database_name' => $model->database_name,
+                            ];
+
+                            $dataInfo = DBHelper::getDatabaseInfoFromCache($params);
                             $tables = $dataInfo['result']['data']['tables'] ?? [];
+                            $status = $dataInfo['status'] ?? null;
+                            $message = $dataInfo['message'] ?? ($dataInfo['result']['message'] ?? null);
+
                             if (!empty($tables)):
                             ?>
                                 <?php foreach ($tables as $table): ?>
@@ -228,7 +240,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="2" class="text-center text-muted">No permissions assigned</td>
+                                    <td colspan="3" class="text-center text-muted">
+                                        <?php if ($status === 'error' || $status === 'warning'): ?>
+                                            <div class="small text-muted"><?= Html::encode($message ?? 'Failed to retrieve structure from source database') ?></div>
+                                        <?php else: ?>
+                                            <div class="small text-muted">No tables available or no permissions assigned</div>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
