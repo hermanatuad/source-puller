@@ -35,62 +35,87 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (empty($tables)) {
                     echo '<div class="alert alert-info">No datawarehouse tables available in cache.</div>';
                 } else {
-                    $accordionId = 'dwAccordion';
-                    ?>
-                    <div class="accordion" id="<?= $accordionId ?>">
-                        <?php foreach ($tables as $tableName => $meta) {
-                            $cols = $meta['columns'] ?? [];
-                            $safeId = 't_' . md5($tableName);
-                            ?>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading-<?= $safeId ?>">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $safeId ?>" aria-expanded="false" aria-controls="collapse-<?= $safeId ?>">
-                                        <div class="me-3">
-                                            <strong><?= Html::encode($tableName) ?></strong>
-                                        </div>
-                                        <div class="text-muted small ms-2">
-                                            <?= Html::encode($meta['columns_count'] ?? count($cols)) ?> col • <?= Html::encode($meta['total_size_mb'] ?? '') ?> MB
-                                        </div>
-                                    </button>
-                                </h2>
-                                <div id="collapse-<?= $safeId ?>" class="accordion-collapse collapse" aria-labelledby="heading-<?= $safeId ?>" data-bs-parent="#<?= $accordionId ?>">
-                                    <div class="accordion-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <div>
-                                                <div class="small text-muted">Columns: <?= Html::encode(count($cols)) ?></div>
-                                            </div>
-                                            <div>
-                                                <?= Html::a('View Schema', ['datawarehouse/view', 'table' => $tableName], ['class' => 'btn btn-sm btn-outline-primary me-2']) ?>
-                                            </div>
-                                        </div>
+                    // Build a simple relation graph using column name heuristics (columns ending with _id)
+                    $nodes = [];
+                    $edges = [];
+                    $tableNames = array_keys($tables);
 
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-bordered mb-0">
-                                                <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Type</th>
-                                                    <th>Nullable</th>
-                                                    <th>Default</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <?php foreach ($cols as $c): ?>
-                                                    <tr>
-                                                        <td><?= Html::encode($c['name'] ?? '') ?></td>
-                                                        <td><?= Html::encode($c['data_type'] ?? '') ?></td>
-                                                        <td><?= (!empty($c['nullable']) ? 'YES' : 'NO') ?></td>
-                                                        <td><?= Html::encode($c['default'] ?? '') ?></td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
+                    foreach ($tables as $tname => $meta) {
+                        $cols = $meta['columns'] ?? [];
+                        $label = $tname . "\n(" . (count($cols)) . " cols)";
+                        $id = 'n_' . md5($tname);
+                        $nodes[$tname] = ['id' => $id, 'label' => $label];
+                    }
+
+                    foreach ($tables as $tname => $meta) {
+                        $cols = $meta['columns'] ?? [];
+                        foreach ($cols as $c) {
+                            $colName = $c['name'] ?? '';
+                            if (preg_match('/^([a-zA-Z0-9]+)_id$/', $colName, $m)) {
+                                $ref = $m[1];
+                                // if referenced table exists, create edge
+                                if (in_array($ref, $tableNames, true)) {
+                                    $edges[] = [$tname, $ref, $colName];
+                                }
+                            }
+                        }
+                    }
+
+                    // create mermaid graph definition
+                    $mermaid = "graph LR\n";
+                    foreach ($nodes as $t => $n) {
+                        $mermaid .= $n['id'] . '[' . str_replace("\n", ' ', addslashes($n['label'])) . "]\n";
+                    }
+                    foreach ($edges as $e) {
+                        list($from, $to, $col) = $e;
+                        $fromId = $nodes[$from]['id'];
+                        $toId = $nodes[$to]['id'];
+                        $mermaid .= "$fromId -->|" . addslashes($col) . "| $toId\n";
+                    }
+                    ?>
+
+                    <div id="dw-graph">
+                        <div class="mb-2 small text-muted">Click nodes to open schema view.</div>
+                        <div class="mermaid" id="dwMermaid">
+<?= $mermaid ?>
+                        </div>
                     </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            if (typeof mermaid !== 'undefined') {
+                                mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+                                // add click handlers: map node ids back to table names
+                                var mapping = {};
+<?php foreach ($nodes as $t => $n): ?>
+                                mapping['<?= $n['id'] ?>'] = '<?= addslashes($t) ?>';
+<?php endforeach; ?>
+
+                                // delegate click events on SVG nodes
+                                setTimeout(function () {
+                                    var svg = document.querySelector('#dwMermaid svg');
+                                    if (!svg) return;
+                                    svg.addEventListener('click', function (ev) {
+                                        var target = ev.target;
+                                        // walk up to group with id starting with 'node-'
+                                        while (target && target !== svg) {
+                                            if (target.id && target.id.indexOf('n_') === 0) {
+                                                var tid = target.id;
+                                                var tname = mapping[tid];
+                                                if (tname) {
+                                                    window.location = '<?= Url::to(['datawarehouse/view']) ?>?table=' + encodeURIComponent(tname);
+                                                }
+                                                return;
+                                            }
+                                            target = target.parentElement;
+                                        }
+                                    }, false);
+                                }, 500);
+                            }
+                        });
+                    </script>
                     <?php
                 }
                 ?>
