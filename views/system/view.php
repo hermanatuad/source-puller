@@ -194,6 +194,38 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Nested Sortables List with Handle</h4>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <p class="text-muted">Use <code>nested-list nested-sortable-handle</code> class to list-group class to set a nested list with sortable items.</p>
+
+                <div class="list-group col nested-list nested-sortable-handle">
+                    <div class="list-group-item nested-1"><i class="ri-drag-move-fill align-bottom handle"></i>Item 1.1
+                        <div class="list-group nested-list nested-sortable-handle">
+                            <div class="list-group-item nested-2"><i class="ri-drag-move-fill align-bottom handle"></i>Item 2.1</div>
+                            <div class="list-group-item nested-2"><i class="ri-drag-move-fill align-bottom handle"></i>Item 2.2
+                                <div class="list-group nested-list nested-sortable-handle">
+                                    <div class="list-group-item nested-3"><i class="ri-drag-move-fill align-bottom handle"></i>Item 3.1</div>
+                                    <div class="list-group-item nested-3"><i class="ri-drag-move-fill align-bottom handle"></i>Item 3.2</div>
+                                    <div class="list-group-item nested-3"><i class="ri-drag-move-fill align-bottom handle"></i>Item 3.3</div>
+                                    <div class="list-group-item nested-3"><i class="ri-drag-move-fill align-bottom handle"></i>Item 3.4</div>
+                                </div>
+                            </div>
+                            <div class="list-group-item nested-2"><i class="ri-drag-move-fill align-bottom handle"></i>Item 2.3</div>
+                            <div class="list-group-item nested-2"><i class="ri-drag-move-fill align-bottom handle"></i>Item 2.4</div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end card-body -->
+        </div><!-- end card -->
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">
                     <i class="ri-server-line me-2"></i>Data Sources
@@ -255,7 +287,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <button type="button" class="btn btn-sm btn-outline-primary btn-show-table" data-url="<?= Html::encode(Url::to(['system/table-data', 'id' => $model->id, 'table' => $table['name']])) ?>">View</button>
                                         </td>
                                     </tr>
