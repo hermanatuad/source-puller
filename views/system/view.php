@@ -275,6 +275,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                         </div>
                                                         <div class="modal-body">
                                                             <div id="modal-table-message" class="mb-2"></div>
+                                                            <div id="modal-unlinked-columns" class="mb-2"></div>
                                                             <div class="table-responsive">
                                                                 <table class="table table-sm table-bordered" id="modal-table-preview">
                                                                     <thead></thead>
@@ -333,13 +334,20 @@ $(document).on('click', '.btn-show-table', function () {
         method: 'GET',
         dataType: 'json'
     }).done(function (res) {
-        if (res.status === 'success') {
+            if (res.status === 'success') {
             var cols = res.data.columns || [];
             var rows = res.data.rows || [];
+            var unlinked = res.data.unlinked_columns || [];
             var thead = $('#modal-table-preview thead');
             var tbody = $('#modal-table-preview tbody');
             var trh = $('<tr/>');
-            cols.forEach(function (c) { trh.append($('<th/>').text(c)); });
+            cols.forEach(function (c) {
+                var th = $('<th/>').text(c);
+                if (unlinked.indexOf(c) !== -1) {
+                    th.addClass('table-danger');
+                }
+                trh.append(th);
+            });
             thead.append(trh);
 
             rows.forEach(function (r) {
@@ -352,7 +360,16 @@ $(document).on('click', '.btn-show-table', function () {
                 tbody.append(tr);
             });
 
-            $('#modal-table-message').text(rows.length + ' row(s) shown.');
+            var msg = rows.length + ' row(s) shown.';
+            if (unlinked.length) {
+                msg += ' Unlinked columns: ' + unlinked.join(', ');
+                var list = $('<div/>').addClass('small text-danger').text('Unlinked: ' + unlinked.join(', '));
+                $('#modal-unlinked-columns').empty().append(list);
+            } else {
+                $('#modal-unlinked-columns').empty();
+            }
+
+            $('#modal-table-message').text(msg);
         } else {
             $('#modal-table-message').text(res.message || 'Failed to load data');
         }

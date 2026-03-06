@@ -259,6 +259,27 @@ class SystemController extends Controller
                 }
             }
 
+            // Determine which source columns are already linked for this system/table
+            $linkedColumns = [];
+            try {
+                $bridge = \app\models\Bridge::find()->where([
+                    'system_code' => $model->system_code,
+                    'bridge_table_source' => $table
+                ])->one();
+
+                if ($bridge) {
+                    foreach ($bridge->bridgeColumns as $bc) {
+                        if (!empty($bc->source_column_name)) {
+                            $linkedColumns[] = $bc->source_column_name;
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                // ignore relation errors
+            }
+
+            $unlinked = array_values(array_diff($columns, $linkedColumns));
+
             while ($r = $res->fetch_assoc()) {
                 $rows[] = $r;
             }
@@ -266,7 +287,7 @@ class SystemController extends Controller
             $res->free();
             $mysqli->close();
 
-            return $this->asJson(['status' => 'success', 'message' => 'OK', 'data' => ['columns' => $columns, 'rows' => $rows]]);
+            return $this->asJson(['status' => 'success', 'message' => 'OK', 'data' => ['columns' => $columns, 'rows' => $rows, 'unlinked_columns' => $unlinked]]);
         } catch (\Exception $e) {
             return $this->asJson(['status' => 'error', 'message' => $e->getMessage()]);
         }
