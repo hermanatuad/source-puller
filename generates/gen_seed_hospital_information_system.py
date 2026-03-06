@@ -73,8 +73,16 @@ FIRST_NAMES = [
 LAST_NAMES = ['Ismail', 'Hassan', 'Rahman', 'Ahmad', 'Ali', 'Tan', 'Lim', 'Wong', 'Singh', 'Raj', 'Kumar', 'Zainal', 'Othman', 'Abdul', 'Khan', 'Salleh']
 
 
-def random_name():
-    return f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}"
+def random_name(gender=None):
+    if gender is None:
+        gender = random.choice(['male', 'female'])
+    first = random.choice(FIRST_NAMES)
+    last = random.choice(LAST_NAMES)
+    use_particle = random.random() < 0.6
+    if use_particle:
+        particle = 'bin' if gender == 'male' else 'binti'
+        return f"{first} {particle} {last}"
+    return f"{first} {last}"
 
 
 def random_date_of_birth(min_age=0, max_age=90):
@@ -119,9 +127,9 @@ def seed(conn, args):
     for i in range(1, args.patients + 1):
         mrn = f"MR-{i:05d}"
         national_id = rand_digits(16)
-        full_name = random_name()
-        dob = random_date_of_birth(0, 90)
         gender = random.choice(['male', 'female'])
+        full_name = random_name(gender)
+        dob = random_date_of_birth(0, 90)
         religion = random.choice(['Islam', 'Christian', 'Hindu', 'Buddha', 'Other'])
         marital_status = random.choice(['single', 'married', 'divorced'])
         city = random.choice(['Kuala Lumpur', 'George Town', 'Johor Bahru', 'Kota Kinabalu', 'Kuching', 'Ipoh', 'Melaka', 'Alor Setar', 'Seremban', 'Shah Alam', 'Petaling Jaya', 'Putrajaya'])
