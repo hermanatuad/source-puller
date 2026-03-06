@@ -72,32 +72,35 @@ $this->params['breadcrumbs'][] = $this->title;
                         $toId = $nodes[$to]['id'];
                         $mermaid .= "$fromId -->|" . addslashes($col) . "| $toId\n";
                     }
-                    ?>
+                ?>
 
                     <div id="dw-graph">
                         <div class="mb-2 small text-muted">Click nodes to open schema view.</div>
                         <div class="mermaid" id="dwMermaid">
-<?= $mermaid ?>
+                            <?= $mermaid ?>
                         </div>
                     </div>
 
                     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
                     <script>
-                        document.addEventListener('DOMContentLoaded', function () {
+                        document.addEventListener('DOMContentLoaded', function() {
                             if (typeof mermaid !== 'undefined') {
-                                mermaid.initialize({ startOnLoad: true, theme: 'default' });
+                                mermaid.initialize({
+                                    startOnLoad: true,
+                                    theme: 'default'
+                                });
 
                                 // add click handlers: map node ids back to table names
                                 var mapping = {};
-<?php foreach ($nodes as $t => $n): ?>
-                                mapping['<?= $n['id'] ?>'] = '<?= addslashes($t) ?>';
-<?php endforeach; ?>
+                                <?php foreach ($nodes as $t => $n): ?>
+                                    mapping['<?= $n['id'] ?>'] = '<?= addslashes($t) ?>';
+                                <?php endforeach; ?>
 
                                 // delegate click events on SVG nodes
-                                setTimeout(function () {
+                                setTimeout(function() {
                                     var svg = document.querySelector('#dwMermaid svg');
                                     if (!svg) return;
-                                    svg.addEventListener('click', function (ev) {
+                                    svg.addEventListener('click', function(ev) {
                                         var target = ev.target;
                                         // walk up to group with id starting with 'node-'
                                         while (target && target !== svg) {
@@ -116,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         });
                     </script>
-                    <?php
+                <?php
                 }
                 ?>
             </div>
