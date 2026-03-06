@@ -15,6 +15,7 @@ $this->title = $model->system_name ?: $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 
 <div class="row">
@@ -361,6 +362,37 @@ $(document).on('click', '.btn-show-table', function () {
         $('#modal-table-message').text(text);
     });
 });
+JS
+);
+?>
+
+<?php
+// Initialize nested Sortable lists (handles: .handle)
+$this->registerJs(
+    <<<JS
+(function(){
+    function initNestedSortable(){
+        $('.nested-list').each(function(){
+            try {
+                new Sortable(this, {
+                    group: 'nested',
+                    animation: 150,
+                    handle: '.handle',
+                    fallbackOnBody: true,
+                    swapThreshold: 0.65
+                });
+            } catch (e) {
+                console.warn('Sortable init failed', e);
+            }
+        });
+    }
+
+    if (typeof Sortable !== 'undefined') {
+        initNestedSortable();
+    } else {
+        document.addEventListener('DOMContentLoaded', initNestedSortable);
+    }
+})();
 JS
 );
 ?>

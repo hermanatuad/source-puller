@@ -14,6 +14,12 @@ use yii\web\YiiAsset;
 AppAsset::register($this);
 YiiAsset::register($this);
 
+// Make Sortable.js available globally from local libs
+$this->registerJsFile('/libs/sortablejs/Sortable.min.js', [
+    'depends' => [\yii\web\JqueryAsset::class],
+    'position' => \yii\web\View::POS_END,
+]);
+
 ?>
 <?php $this->beginPage() ?>
 <!doctype html>
