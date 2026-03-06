@@ -313,6 +313,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 
+<script src="/libs/sortablejs/Sortable.min.js"></script>
 <?php
 // Register JS to handle click and fetch table data
 $this->registerJs(
