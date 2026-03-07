@@ -681,7 +681,14 @@ class BridgeController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        $bridgeColumns = BridgeColumn::find()->where(['bridge_id' => $id])->all();
+        foreach ($bridgeColumns as $bc) {
+            $bc->delete();
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }
