@@ -18,6 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
+<div id="container"></div>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
@@ -285,6 +287,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script src="/libs/sortablejs/Sortable.min.js"></script>
 <?php
+$this->registerJsFile('/react/bundle.js', ['position' => \yii\web\View::POS_END]);
 // Register JS to handle click and fetch table data
 $this->registerJs(
     <<<JS

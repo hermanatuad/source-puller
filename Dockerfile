@@ -1,3 +1,16 @@
+FROM node:20-alpine AS react-builder
+
+WORKDIR /app
+
+# copy react project
+COPY web/react/package.json web/react/package-lock.json* ./ 
+
+RUN npm install
+
+COPY web/react ./ 
+
+RUN npm run build
+
 FROM php:8.3-fpm-alpine
 
 # Install system dependencies

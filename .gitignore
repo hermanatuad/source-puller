@@ -50,3 +50,6 @@ tests/_support/_generated/
 
 config/db.php
 # docker/nginx/logs/
+
+web/react/dist/
+web/react/package-lock.json
