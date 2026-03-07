@@ -640,7 +640,8 @@ class BridgeController extends Controller
         }
 
         Yii::$app->session->setFlash('success', 'Bridge execution completed.');
-        return $this->redirect(['view', 'id' => $id]);
+        return $this->redirect(['index']);
+        // return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
