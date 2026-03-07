@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
                         'placeholder' => 'Enter target column name',
                         'class' => 'form-control',
                         'disabled' => true
-                    ]) ?>
+                    ])->label('Warehouse Column Name') ?>
                 </div>
 
                 <div class="col-md-4">
@@ -40,7 +40,7 @@ use yii\widgets\ActiveForm;
                         'class' => 'form-control',
                         'data-choices' => 'true',
                         'id' => 'source_column_name'
-                    ])->label('Column Source') ?>
+                    ])->label('Source Column Name') ?>
                 </div>
 
                 <div class="col-md-4">
