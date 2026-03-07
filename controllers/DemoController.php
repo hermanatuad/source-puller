@@ -55,14 +55,13 @@ class DemoController extends Controller
         if ($request->isPost) {
 
             $dwConfig = DWHelper::getConfig();
-            echo '<pre>';print_r($dwConfig);exit;
-            if (empty($dwConfig) || empty($dwConfig['dbname'])) {
+            if (empty($dwConfig) || empty($dwConfig['database'])) {
                 \Yii::$app->session->setFlash('error', 'Datawarehouse configuration is missing.');
                 return $this->redirect(['index']);
             }
 
             try {
-                $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s;', $dwConfig['host'] ?? 'localhost', $dwConfig['port'] ?? 5432, $dwConfig['dbname']);
+                $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s;', $dwConfig['hostname'] ?? 'localhost', $dwConfig['port'] ?? 5432, $dwConfig['database']);
                 $pdo = new \PDO($dsn, $dwConfig['username'] ?? null, $dwConfig['password'] ?? null, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
 
                 $tables = [];
