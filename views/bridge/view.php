@@ -90,7 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$column['name']] ?? ''] ?? 'N/A' ?>
                                         </td>
                                         <td>
-                                            <?= Html::a('Config', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-danger']) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -126,11 +126,14 @@ class BridgeColumnController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($bridge_id, $target_column_name)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModelBridge($bridge_id, $target_column_name);
+        if (!empty($model)) {
+            $model->delete();
+        }
 
-        return $this->redirect(['index']);
+        return $this->redirect(['bridge/view', 'id' => $bridge_id]);
     }
 
     /**
