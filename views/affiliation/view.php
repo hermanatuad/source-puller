@@ -55,8 +55,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         $code = $model->affiliation_code;
                         // Try several common table/column combinations
                         $tries = [
-                            ['patients', 'affiliation_code'],
-                            ['patients', 'affiliation_id'],
+                            ['patient', 'affiliation_code'],
+                            ['patient', 'affiliation_id'],
                             ['patient', 'affiliation_code'],
                             ['patient', 'affiliation_id'],
                             ['dim_patient', 'affiliation_code'],
