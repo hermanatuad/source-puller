@@ -73,11 +73,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                                             'class' => 'dropdown-item'
                                                         ]) ?>
                                                     </li>
-                                                    <li>
-                                                        <?= Html::a('<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit', ['update', 'id' => $model->id], [
-                                                            'class' => 'dropdown-item'
-                                                        ]) ?>
-                                                    </li>
                                                     <li class="dropdown-divider"></li>
                                                     <li>
                                                         <?= Html::beginForm(['delete', 'id' => $model->id], 'post', ['style' => 'display:inline']) ?>
