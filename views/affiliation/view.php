@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ['dim_patient', 'affiliation_code'],
                             ['dim_patient', 'affiliation_id'],
                         ];
+                        $dwErrors = [];
                         foreach ($tries as $t) {
                             list($table, $col) = $t;
                             $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
@@ -72,7 +73,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     break;
                                 }
                             } catch (\Exception $e) {
-                                // ignore and try next
+                                $msg = $e->getMessage();
+                                if (stripos($msg, 'relation') !== false || stripos($msg, 'does not exist') !== false) {
+                                    $dwErrors[] = "Table not found: $table";
+                                } elseif (stripos($msg, 'column') !== false) {
+                                    $dwErrors[] = "Column not found: $col";
+                                } else {
+                                    $dwErrors[] = $msg;
+                                }
+                                // try next combo
                             }
                         }
                         if ($dwCount === null) {
@@ -83,11 +92,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $dwCount = (int)$count;
                                 }
                             } catch (\Exception $e) {
-                                $dwError = $e->getMessage();
+                                $dwErrors[] = 'patients table not found';
                             }
                         }
+
+                        if ($dwCount === null) {
+                            $dwError = !empty($dwErrors) ? implode('; ', array_values(array_unique($dwErrors))) : 'No matching patients table/column found in DW';
+                        }
                     } catch (\Exception $e) {
-                        $dwError = $e->getMessage();
+                        $dwError = 'DW query error: ' . $e->getMessage();
                     }
                 } else {
                     $dwError = 'dbDataWarehouse not configured';
@@ -141,27 +154,47 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ['patient', 'affiliation_id'],
                                 ];
 
+                                $mysqlErrors = [];
                                 foreach ($tries as $t) {
                                     list($table, $col) = $t;
                                     $safeTable = $mysqli->real_escape_string($table);
                                     $safeCol = $mysqli->real_escape_string($col);
                                     $sql = "SELECT COUNT(*) AS cnt FROM `" . $safeTable . "` WHERE `" . $safeCol . "` = '" . $code . "'";
-                                    $res = @$mysqli->query($sql);
+                                    $res = $mysqli->query($sql);
                                     if ($res && ($row = $res->fetch_row())) {
                                         $count = (int)$row[0];
                                         $res->free();
                                         break;
+                                    }
+                                    if ($mysqli->errno) {
+                                        $mysqlErrors[] = $mysqli->error;
+                                        // reset error for next attempt
+                                        // no mysqli->clear_errors in older PHP, ignore
                                     }
                                 }
 
                                 if ($count === null) {
                                     // try total patients table without filter as fallback
                                     $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
-                                    $res2 = @$mysqli->query($fallbackSql);
+                                    $res2 = $mysqli->query($fallbackSql);
                                     if ($res2 && ($row2 = $res2->fetch_row())) {
                                         $count = (int)$row2[0];
                                         $res2->free();
+                                    } else {
+                                        if ($mysqli->errno) {
+                                            $mysqlErrors[] = $mysqli->error;
+                                        }
                                     }
+                                }
+
+                                if ($count === null && !empty($mysqlErrors)) {
+                                    // prefer short, friendly messages
+                                    $uniq = array_values(array_unique($mysqlErrors));
+                                    $err = implode('; ', array_map(function($m){
+                                        if (stripos($m, 'Unknown column') !== false) return 'Column not found';
+                                        if (stripos($m, 'doesn\'t exist') !== false) return 'Table not found';
+                                        return $m;
+                                    }, $uniq));
                                 }
 
                                 $mysqli->close();
