@@ -80,9 +80,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                                 <?php foreach ($columns as $column): ?>
                                     <?php
-                                        $colName = $column['name'] ?? null;
-                                        $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
-                                        $rowClass = $isLinked ? 'table-success' : 'table-warning';
+                                    $colName = $column['name'] ?? null;
+                                    $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
+                                    $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
                                         <td><?= Html::encode($colName ?: 'N/A') ?></td>
