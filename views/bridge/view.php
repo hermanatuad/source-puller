@@ -91,7 +91,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </td>
                                         <td>
                                             <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
-                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-danger']) ?>
+                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], [
+                                                'class' => 'btn btn-sm btn-outline-danger',
+                                                'data' => [
+                                                    'confirm' => 'Are you sure you want to delete this item?',
+                                                    'method' => 'post',
+                                                ],
+                                            ]) ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
