@@ -84,6 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </thead>
                             <tbody>
                                 <?php
+                                $totalCount = 0;
                                 foreach ($systems as $sys) {
                                     $count = null;
                                     $err = null;
@@ -179,6 +180,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $err = $e->getMessage();
                                     }
 
+                                    // accumulate total when we have a numeric count
+                                    if ($count !== null) {
+                                        $totalCount += (int)$count;
+                                    }
+
                                     echo '<tr>';
                                     echo '<td>' . Html::encode($sys->system_code) . '</td>';
                                     echo '<td>' . Html::encode($sys->system_type) . '</td>';
@@ -191,6 +197,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     echo '</tr>';
                                 }
                                 ?>
+                                <tr>
+                                    <td colspan="3" class="text-center">
+                                        Total:
+                                    </td>
+                                    <td>
+                                        <?= Html::encode($totalCount) ?>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
