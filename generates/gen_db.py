@@ -71,6 +71,57 @@ DATABASES_MYSQL = {
         );
     """,
 
+    "his02": """
+        CREATE TABLE patients (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            national_id VARCHAR(50) UNIQUE,
+            medical_record_number VARCHAR(50) UNIQUE NOT NULL,
+            full_name VARCHAR(100) NOT NULL,
+            date_of_birth DATE,
+            gender VARCHAR(10),
+            religion VARCHAR(10),
+            marital_status VARCHAR(20),
+            city VARCHAR(50),
+            province VARCHAR(50),
+            residential VARCHAR(100),
+            race VARCHAR(20),
+            address TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE visits (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id INT NOT NULL,
+            visit_date TIMESTAMP,
+            exit_date TIMESTAMP,
+            visit_type VARCHAR(30),
+            attending_doctor VARCHAR(100),
+            status VARCHAR(30),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (patient_id) REFERENCES patients(id)
+        );
+
+        CREATE TABLE services (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            service_code VARCHAR(30) UNIQUE NOT NULL,
+            service_name VARCHAR(100) NOT NULL,
+            service_type VARCHAR(30),
+            unit_price DECIMAL(12,2),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE billing (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            visit_id INT NOT NULL,
+            service_id INT NOT NULL,
+            quantity INT,
+            total_amount DECIMAL(12,2),
+            billing_date TIMESTAMP,
+            FOREIGN KEY (visit_id) REFERENCES visits(id),
+            FOREIGN KEY (service_id) REFERENCES services(id)
+        );
+    """,
+
     "laboratory_information_system": """
         CREATE TABLE patients (
             id INT AUTO_INCREMENT PRIMARY KEY,

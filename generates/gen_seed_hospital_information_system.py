@@ -122,10 +122,14 @@ def seed(conn, args):
                     print('Failed to clear table', t, e)
 
     patients = []
+    generated_mrns = set()
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(f'Generating {args.patients} patients...')
     for i in range(1, args.patients + 1):
-        mrn = f"MR-{i:05d}"
+        mrn = f"MR-{rand_digits(8)}"
+        while mrn in generated_mrns:
+            mrn = f"MR-{rand_digits(8)}"
+        generated_mrns.add(mrn)
         national_id = rand_digits(16)
         gender = random.choice(['male', 'female'])
         full_name = random_name(gender)
