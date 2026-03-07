@@ -6,7 +6,7 @@ Creates sample patients, services, visits and billing rows using simple random d
 Tries to use `mysql.connector`; falls back to `pymysql` if not available.
 
 Usage:
-  python generates/gen_seed_hospital_information_system.py --host 127.0.0.1 --user root --password '' --port 3306 --db hospital_information_system --patients 50
+  python generates/gen_seed_hospital_information_system.py --host 127.0.0.1 --user root --password '' --port 1234 --db hospital_information_system --patients 50
 """
 import argparse
 import random
