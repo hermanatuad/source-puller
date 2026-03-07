@@ -53,7 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td>
                                             <?php if (!empty($model->affiliations)): ?>
                                                 <?php foreach ($model->affiliations as $aff): ?>
-                                                    <?= Html::tag('span', Html::encode($aff->affiliation_code), ['class' => 'badge bg-secondary me-1']) ?>
+                                                    <?php
+                                                    $colors = ['bg-primary','bg-success','bg-warning','bg-danger','bg-info','bg-secondary','bg-dark','bg-light'];
+                                                    $i = abs(crc32((string)$aff->affiliation_code)) % count($colors);
+                                                    $badge = $colors[$i];
+                                                    $extra = strpos($badge, 'bg-light') !== false ? ' text-dark' : ' text-white';
+                                                    ?>
+                                                    <?= Html::tag('span', Html::encode($aff->affiliation_code), ['class' => 'badge ' . $badge . $extra . ' me-1']) ?>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
@@ -62,7 +68,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td>
                                             <?php if (!empty($model->systems)): ?>
                                                 <?php foreach ($model->systems as $sys): ?>
-                                                    <?= Html::tag('span', Html::encode($sys->system_code), ['class' => 'badge bg-info text-dark me-1', 'title' => Html::encode($sys->entity_reference)]) ?>
+                                                    <?php
+                                                    $sysColors = ['bg-info','bg-secondary','bg-success','bg-warning','bg-danger','bg-primary','bg-dark','bg-light'];
+                                                    $j = abs(crc32((string)$sys->system_code)) % count($sysColors);
+                                                    $sbadge = $sysColors[$j];
+                                                    $sextra = strpos($sbadge, 'bg-light') !== false ? ' text-dark' : ' text-white';
+                                                    ?>
+                                                    <?= Html::tag('span', Html::encode($sys->system_code), ['class' => 'badge ' . $sbadge . $sextra . ' me-1', 'title' => Html::encode($sys->entity_reference)]) ?>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
