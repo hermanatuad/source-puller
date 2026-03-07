@@ -103,6 +103,98 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+    <div class="col-md-12 mt-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Source Systems Patient Counts</h5>
+                <?php
+                $systems = \app\models\System::find()->where(['affiliation_code' => $model->affiliation_code])->all();
+                if (!empty($systems)) {
+                    ?>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>System</th>
+                                    <th>DB Type</th>
+                                    <th>Database</th>
+                                    <th>Patient Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    <?php
+                    foreach ($systems as $sys) {
+                        $count = null;
+                        $err = null;
+                        try {
+                            if ($sys->system_type === 'mysql') {
+                                $mysqli = new \mysqli($sys->hostname, $sys->username, $sys->password, $sys->database_name, $sys->port ?: 3306);
+                                if ($mysqli->connect_error) {
+                                    throw new \Exception('Connection failed: ' . $mysqli->connect_error);
+                                }
+
+                                $code = $mysqli->real_escape_string($model->affiliation_code);
+                                $tries = [
+                                    ['patients', 'affiliation_code'],
+                                    ['patients', 'affiliation_id'],
+                                    ['patient', 'affiliation_code'],
+                                    ['patient', 'affiliation_id'],
+                                ];
+
+                                foreach ($tries as $t) {
+                                    list($table, $col) = $t;
+                                    $safeTable = $mysqli->real_escape_string($table);
+                                    $safeCol = $mysqli->real_escape_string($col);
+                                    $sql = "SELECT COUNT(*) AS cnt FROM `" . $safeTable . "` WHERE `" . $safeCol . "` = '" . $code . "'";
+                                    $res = @$mysqli->query($sql);
+                                    if ($res && ($row = $res->fetch_row())) {
+                                        $count = (int)$row[0];
+                                        $res->free();
+                                        break;
+                                    }
+                                }
+
+                                if ($count === null) {
+                                    // try total patients table without filter as fallback
+                                    $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
+                                    $res2 = @$mysqli->query($fallbackSql);
+                                    if ($res2 && ($row2 = $res2->fetch_row())) {
+                                        $count = (int)$row2[0];
+                                        $res2->free();
+                                    }
+                                }
+
+                                $mysqli->close();
+                            } else {
+                                $err = 'Unsupported DB type';
+                            }
+                        } catch (\Throwable $e) {
+                            $err = $e->getMessage();
+                        }
+
+                        echo '<tr>';
+                        echo '<td>' . Html::encode($sys->system_code) . '</td>';
+                        echo '<td>' . Html::encode($sys->system_type) . '</td>';
+                        echo '<td>' . Html::encode($sys->database_name) . '</td>';
+                        if ($err !== null) {
+                            echo '<td class="text-danger">' . Html::encode($err) . '</td>';
+                        } else {
+                            echo '<td>' . Html::encode($count === null ? '-' : $count) . '</td>';
+                        }
+                        echo '</tr>';
+                    }
+                    ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php
+                } else {
+                    echo '<p class="text-muted">No source systems registered for this affiliation.</p>';
+                }
+                ?>
+            </div>
+        </div>
+    </div>
     <div class="col-md-12">
         <h4>Users for this affiliation</h4>
         <?php if (!empty($users)): ?>
