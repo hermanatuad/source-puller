@@ -7,6 +7,7 @@ use app\models\HospitalSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\helpers\DWHelper;
 
 /**
  * DemoController implements the CRUD actions for Hospital model.
@@ -25,6 +26,7 @@ class DemoController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'delete-datawarehouse' => ['POST'],
                     ],
                 ],
             ]
@@ -38,6 +40,54 @@ class DemoController extends Controller
      */
     public function actionIndex()
     {
+        return $this->render('index');
+    }
+
+    public function actionDeleteDatawarehouse()
+    {
+
+
+        $request = \Yii::$app->request;
+
+        if ($request->isPost) {
+            $confirm = $request->post('confirm');
+
+            if ($confirm !== 'YES_TRUNCATE_DW') {
+                \Yii::$app->session->setFlash('error', 'Confirmation missing. POST with `confirm=YES_TRUNCATE_DW` to proceed.');
+                return $this->redirect(['index']);
+            }
+
+            $dwConfig = DWHelper::getConfig();
+            if (empty($dwConfig) || empty($dwConfig['dbname'])) {
+                \Yii::$app->session->setFlash('error', 'Datawarehouse configuration is missing.');
+                return $this->redirect(['index']);
+            }
+
+            try {
+                $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s;', $dwConfig['host'] ?? 'localhost', $dwConfig['port'] ?? 5432, $dwConfig['dbname']);
+                $pdo = new \PDO($dsn, $dwConfig['username'] ?? null, $dwConfig['password'] ?? null, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+
+                $tables = [];
+                $stmt = $pdo->query("SELECT tablename FROM pg_tables WHERE schemaname='public'");
+                if ($stmt) {
+                    $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                }
+
+                $pdo->exec('SET session_replication_role = replica;');
+                foreach ($tables as $table) {
+                    // Quote identifier
+                    $tableQuoted = str_replace('"', '""', $table);
+                    $pdo->exec("TRUNCATE TABLE \"{$tableQuoted}\" CASCADE;");
+                }
+                $pdo->exec('SET session_replication_role = origin;');
+
+                \Yii::$app->session->setFlash('success', 'Datawarehouse truncated successfully.');
+            } catch (\Throwable $e) {
+                \Yii::$app->session->setFlash('error', 'Truncate failed: ' . $e->getMessage());
+            }
+
+            return $this->redirect(['index']);
+        }
 
         return $this->render('index');
     }

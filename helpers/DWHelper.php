@@ -27,6 +27,15 @@ class DWHelper
     ];
 
     /**
+     * Return DW connection config. Useful for CLI scripts that need credentials.
+     * @return array
+     */
+    public static function getConfig()
+    {
+        return self::$dwConfig;
+    }
+
+    /**
      * Format number to Indonesian Rupiah currency format
      * 
      * @param float|int $amount The amount to format

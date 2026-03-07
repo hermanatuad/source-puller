@@ -10,7 +10,7 @@ use yii\web\YiiAsset;
 /** @var app\models\UserSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Users Management';
+$this->title = 'Demo Prototype';
 $this->params['breadcrumbs'][] = $this->title;
 
 // Register YiiAsset for data-method support
@@ -26,11 +26,6 @@ $auth = Yii::$app->authManager;
                 <h4 class="card-title mb-0 flex-grow-1">
                     <i class="ri-user-line me-2"></i><?= Html::encode($this->title) ?>
                 </h4>
-                <div class="flex-shrink-0">
-                    <?= Html::a('<i class="ri-add-line align-bottom me-1"></i> Create User', ['create'], [
-                        'class' => 'btn btn-primary'
-                    ]) ?>
-                </div>
             </div>
 
 
@@ -49,7 +44,7 @@ $auth = Yii::$app->authManager;
                                     <i class="ri-key-2-line me-2 text-muted"></i>
                                     <?= Html::encode('Delete all datawarehouse & operational datawarehouse') ?>
                                 </td>
-                                <td><?= Html::a('<i class="ri-delete-bin-line"></i> Delete', ['delete'], [
+                                <td><?= Html::a('<i class="ri-delete-bin-line"></i> Delete', ['delete-datawarehouse'], [
                                         'class' => 'btn btn-danger btn-sm',
                                         'data-confirm' => 'Are you sure you want to delete all datawarehouse & operational datawarehouse?',
                                         'data-method' => 'post',
