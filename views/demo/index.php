@@ -42,11 +42,11 @@ $auth = Yii::$app->authManager;
                             <tr>
                                 <td>
                                     <i class="ri-key-2-line me-2 text-muted"></i>
-                                    <?= Html::encode('Delete all datawarehouse & operational datawarehouse') ?>
+                                    <?= Html::encode('Clear datawarehouse & operational datawarehouse') ?>
                                 </td>
-                                <td><?= Html::a('<i class="ri-delete-bin-line"></i> Delete', ['delete-datawarehouse'], [
-                                        'class' => 'btn btn-danger btn-sm',
-                                        'data-confirm' => 'Are you sure you want to delete all datawarehouse & operational datawarehouse?',
+                                <td><?= Html::a('<i class="ri-play-bin-line"></i> Run', ['delete-datawarehouse'], [
+                                        'class' => 'btn btn-primary btn-sm',
+                                        'data-confirm' => 'Are you sure you want to clear datawarehouse & operational datawarehouse?',
                                         'data-method' => 'post',
                                     ]) ?>
                                 </td>
