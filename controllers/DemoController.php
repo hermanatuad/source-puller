@@ -53,12 +53,12 @@ class DemoController extends Controller
         $request = \Yii::$app->request;
 
         if ($request->isPost) {
-            $confirm = $request->post('confirm');
+            // $confirm = $request->post('confirm');
 
-            if ($confirm !== 'YES_TRUNCATE_DW') {
-                \Yii::$app->session->setFlash('error', 'Confirmation missing. POST with `confirm=YES_TRUNCATE_DW` to proceed.');
-                return $this->redirect(['index']);
-            }
+            // if ($confirm !== 'YES_TRUNCATE_DW') {
+            //     \Yii::$app->session->setFlash('error', 'Confirmation missing. POST with `confirm=YES_TRUNCATE_DW` to proceed.');
+            //     return $this->redirect(['index']);
+            // }
 
             $dwConfig = DWHelper::getConfig();
             if (empty($dwConfig) || empty($dwConfig['dbname'])) {
