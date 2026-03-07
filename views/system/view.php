@@ -22,27 +22,33 @@ $this->params['breadcrumbs'][] = $this->title;
 <div id="container"></div>
 
 <script>
-var width = window.innerWidth;
-var height = window.innerHeight;
-
-var stage = new Konva.Stage({
+const stage = new Konva.Stage({
   container: 'container',
-  width: width,
-  height: height
+  width: 500,
+  height: 400,
 });
 
-var layer = new Konva.Layer();
-
-var circle = new Konva.Circle({
-  x: 100,
-  y: 100,
-  radius: 50,
-  fill: 'red',
-  draggable: true
-});
-
-layer.add(circle);
+// Create a layer
+const layer = new Konva.Layer();
 stage.add(layer);
+
+// Create a draggable rectangle
+const rect = new Konva.Rect({
+  x: 50,
+  y: 50,
+  width: 100,
+  height: 80,
+  fill: 'cornflowerblue',
+  shadowBlur: 5,
+  cornerRadius: 4,
+  draggable: true,
+});
+layer.add(rect);
+
+// Add event listener
+rect.on('click tap', () => {
+  rect.fill(Konva.Util.getRandomColor());
+});
 </script>
 
 <div class="row">
