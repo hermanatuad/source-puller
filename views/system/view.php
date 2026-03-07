@@ -1,5 +1,6 @@
 <?php
 
+use app\assets\KonvaAsset;
 use app\helpers\DBHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -15,10 +16,9 @@ $this->title = $model->system_name ?: $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+// KonvaAsset::register($this);
 
 ?>
-<script src="https://unpkg.com/konva@9/konva.min.js"></script>
-
 <div id="container"></div>
 
 <script>
