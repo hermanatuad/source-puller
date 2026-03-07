@@ -8,6 +8,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\helpers\DWHelper;
+use app\models\Entity;
+use app\models\EntityAffiliation;
+use app\models\EntitySystem;
 
 /**
  * DemoController implements the CRUD actions for Hospital model.
@@ -84,6 +87,36 @@ class DemoController extends Controller
                 \Yii::$app->session->setFlash('success', 'Datawarehouse truncated successfully.');
             } catch (\Throwable $e) {
                 \Yii::$app->session->setFlash('error', 'Truncate failed: ' . $e->getMessage());
+            }
+
+
+            $entitySystem = EntitySystem::find()->all();
+            try {
+                foreach ($entitySystem as $es) {
+                    $es->delete();
+                }
+
+                \Yii::$app->session->setFlash('success', 'Entity systems deleted successfully.');
+            } catch (\Exception $e) {
+                \Yii::$app->session->setFlash('error', 'Failed to delete entity systems.');
+            }
+            $entityAffiliation = EntityAffiliation::find()->all();
+            try {
+                foreach ($entityAffiliation as $ea) {
+                    $ea->delete();
+                }
+                \Yii::$app->session->setFlash('success', 'Entity affiliations deleted successfully.');
+            } catch (\Exception $e) {
+                \Yii::$app->session->setFlash('error', 'Failed to delete entity affiliations.');
+            }
+            $entity = Entity::find()->all();
+            try {
+                foreach ($entity as $e) {
+                    $e->delete();
+                }
+                \Yii::$app->session->setFlash('success', 'Entities deleted successfully.');
+            } catch (\Exception $e) {
+                \Yii::$app->session->setFlash('error', 'Failed to delete entities.');
             }
 
             return $this->redirect(['index']);
