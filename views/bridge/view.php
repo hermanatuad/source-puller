@@ -79,19 +79,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             if (!empty($columns)):
                             ?>
                                 <?php foreach ($columns as $column): ?>
-                                    <tr>
+                                    <?php
+                                        $colName = $column['name'] ?? null;
+                                        $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
+                                        $rowClass = $isLinked ? 'table-success' : 'table-warning';
+                                    ?>
+                                    <tr class="<?= $rowClass ?>">
+                                        <td><?= Html::encode($colName ?: 'N/A') ?></td>
+                                        <td><?= $bridgeColumnList[$colName] ?? 'N/A' ?></td>
+                                        <td><?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$colName] ?? ''] ?? 'N/A' ?></td>
                                         <td>
-                                            <?= Html::encode($column['name'] ?: 'N/A') ?></td>
-                                        </td>
-                                        <td>
-                                            <?= $bridgeColumnList[$column['name']] ?? 'N/A' ?>
-                                        </td>
-                                        <td>
-                                            <?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$column['name']] ?? ''] ?? 'N/A' ?>
-                                        </td>
-                                        <td>
-                                            <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], ['class' => 'btn btn-sm btn-outline-primary']) ?>
-                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $column['name']], [
+                                            <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $colName], [
                                                 'class' => 'btn btn-sm btn-outline-danger',
                                                 'data' => [
                                                     'confirm' => 'Are you sure you want to delete this item?',
