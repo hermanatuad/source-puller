@@ -128,8 +128,23 @@ class BridgeController extends Controller
         $dwTables  = array_combine($dwTables, $dwTables);
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                try {
+                    if ($model->save()) {
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+
+                    // Validation failed; flash readable errors
+                    $errors = $model->getErrors();
+                    $msg = [];
+                    foreach ($errors as $attr => $errList) {
+                        $msg[] = $attr . ': ' . implode('; ', $errList);
+                    }
+                    Yii::$app->session->setFlash('error', 'Failed to save Bridge: ' . implode(' | ', $msg));
+                } catch (\Throwable $e) {
+                    Yii::error('Bridge save exception: ' . $e->getMessage(), __METHOD__);
+                    Yii::$app->session->setFlash('error', 'Exception while saving Bridge: ' . $e->getMessage());
+                }
             }
         } else {
             $model->loadDefaultValues();
