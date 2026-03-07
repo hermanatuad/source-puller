@@ -176,7 +176,7 @@ class MenuHelper
             ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-user-line"></i> <span>Reset</span>',
+                'label' => '<i class="ri-history-line"></i> <span>Reset</span>',
                 'url' => ['demo/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
