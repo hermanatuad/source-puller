@@ -79,7 +79,9 @@ class SystemController extends Controller
         $model = new System();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
+                echo '<pre>';print_r($model);exit;
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
