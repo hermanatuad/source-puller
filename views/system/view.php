@@ -17,6 +17,33 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
 ?>
+<script src="https://unpkg.com/konva@9/konva.min.js"></script>
+
+<div id="container"></div>
+
+<script>
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+var stage = new Konva.Stage({
+  container: 'container',
+  width: width,
+  height: height
+});
+
+var layer = new Konva.Layer();
+
+var circle = new Konva.Circle({
+  x: 100,
+  y: 100,
+  radius: 50,
+  fill: 'red',
+  draggable: true
+});
+
+layer.add(circle);
+stage.add(layer);
+</script>
 
 <div class="row">
     <div class="col-lg-12">
