@@ -169,6 +169,18 @@ class MenuHelper
                 'visible' => Yii::$app->user->can('admin')
             ];
 
+            $menuItems[] = [
+                'type' => 'title',
+                'label' => 'Demo Prototype',
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
+            $menuItems[] = [
+                'label' => '<i class="ri-user-line"></i> <span>Reset</span>',
+                'url' => ['demo/index'],
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
             // $menuItems[] = [
             //     'label' => '<i class="ri-settings-3-line"></i> <span>Master</span>',
             //     'visible' => Yii::$app->user->can('admin'),
