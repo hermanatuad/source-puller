@@ -24,39 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'affiliation_code',
-            'affiliation_name',
-            'address',
-        ],
-    ]) ?>
-
-</div>
-
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Data Warehouse</h5>
-                <?php
-                $dwCount = null;
-                $dwError = null;
-                if (Yii::$app->has('dbDataWarehouse')) {
-                    try {
-                        $db = Yii::$app->dbDataWarehouse;
-                        $code = $model->affiliation_code;
-                        // Try several common table/column combinations
                         $tries = [
-                            ['patient', 'affiliation_code'],
-                            ['patient', 'affiliation_id'],
+                            ['patients', 'affiliation_code'],
+                            ['patients', 'affiliation_id'],
                             ['patient', 'affiliation_code'],
                             ['patient', 'affiliation_id'],
                             ['dim_patient', 'affiliation_code'],
@@ -65,10 +35,58 @@ $this->params['breadcrumbs'][] = $this->title;
                         $dwErrors = [];
                         foreach ($tries as $t) {
                             list($table, $col) = $t;
-                            $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
                             try {
+                                $tblExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table',
+                                    [':schema' => 'public', ':table' => $table]
+                                )->queryScalar();
+                                if (!$tblExists) {
+                                    $dwErrors[] = "Table not found: $table";
+                                    continue;
+                                }
+
+                                $colExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = :schema AND table_name = :table AND column_name = :col',
+                                    [':schema' => 'public', ':table' => $table, ':col' => $col]
+                                )->queryScalar();
+
+                                if (!$colExists) {
+                                    $dwErrors[] = "Column not found: $col (in $table)";
+                                    continue;
+                                }
+
+                                // both table and column exist, run count
+                                $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
                                 $count = $db->createCommand($sql, [':code' => $code])->queryScalar();
                                 if ($count !== false) {
+                                    $dwCount = (int)$count;
+                                    break;
+                                }
+                            } catch (\Exception $e) {
+                                $dwErrors[] = $e->getMessage();
+                            }
+                        }
+
+                        if ($dwCount === null) {
+                            // try total patients table without filter if it exists
+                            try {
+                                $exists = (int)$db->createCommand('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table', [':schema' => 'public', ':table' => 'patients'])->queryScalar();
+                                if ($exists) {
+                                    $count = $db->createCommand('SELECT COUNT(*) FROM "patients"')->queryScalar();
+                                    if ($count !== false) {
+                                        $dwCount = (int)$count;
+                                    }
+                                } else {
+                                    $dwErrors[] = 'patients table not found';
+                                }
+                            } catch (\Exception $e) {
+                                $dwErrors[] = $e->getMessage();
+                            }
+                        }
+
+                        if ($dwCount === null) {
+                            $dwError = !empty($dwErrors) ? implode('; ', array_values(array_unique($dwErrors))) : 'No matching patients table/column found in DW';
+                        }
                                     $dwCount = (int)$count;
                                     break;
                                 }
@@ -157,8 +175,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $mysqlErrors = [];
                                 foreach ($tries as $t) {
                                     list($table, $col) = $t;
+                                    // check table existence in information_schema
                                     $safeTable = $mysqli->real_escape_string($table);
                                     $safeCol = $mysqli->real_escape_string($col);
+                                    $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "'";
+                                    $tblRes = $mysqli->query($tblQ);
+                                    $tblExists = false;
+                                    if ($tblRes && ($r = $tblRes->fetch_row())) {
+                                        $tblExists = (int)$r[0] > 0;
+                                        $tblRes->free();
+                                    }
+
+                                    if (!$tblExists) {
+                                        $mysqlErrors[] = "Table not found: $table";
+                                        continue;
+                                    }
+
+                                    // check column existence
+                                    $colQ = "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "' AND column_name = '" . $safeCol . "'";
+                                    $colRes = $mysqli->query($colQ);
+                                    $colExists = false;
+                                    if ($colRes && ($rc = $colRes->fetch_row())) {
+                                        $colExists = (int)$rc[0] > 0;
+                                        $colRes->free();
+                                    }
+
+                                    if (!$colExists) {
+                                        $mysqlErrors[] = "Column not found: $col (in $table)";
+                                        continue;
+                                    }
+
+                                    // run safe count
                                     $sql = "SELECT COUNT(*) AS cnt FROM `" . $safeTable . "` WHERE `" . $safeCol . "` = '" . $code . "'";
                                     $res = $mysqli->query($sql);
                                     if ($res && ($row = $res->fetch_row())) {
@@ -166,35 +213,32 @@ $this->params['breadcrumbs'][] = $this->title;
                                         $res->free();
                                         break;
                                     }
-                                    if ($mysqli->errno) {
-                                        $mysqlErrors[] = $mysqli->error;
-                                        // reset error for next attempt
-                                        // no mysqli->clear_errors in older PHP, ignore
-                                    }
                                 }
 
                                 if ($count === null) {
-                                    // try total patients table without filter as fallback
-                                    $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
-                                    $res2 = $mysqli->query($fallbackSql);
-                                    if ($res2 && ($row2 = $res2->fetch_row())) {
-                                        $count = (int)$row2[0];
-                                        $res2->free();
-                                    } else {
-                                        if ($mysqli->errno) {
-                                            $mysqlErrors[] = $mysqli->error;
+                                    // try total patients table without filter as fallback if exists
+                                    $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = 'patients'";
+                                    $tblRes = $mysqli->query($tblQ);
+                                    $tblExists = false;
+                                    if ($tblRes && ($r = $tblRes->fetch_row())) {
+                                        $tblExists = (int)$r[0] > 0;
+                                        $tblRes->free();
+                                    }
+                                    if ($tblExists) {
+                                        $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
+                                        $res2 = $mysqli->query($fallbackSql);
+                                        if ($res2 && ($row2 = $res2->fetch_row())) {
+                                            $count = (int)$row2[0];
+                                            $res2->free();
                                         }
+                                    } else {
+                                        $mysqlErrors[] = 'patients table not found';
                                     }
                                 }
 
                                 if ($count === null && !empty($mysqlErrors)) {
-                                    // prefer short, friendly messages
                                     $uniq = array_values(array_unique($mysqlErrors));
-                                    $err = implode('; ', array_map(function($m){
-                                        if (stripos($m, 'Unknown column') !== false) return 'Column not found';
-                                        if (stripos($m, 'doesn\'t exist') !== false) return 'Table not found';
-                                        return $m;
-                                    }, $uniq));
+                                    $err = implode('; ', $uniq);
                                 }
 
                                 $mysqli->close();
