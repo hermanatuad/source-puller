@@ -11,7 +11,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 // Multi-database configuration generated from environment variables
 
 $mysqlHost = getenv('mysql_host') ?: getenv('db_host') ?: '127.0.0.1';
-$mysqlPort = getenv('mysql_port') ?: getenv('db_port') ?: '1234';
+$mysqlPort = getenv('mysql_port') ?: getenv('db_port') ?: '3456';
 $mysqlDbName = getenv('mysql_db_name') ?: getenv('db_name') ?: 'yii_test';
 $mysqlUsername = getenv('mysql_username') ?: getenv('db_username') ?: 'root';
 $mysqlPassword = getenv('mysql_password') ?: getenv('db_password') ?: '';

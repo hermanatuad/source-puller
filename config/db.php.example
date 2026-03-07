@@ -4,7 +4,7 @@
 
 // MySQL Configuration (Default Database)
 $mysqlHost = getenv('mysql_host') ?: 'localhost';
-$mysqlPort = getenv('mysql_port') ?: '1234';
+$mysqlPort = getenv('mysql_port') ?: '3456';
 $mysqlDbName = getenv('mysql_db_name') ?: 'yii_test';
 $mysqlUsername = getenv('mysql_username') ?: 'root';
 $mysqlPassword = getenv('mysql_password') ?: 'example';
