@@ -16,7 +16,7 @@ $this->title = $model->system_name ?: $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
-// KonvaAsset::register($this);
+KonvaAsset::register($this);
 
 ?>
 <div id="container"></div>
