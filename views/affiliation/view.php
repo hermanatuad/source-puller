@@ -15,10 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="affiliation-view">
+
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('<i class="ri-delete-bin-2-line"></i> Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -33,278 +35,281 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'affiliation_code',
             'affiliation_name',
-            'created_at:datetime',
+            'address',
         ],
     ]) ?>
 
 </div>
 
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Data Warehouse</h5>
 
-
-<?php
-// Initialize DW counters to avoid undefined variable
-$dwCount = null;
-$dwError = null;
-if (Yii::$app->has('dbDataWarehouse')) {
-    try {
-        $db = Yii::$app->dbDataWarehouse;
-        $code = $model->affiliation_code;
-        $tries = [
-            ['patients', 'affiliation_code'],
-            ['patients', 'affiliation_id'],
-            ['patient', 'affiliation_code'],
-            ['patient', 'affiliation_id'],
-            ['dim_patient', 'affiliation_code'],
-            ['dim_patient', 'affiliation_id'],
-        ];
-        $dwErrors = [];
-        foreach ($tries as $t) {
-            list($table, $col) = $t;
-            try {
-                $tblExists = (int)$db->createCommand(
-                    'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table',
-                    [':schema' => 'public', ':table' => $table]
-                )->queryScalar();
-                if (!$tblExists) {
-                    $dwErrors[] = "Table not found: $table";
-                    continue;
-                }
-
-                $colExists = (int)$db->createCommand(
-                    'SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = :schema AND table_name = :table AND column_name = :col',
-                    [':schema' => 'public', ':table' => $table, ':col' => $col]
-                )->queryScalar();
-
-                if (!$colExists) {
-                    $dwErrors[] = "Column not found: $col (in $table)";
-                    continue;
-                }
-
-                $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
-                $count = $db->createCommand($sql, [':code' => $code])->queryScalar();
-                if ($count !== false) {
-                    $dwCount = (int)$count;
-                    break;
-                }
-            } catch (\Exception $e) {
-                $dwErrors[] = $e->getMessage();
-            }
-        }
-
-        if ($dwCount === null) {
-            $exists = (int)$db->createCommand('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table', [':schema' => 'public', ':table' => 'patients'])->queryScalar();
-            if ($exists) {
-                try {
-                    $count = $db->createCommand('SELECT COUNT(*) FROM "patients"')->queryScalar();
-                    if ($count !== false) {
-                        $dwCount = (int)$count;
-                    }
-                } catch (\Exception $e) {
-                    $dwErrors[] = $e->getMessage();
-                }
-            } else {
-                $dwErrors[] = 'patients table not found';
-            }
-        }
-
-        if ($dwCount === null) {
-            $dwError = !empty($dwErrors) ? implode('; ', array_values(array_unique($dwErrors))) : 'No matching patients table/column found in DW';
-        }
-    } catch (\Exception $e) {
-        $dwError = 'DW query error: ' . $e->getMessage();
-    }
-} else {
-    $dwError = 'dbDataWarehouse not configured';
-}
-?>
-
-<?php if ($dwCount !== null): ?>
-    <p class="h2"><?= Html::encode($dwCount) ?></p>
-    <p class="text-muted">Patients (matching affiliation when available)</p>
-<?php else: ?>
-    <p class="text-danger"><?php echo Html::encode($dwError ?: 'No data available'); ?></p>
-<?php endif; ?>
-</div>
-</div>
-</div>
-<div class="col-md-12 mt-3">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Source Systems Patient Counts</h5>
-            <?php
-            $systems = \app\models\System::find()->where(['affiliation_code' => $model->affiliation_code])->all();
-            if (!empty($systems)) {
-            ?>
-                <div class="table-responsive">
-                    <table class="table table-sm table-striped">
-                        <thead>
-                            <tr>
-                                <th>System</th>
-                                <th>DB Type</th>
-                                <th>Database</th>
-                                <th>Patient Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($systems as $sys) {
-                                $count = null;
-                                $err = null;
-                                try {
-                                    if ($sys->system_type === 'mysql') {
-                                        $mysqli = new \mysqli($sys->hostname, $sys->username, $sys->password, $sys->database_name, $sys->port ?: 3306);
-                                        if ($mysqli->connect_error) {
-                                            throw new \Exception('Connection failed: ' . $mysqli->connect_error);
-                                        }
-
-                                        $code = $mysqli->real_escape_string($model->affiliation_code);
-                                        $tries = [
-                                            ['patients', 'affiliation_code'],
-                                            ['patients', 'affiliation_id'],
-                                            ['patient', 'affiliation_code'],
-                                            ['patient', 'affiliation_id'],
-                                        ];
-
-                                        $mysqlErrors = [];
-                                        foreach ($tries as $t) {
-                                            list($table, $col) = $t;
-                                            // check table existence in information_schema
-                                            $safeTable = $mysqli->real_escape_string($table);
-                                            $safeCol = $mysqli->real_escape_string($col);
-                                            $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "'";
-                                            $tblRes = $mysqli->query($tblQ);
-                                            $tblExists = false;
-                                            if ($tblRes && ($r = $tblRes->fetch_row())) {
-                                                $tblExists = (int)$r[0] > 0;
-                                                $tblRes->free();
-                                            }
-
-                                            if (!$tblExists) {
-                                                $mysqlErrors[] = "Table not found: $table";
-                                                continue;
-                                            }
-
-                                            // check column existence
-                                            $colQ = "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "' AND column_name = '" . $safeCol . "'";
-                                            $colRes = $mysqli->query($colQ);
-                                            $colExists = false;
-                                            if ($colRes && ($rc = $colRes->fetch_row())) {
-                                                $colExists = (int)$rc[0] > 0;
-                                                $colRes->free();
-                                            }
-
-                                            if (!$colExists) {
-                                                $mysqlErrors[] = "Column not found: $col (in $table)";
-                                                continue;
-                                            }
-
-                                            // run safe count
-                                            $sql = "SELECT COUNT(*) AS cnt FROM `" . $safeTable . "` WHERE `" . $safeCol . "` = '" . $code . "'";
-                                            $res = $mysqli->query($sql);
-                                            if ($res && ($row = $res->fetch_row())) {
-                                                $count = (int)$row[0];
-                                                $res->free();
-                                                break;
-                                            }
-                                        }
-
-                                        if ($count === null) {
-                                            // try total patients table without filter as fallback if exists
-                                            $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = 'patients'";
-                                            $tblRes = $mysqli->query($tblQ);
-                                            $tblExists = false;
-                                            if ($tblRes && ($r = $tblRes->fetch_row())) {
-                                                $tblExists = (int)$r[0] > 0;
-                                                $tblRes->free();
-                                            }
-                                            if ($tblExists) {
-                                                $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
-                                                $res2 = $mysqli->query($fallbackSql);
-                                                if ($res2 && ($row2 = $res2->fetch_row())) {
-                                                    $count = (int)$row2[0];
-                                                    $res2->free();
-                                                }
-                                            } else {
-                                                $mysqlErrors[] = 'patients table not found';
-                                            }
-                                        }
-
-                                        if ($count === null && !empty($mysqlErrors)) {
-                                            $uniq = array_values(array_unique($mysqlErrors));
-                                            $err = implode('; ', $uniq);
-                                        }
-
-                                        $mysqli->close();
-                                    } else {
-                                        $err = 'Unsupported DB type';
-                                    }
-                                } catch (\Throwable $e) {
-                                    $err = $e->getMessage();
+                <?php
+                // Initialize DW counters to avoid undefined variable
+                $dwCount = null;
+                $dwError = null;
+                if (Yii::$app->has('dbDataWarehouse')) {
+                    try {
+                        $db = Yii::$app->dbDataWarehouse;
+                        $code = $model->affiliation_code;
+                        $tries = [
+                            ['patients', 'affiliation_code'],
+                            ['patients', 'affiliation_id'],
+                            ['patient', 'affiliation_code'],
+                            ['patient', 'affiliation_id'],
+                            ['dim_patient', 'affiliation_code'],
+                            ['dim_patient', 'affiliation_id'],
+                        ];
+                        $dwErrors = [];
+                        foreach ($tries as $t) {
+                            list($table, $col) = $t;
+                            try {
+                                $tblExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table',
+                                    [':schema' => 'public', ':table' => $table]
+                                )->queryScalar();
+                                if (!$tblExists) {
+                                    $dwErrors[] = "Table not found: $table";
+                                    continue;
                                 }
 
-                                echo '<tr>';
-                                echo '<td>' . Html::encode($sys->system_code) . '</td>';
-                                echo '<td>' . Html::encode($sys->system_type) . '</td>';
-                                echo '<td>' . Html::encode($sys->database_name) . '</td>';
-                                if ($err !== null) {
-                                    echo '<td class="text-danger">' . Html::encode($err) . '</td>';
-                                } else {
-                                    echo '<td>' . Html::encode($count === null ? '-' : $count) . '</td>';
+                                $colExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = :schema AND table_name = :table AND column_name = :col',
+                                    [':schema' => 'public', ':table' => $table, ':col' => $col]
+                                )->queryScalar();
+
+                                if (!$colExists) {
+                                    $dwErrors[] = "Column not found: $col (in $table)";
+                                    continue;
                                 }
-                                echo '</tr>';
+
+                                $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
+                                $count = $db->createCommand($sql, [':code' => $code])->queryScalar();
+                                if ($count !== false) {
+                                    $dwCount = (int)$count;
+                                    break;
+                                }
+                            } catch (\Exception $e) {
+                                $dwErrors[] = $e->getMessage();
                             }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php
-            } else {
-                echo '<p class="text-muted">No source systems registered for this affiliation.</p>';
-            }
-            ?>
+                        }
+
+                        if ($dwCount === null) {
+                            $exists = (int)$db->createCommand('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table', [':schema' => 'public', ':table' => 'patients'])->queryScalar();
+                            if ($exists) {
+                                try {
+                                    $count = $db->createCommand('SELECT COUNT(*) FROM "patients"')->queryScalar();
+                                    if ($count !== false) {
+                                        $dwCount = (int)$count;
+                                    }
+                                } catch (\Exception $e) {
+                                    $dwErrors[] = $e->getMessage();
+                                }
+                            } else {
+                                $dwErrors[] = 'patients table not found';
+                            }
+                        }
+
+                        if ($dwCount === null) {
+                            $dwError = !empty($dwErrors) ? implode('; ', array_values(array_unique($dwErrors))) : 'No matching patients table/column found in DW';
+                        }
+                    } catch (\Exception $e) {
+                        $dwError = 'DW query error: ' . $e->getMessage();
+                    }
+                } else {
+                    $dwError = 'dbDataWarehouse not configured';
+                }
+                ?>
+
+                <?php if ($dwCount !== null): ?>
+                    <p class="h2"><?= Html::encode($dwCount) ?></p>
+                    <p class="text-muted">Patients (matching affiliation when available)</p>
+                <?php else: ?>
+                    <p class="text-danger"><?php echo Html::encode($dwError ?: 'No data available'); ?></p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</div>
-<div class="col-md-12">
-    <h4>Users for this affiliation</h4>
-    <?php if (!empty($users)): ?>
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $index => $user): ?>
-                        <tr>
-                            <td><?= $index + 1 ?></td>
-                            <td><?= Html::encode($user->username) ?></td>
-                            <td><?= Html::encode($user->email) ?></td>
-                            <td><?= Html::encode($user->name) ?></td>
-                            <td>
-                                <?= Html::a('View', ['user/view', 'id' => $user->id], ['class' => 'btn btn-sm btn-info']) ?>
-                                <?= Html::a('Edit', ['user/update', 'id' => $user->id], ['class' => 'btn btn-sm btn-primary']) ?>
-                                <?= Html::a('Delete', ['user/delete', 'id' => $user->id], [
-                                    'class' => 'btn btn-sm btn-danger',
-                                    'data' => [
-                                        'confirm' => 'Are you sure you want to delete this user?',
-                                        'method' => 'post',
-                                    ],
-                                ]) ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+    <div class="col-md-12 mt-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Source Systems Patient Counts</h5>
+                <?php
+                $systems = \app\models\System::find()->where(['affiliation_code' => $model->affiliation_code])->all();
+                if (!empty($systems)) {
+                ?>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>System</th>
+                                    <th>DB Type</th>
+                                    <th>Database</th>
+                                    <th>Patient Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($systems as $sys) {
+                                    $count = null;
+                                    $err = null;
+                                    try {
+                                        if ($sys->system_type === 'mysql') {
+                                            $mysqli = new \mysqli($sys->hostname, $sys->username, $sys->password, $sys->database_name, $sys->port ?: 3306);
+                                            if ($mysqli->connect_error) {
+                                                throw new \Exception('Connection failed: ' . $mysqli->connect_error);
+                                            }
+
+                                            $code = $mysqli->real_escape_string($model->affiliation_code);
+                                            $tries = [
+                                                ['patients', 'affiliation_code'],
+                                                ['patients', 'affiliation_id'],
+                                                ['patient', 'affiliation_code'],
+                                                ['patient', 'affiliation_id'],
+                                            ];
+
+                                            $mysqlErrors = [];
+                                            foreach ($tries as $t) {
+                                                list($table, $col) = $t;
+                                                // check table existence in information_schema
+                                                $safeTable = $mysqli->real_escape_string($table);
+                                                $safeCol = $mysqli->real_escape_string($col);
+                                                $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "'";
+                                                $tblRes = $mysqli->query($tblQ);
+                                                $tblExists = false;
+                                                if ($tblRes && ($r = $tblRes->fetch_row())) {
+                                                    $tblExists = (int)$r[0] > 0;
+                                                    $tblRes->free();
+                                                }
+
+                                                if (!$tblExists) {
+                                                    $mysqlErrors[] = "Table not found: $table";
+                                                    continue;
+                                                }
+
+                                                // check column existence
+                                                $colQ = "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = '" . $safeTable . "' AND column_name = '" . $safeCol . "'";
+                                                $colRes = $mysqli->query($colQ);
+                                                $colExists = false;
+                                                if ($colRes && ($rc = $colRes->fetch_row())) {
+                                                    $colExists = (int)$rc[0] > 0;
+                                                    $colRes->free();
+                                                }
+
+                                                if (!$colExists) {
+                                                    $mysqlErrors[] = "Column not found: $col (in $table)";
+                                                    continue;
+                                                }
+
+                                                // run safe count
+                                                $sql = "SELECT COUNT(*) AS cnt FROM `" . $safeTable . "` WHERE `" . $safeCol . "` = '" . $code . "'";
+                                                $res = $mysqli->query($sql);
+                                                if ($res && ($row = $res->fetch_row())) {
+                                                    $count = (int)$row[0];
+                                                    $res->free();
+                                                    break;
+                                                }
+                                            }
+
+                                            if ($count === null) {
+                                                // try total patients table without filter as fallback if exists
+                                                $tblQ = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '" . $mysqli->real_escape_string($sys->database_name) . "' AND table_name = 'patients'";
+                                                $tblRes = $mysqli->query($tblQ);
+                                                $tblExists = false;
+                                                if ($tblRes && ($r = $tblRes->fetch_row())) {
+                                                    $tblExists = (int)$r[0] > 0;
+                                                    $tblRes->free();
+                                                }
+                                                if ($tblExists) {
+                                                    $fallbackSql = "SELECT COUNT(*) AS cnt FROM `patients`";
+                                                    $res2 = $mysqli->query($fallbackSql);
+                                                    if ($res2 && ($row2 = $res2->fetch_row())) {
+                                                        $count = (int)$row2[0];
+                                                        $res2->free();
+                                                    }
+                                                } else {
+                                                    $mysqlErrors[] = 'patients table not found';
+                                                }
+                                            }
+
+                                            if ($count === null && !empty($mysqlErrors)) {
+                                                $uniq = array_values(array_unique($mysqlErrors));
+                                                $err = implode('; ', $uniq);
+                                            }
+
+                                            $mysqli->close();
+                                        } else {
+                                            $err = 'Unsupported DB type';
+                                        }
+                                    } catch (\Throwable $e) {
+                                        $err = $e->getMessage();
+                                    }
+
+                                    echo '<tr>';
+                                    echo '<td>' . Html::encode($sys->system_code) . '</td>';
+                                    echo '<td>' . Html::encode($sys->system_type) . '</td>';
+                                    echo '<td>' . Html::encode($sys->database_name) . '</td>';
+                                    if ($err !== null) {
+                                        echo '<td class="text-danger">' . Html::encode($err) . '</td>';
+                                    } else {
+                                        echo '<td>' . Html::encode($count === null ? '-' : $count) . '</td>';
+                                    }
+                                    echo '</tr>';
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php
+                } else {
+                    echo '<p class="text-muted">No source systems registered for this affiliation.</p>';
+                }
+                ?>
+            </div>
         </div>
-    <?php else: ?>
-        <p class="text-muted">No users associated with this affiliation.</p>
-    <?php endif; ?>
-</div>
-</div>
+    </div>
+    <div class="col-md-12">
+        <h4>Users for this affiliation</h4>
+        <?php if (!empty($users)): ?>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($users as $index => $user): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= Html::encode($user->username) ?></td>
+                                <td><?= Html::encode($user->email) ?></td>
+                                <td><?= Html::encode($user->name) ?></td>
+                                <td>
+                                    <?= Html::a('View', ['user/view', 'id' => $user->id], ['class' => 'btn btn-sm btn-info']) ?>
+                                    <?= Html::a('Edit', ['user/update', 'id' => $user->id], ['class' => 'btn btn-sm btn-primary']) ?>
+                                    <?= Html::a('Delete', ['user/delete', 'id' => $user->id], [
+                                        'class' => 'btn btn-sm btn-danger',
+                                        'data' => [
+                                            'confirm' => 'Are you sure you want to delete this user?',
+                                            'method' => 'post',
+                                        ],
+                                    ]) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php else: ?>
+            <p class="text-muted">No users associated with this affiliation.</p>
+        <?php endif; ?>
+    </div>
 </div>
