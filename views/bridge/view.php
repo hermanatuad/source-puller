@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">
-                    <i class="ri-server-line me-2"></i> Brige Column
+                    <i class="ri-server-line me-2"></i> Extraction Pipeline Columns
                 </h4>
             </div>
 
