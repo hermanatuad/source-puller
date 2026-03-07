@@ -68,8 +68,8 @@ class MyHelper
     {
         $data = [
             'patient_id' => 'Patient ID',
-            // 'datetime' => 'Datetime',
-            // 'custom' => 'Custom'
+            'datetime' => 'Datetime',
+            'custom' => 'Custom'
         ];
         return $data;
     }
