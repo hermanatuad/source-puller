@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 $patientCount = Entity::find()
                     ->joinWith('affiliations')
-                    ->where(['affiliation.id' => $model->id])
+                    ->where(['affiliation_code' => $model->affiliation_code])
                     ->count();
 
                 ?>
