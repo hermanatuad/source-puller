@@ -69,6 +69,7 @@ class MyHelper
         $data = [
             'patient_id' => 'Patient ID',
             'datetime' => 'Datetime',
+            'national_id' => 'National ID',
             'custom' => 'Custom'
         ];
         return $data;
