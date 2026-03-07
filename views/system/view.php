@@ -1,6 +1,5 @@
 <?php
 
-use app\assets\KonvaAsset;
 use app\helpers\DBHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -16,42 +15,8 @@ $this->title = $model->system_name ?: $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
-KonvaAsset::register($this);
 
 ?>
-<script src="https://unpkg.com/konva@9/konva.min.js"></script>
-
-<div id="container"></div>
-
-<script>
-const stage = new Konva.Stage({
-  container: 'container',
-  width: 500,
-  height: 400,
-});
-
-// Create a layer
-const layer = new Konva.Layer();
-stage.add(layer);
-
-// Create a draggable rectangle
-const rect = new Konva.Rect({
-  x: 50,
-  y: 50,
-  width: 100,
-  height: 80,
-  fill: 'cornflowerblue',
-  shadowBlur: 5,
-  cornerRadius: 4,
-  draggable: true,
-});
-layer.add(rect);
-
-// Add event listener
-rect.on('click tap', () => {
-  rect.fill(Konva.Util.getRandomColor());
-});
-</script>
 
 <div class="row">
     <div class="col-lg-12">
@@ -223,8 +188,6 @@ rect.on('click tap', () => {
                     </div>
                 </div>
             </div>
-
-                    
         </div>
     </div>
 </div>
@@ -260,32 +223,8 @@ rect.on('click tap', () => {
 
                             $dataInfo = DBHelper::getDatabaseInfoFromCache($params);
                             $tables = $dataInfo['result']['tables'] ?? [];
-                            // normalize tables: sometimes returned as JSON string
-                            if (is_string($tables)) {
-                                $decoded = json_decode($tables, true);
-                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                    $tables = $decoded;
-                                } else {
-                                    $tables = [];
-                                }
-                            } elseif (!is_array($tables)) {
-                                $tables = [];
-                            }
                             $status = $dataInfo['status'] ?? null;
                             $message = $dataInfo['message'] ?? ($dataInfo['result']['message'] ?? null);
-
-                            // Prepare minimal schema payload for Konva (name + columns)
-                            $schemaPayload = [];
-                            foreach ($tables as $t) {
-                                $cols = [];
-                                if (!empty($t['columns']) && is_array($t['columns'])) {
-                                    foreach ($t['columns'] as $c) {
-                                        $cols[] = is_array($c) && isset($c['name']) ? $c['name'] : (is_string($c) ? $c : '');
-                                    }
-                                }
-                                $schemaPayload[] = ['name' => $t['name'] ?? '', 'columns' => $cols];
-                            }
-                            $schemaJson = json_encode($schemaPayload);
 
                             if (!empty($tables)):
                             ?>
