@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="card-body">
                 <?php
                 $dbInfo = DBHelper::getDatabaseInfoFromCache($system);
-                $sourceColumns = $dbInfo['result']['data']['tables'][$model->bridge_table_source]['columns'] ?? [];
+                $sourceColumns = $dbInfo['result']['tables'][$model->bridge_table_source]['columns'] ?? [];
                 $linkedSourceCols = array_filter(array_values($bridgeColumnList));
                 ?>
 
