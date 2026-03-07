@@ -13,6 +13,14 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Html::encode(Yii::$app->session->getFlash('error')) ?>
+        </div>
+    <?php endif; ?>
+
+    <?= $form->errorSummary($model) ?>
+
     <div class="card shadow-sm">
         <div class="card-header d-flex align-items-center bg-white">
             <h5 class="mb-0"><i class="ri-settings-3-line me-2"></i> System Configuration</h5>

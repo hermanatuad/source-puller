@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\helpers\DBHelper;
 use app\helpers\MyHelper;
 use app\models\System;
+use app\models\Affiliation;
 use app\models\SystemSearch;
 use Yii;
 use yii\web\Controller;
@@ -80,9 +81,27 @@ class SystemController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                echo '<pre>';print_r($model);exit;
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+                if (empty($model->affiliation_code)) {
+                    $affCode = Affiliation::find()->select('affiliation_code')->scalar();
+                    $model->affiliation_code = $affCode ?: 'IJN';
+                }
+
+                try {
+                    if ($model->save()) {
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+
+                    // Validation failed; show readable errors
+                    $errors = $model->getErrors();
+                    $msg = [];
+                    foreach ($errors as $attr => $errList) {
+                        $msg[] = $attr . ': ' . implode('; ', $errList);
+                    }
+                    Yii::$app->session->setFlash('error', 'Failed to save System: ' . implode(' | ', $msg));
+                } catch (\Throwable $e) {
+                    Yii::error('System save exception: ' . $e->getMessage(), __METHOD__);
+                    Yii::$app->session->setFlash('error', 'Exception while saving System: ' . $e->getMessage());
+                }
             }
         } else {
             $model->loadDefaultValues();
