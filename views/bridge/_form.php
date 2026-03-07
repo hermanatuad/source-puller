@@ -16,13 +16,13 @@ use app\models\System;
 
     <?php $form = ActiveForm::begin(); ?>
 
-        <?php if (Yii::$app->session->hasFlash('error')): ?>
-            <div class="alert alert-danger">
-                <?= Html::encode(Yii::$app->session->getFlash('error')) ?>
-            </div>
-        <?php endif; ?>
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Html::encode(Yii::$app->session->getFlash('error')) ?>
+        </div>
+    <?php endif; ?>
 
-        <?= $form->errorSummary($model) ?>
+    <?= $form->errorSummary($model) ?>
 
     <div class="card shadow-sm">
         <div class="card-header d-flex align-items-center bg-white">
@@ -36,18 +36,6 @@ use app\models\System;
 
                 <div class="col-md-8">
                     <?= $form->field($model, 'bridge_name')->textInput(['placeholder' => 'Enter bridge name']) ?>
-                </div>
-
-                <div class="col-md-4">
-                    <?= $form->field($model, 'bridge_type')->dropDownList([
-                        'independent' => 'Independent',
-                        'dependent' => 'Dependent'
-                    ], [
-                        'prompt' => 'Select bridge type',
-                        'class' => 'form-control',
-                        'data-choices' => 'true',
-                        'id' => 'bridge-bridge_type'
-                    ])->label('Bridge Type') ?>
                 </div>
 
                 <div class="col-md-4">
@@ -74,6 +62,18 @@ use app\models\System;
                         'data-choices' => 'true',
                         'id' => 'bridge-bridge_table_target'
                     ])->label('Table Warehouse') ?>
+                </div>
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'bridge_type')->dropDownList([
+                        'independent' => 'Independent',
+                        'dependent' => 'Dependent'
+                    ], [
+                        'prompt' => 'Select bridge type',
+                        'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'bridge-bridge_type'
+                    ])->label('Bridge Type') ?>
                 </div>
 
             </div>
