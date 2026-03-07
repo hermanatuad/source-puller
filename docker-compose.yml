@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+
+  # React builder (development)
+  node:
+    image: node:20-alpine
+    container_name: yii2_node
+    working_dir: /app
+    volumes:
+      - ./web/react:/app
+    command: sh -c "npm install && npm run build"
+    networks:
+      - yii2-network
+
+
   # PHP-FPM Service
   php:
     build:
@@ -21,7 +34,7 @@ services:
       - .env
     networks:
       - yii2-network
-    # Note: external DB at 34.71.143.136; no local DB dependency
+
 
   # Nginx Service
   nginx:
@@ -40,13 +53,12 @@ services:
     depends_on:
       - php
 
-  # Databases are provided externally at 34.71.143.136 (MySQL & PostgreSQL)
 
 networks:
   yii2-network:
     driver: bridge
 
+
 volumes:
   vendor_data:
     driver: local
-
