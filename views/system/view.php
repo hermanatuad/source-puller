@@ -19,6 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 KonvaAsset::register($this);
 
 ?>
+<script src="https://unpkg.com/konva@9/konva.min.js"></script>
+
 <div id="container"></div>
 
 <script>
@@ -221,6 +223,103 @@ rect.on('click tap', () => {
                     </div>
                 </div>
             </div>
+
+                    <!-- Schema Diagram -->
+                    <?php
+                    // Prepare minimal schema payload for Konva (name + columns)
+                    $schemaPayload = [];
+                    foreach ($tables as $t) {
+                        $cols = [];
+                        if (!empty($t['columns']) && is_array($t['columns'])) {
+                            foreach ($t['columns'] as $c) {
+                                $cols[] = is_array($c) && isset($c['name']) ? $c['name'] : (is_string($c) ? $c : '');
+                            }
+                        }
+                        $schemaPayload[] = ['name' => $t['name'] ?? '', 'columns' => $cols];
+                    }
+                    $schemaJson = json_encode($schemaPayload);
+                    ?>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Schema Diagram</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="schema-canvas-container" style="width:100%; height:600px; border:1px solid #eee;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    (function(){
+                        const schema = <?= $schemaJson ?> || [];
+                        const container = document.getElementById('schema-canvas-container');
+                        const width = Math.max(container.clientWidth, 800);
+                        const height = Math.max(container.clientHeight, 600);
+
+                        const stage = new Konva.Stage({ container: 'schema-canvas-container', width: width, height: height });
+                        const layer = new Konva.Layer();
+                        stage.add(layer);
+
+                        const paddingX = 40;
+                        const paddingY = 40;
+                        const boxWidth = 260;
+                        const lineHeight = 18;
+                        const headerHeight = 28;
+
+                        const colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
+
+                        schema.forEach(function(tbl, idx){
+                            const row = Math.floor(idx / colsPerRow);
+                            const col = idx % colsPerRow;
+                            const x = paddingX + col * (boxWidth + paddingX);
+                            const cols = tbl.columns || [];
+                            const boxHeight = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
+
+                            const group = new Konva.Group({ x: x, y: paddingY + row * (boxHeight + paddingY), draggable: true });
+
+                            const header = new Konva.Rect({ x: 0, y: 0, width: boxWidth, height: headerHeight, fill: '#1976d2', cornerRadius: 4 });
+                            const headerText = new Konva.Text({ x: 8, y: 4, text: tbl.name || '(table)', fontSize: 14, fontStyle: 'bold', fill: '#fff' });
+
+                            const body = new Konva.Rect({ x: 0, y: headerHeight, width: boxWidth, height: boxHeight - headerHeight, fill: '#fff', stroke: '#1976d2', strokeWidth: 1, cornerRadius: 4 });
+
+                            group.add(body);
+                            group.add(header);
+                            group.add(headerText);
+
+                            // columns list
+                            cols.forEach(function(colName, i){
+                                const y = headerHeight + 6 + i * lineHeight;
+                                const txt = new Konva.Text({ x: 8, y: y, text: colName, fontSize: 12, fill: '#333' });
+                                group.add(txt);
+                            });
+
+                            // click to toggle collapse
+                            group.on('dblclick', function(){
+                                const visible = group.find('Text').length > 1 && group.find('Text')[1].visible();
+                                // toggle visibility of column texts (keep header)
+                                group.find('Text').forEach(function(node, i){
+                                    if (i === 0) return; // header text
+                                    node.visible(!visible);
+                                });
+                                // adjust body height when collapsed
+                                if (!visible) {
+                                    body.height(headerHeight + 12);
+                                } else {
+                                    body.height(boxHeight - headerHeight);
+                                }
+                                layer.draw();
+                            });
+
+                            layer.add(group);
+                        });
+
+                        layer.draw();
+                    })();
+                    </script>
         </div>
     </div>
 </div>
