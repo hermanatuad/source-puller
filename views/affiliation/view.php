@@ -20,13 +20,90 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ]) ?>
+
+                <?php
+                // Initialize DW counters to avoid undefined variable
+                $dwCount = null;
+                $dwError = null;
+                if (Yii::$app->has('dbDataWarehouse')) {
+                    try {
+                        $db = Yii::$app->dbDataWarehouse;
+                        $code = $model->affiliation_code;
+                        $tries = [
+                            ['patients', 'affiliation_code'],
+                            ['patients', 'affiliation_id'],
+                            ['patient', 'affiliation_code'],
+                            ['patient', 'affiliation_id'],
+                            ['dim_patient', 'affiliation_code'],
+                            ['dim_patient', 'affiliation_id'],
+                        ];
+                        $dwErrors = [];
+                        foreach ($tries as $t) {
+                            list($table, $col) = $t;
+                            try {
+                                $tblExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table',
+                                    [':schema' => 'public', ':table' => $table]
+                                )->queryScalar();
+                                if (!$tblExists) {
+                                    $dwErrors[] = "Table not found: $table";
+                                    continue;
+                                }
+
+                                $colExists = (int)$db->createCommand(
+                                    'SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = :schema AND table_name = :table AND column_name = :col',
+                                    [':schema' => 'public', ':table' => $table, ':col' => $col]
+                                )->queryScalar();
+
+                                if (!$colExists) {
+                                    $dwErrors[] = "Column not found: $col (in $table)";
+                                    continue;
+                                }
+
+                                $sql = "SELECT COUNT(*) FROM \"$table\" WHERE \"$col\" = :code";
+                                $count = $db->createCommand($sql, [':code' => $code])->queryScalar();
+                                if ($count !== false) {
+                                    $dwCount = (int)$count;
+                                    break;
+                                }
+                            } catch (\Exception $e) {
+                                $dwErrors[] = $e->getMessage();
+                            }
+                        }
+
+                        if ($dwCount === null) {
+                            $exists = (int)$db->createCommand('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :schema AND table_name = :table', [':schema' => 'public', ':table' => 'patients'])->queryScalar();
+                            if ($exists) {
+                                try {
+                                    $count = $db->createCommand('SELECT COUNT(*) FROM "patients"')->queryScalar();
+                                    if ($count !== false) {
+                                        $dwCount = (int)$count;
+                                    }
+                                } catch (\Exception $e) {
+                                    $dwErrors[] = $e->getMessage();
+                                }
+                            } else {
+                                $dwErrors[] = 'patients table not found';
+                            }
+                        }
+
+                        if ($dwCount === null) {
+                            $dwError = !empty($dwErrors) ? implode('; ', array_values(array_unique($dwErrors))) : 'No matching patients table/column found in DW';
+                        }
+                    } catch (\Exception $e) {
+                        $dwError = 'DW query error: ' . $e->getMessage();
+                    }
+                } else {
+                    $dwError = 'dbDataWarehouse not configured';
+                }
+                ?>
 
                 <?php if ($dwCount !== null): ?>
                     <p class="h2"><?= Html::encode($dwCount) ?></p>
