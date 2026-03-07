@@ -199,10 +199,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ?>
                                 <tr>
                                     <td colspan="3" class="text-center">
-                                        Total:
+                                        <strong>Total:</strong>
                                     </td>
                                     <td>
-                                        <?= Html::encode($totalCount) ?>
+                                        <strong><?= Html::encode($totalCount) ?></strong>
                                     </td>
                                 </tr>
                             </tbody>
