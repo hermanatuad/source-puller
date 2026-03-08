@@ -31,6 +31,23 @@
         </clinicalCheck>
     </clinicals>
     <Episodes>
+
+        <episode id="EPI-20201010-002" type="outpatient">
+            <Stages>
+                <stage id="1S21F1" type="admission">
+                    
+                </stage>
+                <stage id="1S21F2" type="medical-checkup">
+                    <description>Routine medical examination</description>
+                </stage>
+
+                <stage id="1S21F3" type="discharge">
+                    <description>Patient discharged</description>
+                </stage>
+
+            </Stages>
+        </episode>
+
         <episode id="EPI-20200920-001" type="inpatient">
 
             <reasonForVisit>Chest pain and shortness of breath</reasonForVisit>
@@ -38,45 +55,98 @@
             <Stages>
 
                 <stage id="STG-ADM-001" type="admission">
+
                     <startDateTime>2020-09-20T07:50:00</startDateTime>
                     <endDateTime>2020-09-20T08:30:00</endDateTime>
+
                     <initialAssessment>
                         <symptom>Chest pain</symptom>
                         <symptom>Shortness of breath</symptom>
                         <triageLevel>High</triageLevel>
                     </initialAssessment>
+
                 </stage>
 
-                <stage id="STG-WARD-001" type="ward">
-                    <startDateTime>2020-09-20T09:00:00</startDateTime>
-                    <endDateTime>2020-09-21T08:00:00</endDateTime>
 
-                    <diagnosis>
-                        <primaryDiagnosis code="I20">Angina Pectoris</primaryDiagnosis>
-                    </diagnosis>
+                <stage id="STG-RAD-001" type="radiology">
 
-                    <checkLaboratory>
+                    <radiology>
 
-                        <laboratoryTest id="LAB-001">
-                            <testName>Blood Test</testName>
-                            <testType>Cardiac Enzyme</testType>
-                            <result>Elevated Troponin</result>
-                            <dateTime>2020-09-20T10:00:00</dateTime>
-                        </laboratoryTest>
+                        <medicalImaging id="IMG-CT-001">
 
-                        <laboratoryTest id="LAB-002">
-                            <testName>Urine Test</testName>
-                            <result>Normal</result>
-                            <dateTime>2020-09-20T10:15:00</dateTime>
-                        </laboratoryTest>
+                            <modality>CT Scan</modality>
+                            <bodyPart>Chest</bodyPart>
+                            <machine>Siemens SOMATOM Definition</machine>
+                            <dateTime>2020-09-20T11:20:00</dateTime>
 
-                    </checkLaboratory>
+                            <dicomStudyUID>1.2.840.113619.2.55.3.604688</dicomStudyUID>
+
+                            <imageFiles>
+
+                                <imageFile>
+                                    <format>DICOM</format>
+                                    <link>https://hospital-storage.example.com/pacs/ct/IMG-CT-001/series1.dcm</link>
+                                </imageFile>
+
+                                <imageFile>
+                                    <format>JPEG Preview</format>
+                                    <link>https://hospital-storage.example.com/pacs/ct/IMG-CT-001/preview.jpg</link>
+                                </imageFile>
+
+                            </imageFiles>
+
+                            <radiologyReport>
+
+                                <reportType>Radiologist Report</reportType>
+                                <format>PDF</format>
+                                <link>https://hospital-storage.example.com/reports/ct/IMG-CT-001-report.pdf</link>
+
+                                <summary>
+                                    Mild coronary artery calcification detected.
+                                </summary>
+
+                            </radiologyReport>
+
+                        </medicalImaging>
+
+
+                        <medicalImaging id="IMG-MRI-001">
+
+                            <modality>MRI</modality>
+                            <bodyPart>Heart</bodyPart>
+                            <machine>Philips Ingenia 3.0T</machine>
+                            <dateTime>2020-09-21T08:00:00</dateTime>
+
+                            <dicomStudyUID>1.2.840.113619.2.55.3.888771</dicomStudyUID>
+
+                            <imageFiles>
+
+                                <imageFile>
+                                    <format>DICOM</format>
+                                    <link>https://hospital-storage.example.com/pacs/mri/IMG-MRI-001/series1.dcm</link>
+                                </imageFile>
+
+                            </imageFiles>
+
+                            <radiologyReport>
+
+                                <format>PDF</format>
+                                <link>https://hospital-storage.example.com/reports/mri/IMG-MRI-001-report.pdf</link>
+
+                                <summary>
+                                    Evidence of reduced myocardial perfusion in the left ventricle.
+                                </summary>
+
+                            </radiologyReport>
+
+                        </medicalImaging>
+
+                    </radiology>
+
                 </stage>
 
-                <stage id="STG-PROC-001" type="procedure" subtype="invasive">
 
-                    <startDateTime>2020-09-21T09:00:00</startDateTime>
-                    <endDateTime>2020-09-21T11:30:00</endDateTime>
+                <stage id="STG-PROC-001" type="procedure">
 
                     <procedures>
 
@@ -98,33 +168,38 @@
 
                 </stage>
 
-                <stage id="STG-WARD-002" type="ward">
 
-                    <startDateTime>2020-09-21T12:00:00</startDateTime>
-                    <endDateTime>2020-09-23T09:00:00</endDateTime>
+                <stage id="STG-DOC-001" type="clinical-documents">
 
-                    <monitoring>
+                    <documents>
 
-                        <vitalSign id="VS-1">
-                            <bloodPressure>130/85</bloodPressure>
-                            <heartRate>76</heartRate>
-                            <dateTime>2020-09-22T08:00:00</dateTime>
-                        </vitalSign>
+                        <document id="DOC-001">
+                            <documentType>Discharge Summary</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-23</createdDate>
+                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                        </document>
 
-                        <vitalSign id="VS-2">
-                            <bloodPressure>128/82</bloodPressure>
-                            <heartRate>72</heartRate>
-                            <dateTime>2020-09-23T08:00:00</dateTime>
-                        </vitalSign>
+                        <document id="DOC-002">
+                            <documentType>Laboratory Report</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-20</createdDate>
+                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
+                        </document>
 
-                    </monitoring>
+                        <document id="DOC-003">
+                            <documentType>Procedure Consent Form</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-21</createdDate>
+                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
+                        </document>
+
+                    </documents>
 
                 </stage>
 
-                <stage id="STG-DIS-001" type="discharge">
 
-                    <startDateTime>2020-09-23T09:00:00</startDateTime>
-                    <endDateTime>2020-09-23T10:00:00</endDateTime>
+                <stage id="STG-DIS-001" type="discharge">
 
                     <dischargeCondition>Stable</dischargeCondition>
 
@@ -134,45 +209,20 @@
                             <medicationName>Aspirin</medicationName>
                             <dosage>100 mg</dosage>
                             <frequency>Once daily</frequency>
-                            <startDateTime>2020-09-23</startDateTime>
-                            <endDateTime>2021-03-23</endDateTime>
                         </medication>
 
                         <medication id="MED-002">
                             <medicationName>Atorvastatin</medicationName>
                             <dosage>20 mg</dosage>
                             <frequency>Once daily</frequency>
-                            <startDateTime>2020-09-23</startDateTime>
-                            <endDateTime>2021-03-23</endDateTime>
                         </medication>
 
                     </medications>
 
-                    <followUp>
-                        <appointmentDate>2020-10-02</appointmentDate>
-                        <department>Cardiology</department>
-                    </followUp>
-
                 </stage>
 
             </Stages>
 
-        </episode>
-
-        <episode id="EPI-20201010-002" type="outpatient">
-            <Stages>
-                <stage id="1S21F1" type="admission">
-                    
-                </stage>
-                <stage id="1S21F2" type="medical-checkup">
-                    <description>Routine medical examination</description>
-                </stage>
-
-                <stage id="1S21F3" type="discharge">
-                    <description>Patient discharged</description>
-                </stage>
-
-            </Stages>
         </episode>
     </Episodes>
 </Patient>
