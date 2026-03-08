@@ -483,12 +483,13 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingIdentity-<?php echo $pid; ?>">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentity-<?php echo $pid; ?>" aria-expanded="true" aria-controls="collapseIdentity-<?php echo $pid; ?>">
-                                        Identity — <?php echo htmlspecialchars((string)$patient->identity->patientName); ?>
+                                        Patient Identity
                                     </button>
                                 </h2>
-                                <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>">
                                     <div class="accordion-body">
-                                        <p class="mb-1"><strong>ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
+                                        <p clascs="mb-1"><strong>Patient ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
+                                        <p clascs="mb-1"><strong>Patient Name:<?php echo htmlspecialchars((string)$patient->identity->patientName); ?></p>
                                         <p class="mb-1"><strong>National IC:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
                                         <p class="mb-0"><strong>Passport:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientPassport); ?></p>
                                     </div>
@@ -501,7 +502,7 @@
                                         Demographic
                                     </button>
                                 </h2>
-                                <div id="collapseDemo-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingDemo-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                <div id="collapseDemo-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingDemo-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-sm-12">
@@ -524,7 +525,7 @@
                                         Clinical Checks (<?php echo count($patient->clinicals->clinicalCheck); ?>)
                                     </button>
                                 </h2>
-                                <div id="collapseChecks-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingChecks-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                <div id="collapseChecks-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingChecks-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <div class="accordion" id="checksAccordion-<?php echo $pid; ?>">
                                             <?php foreach ($patient->clinicals->clinicalCheck as $check): $cid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$check['id']); ?>
@@ -534,7 +535,7 @@
                                                         Check #<?php echo htmlspecialchars((string)$check['id']); ?> — <?php echo htmlspecialchars((string)$check->dateTime); ?>
                                                     </button>
                                                 </h2>
-                                                <div id="checkCollapse-<?php echo $pid . '-' . $cid; ?>" class="accordion-collapse collapse" aria-labelledby="checkHeading-<?php echo $pid . '-' . $cid; ?>" data-bs-parent="#checksAccordion-<?php echo $pid; ?>">
+                                                <div id="checkCollapse-<?php echo $pid . '-' . $cid; ?>" class="accordion-collapse collapse" aria-labelledby="checkHeading-<?php echo $pid . '-' . $cid; ?>">
                                                     <div class="accordion-body">
                                                         <p class="mb-1"><strong>Weight:</strong> <?php echo htmlspecialchars((string)$check->weight); ?> <?php echo htmlspecialchars((string)$check->weight['unit']); ?></p>
                                                         <p class="mb-1"><strong>Height:</strong> <?php echo htmlspecialchars((string)$check->height); ?> <?php echo htmlspecialchars((string)$check->height['unit']); ?></p>
@@ -554,7 +555,7 @@
                                         Episodes (<?php echo count($patient->Episodes->episode); ?>)
                                     </button>
                                 </h2>
-                                <div id="collapseEps-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingEps-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                <div id="collapseEps-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingEps-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <div class="accordion" id="epsAccordion-<?php echo $pid; ?>">
                                             <?php foreach ($patient->Episodes->episode as $ep): $eid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$ep['id']); ?>
@@ -564,7 +565,7 @@
                                                         Episode <?php echo htmlspecialchars((string)$ep['id']); ?> — <?php echo htmlspecialchars((string)$ep['type']); ?>
                                                     </button>
                                                 </h2>
-                                                <div id="epCollapse-<?php echo $pid . '-' . $eid; ?>" class="accordion-collapse collapse" aria-labelledby="epHeading-<?php echo $pid . '-' . $eid; ?>" data-bs-parent="#epsAccordion-<?php echo $pid; ?>">
+                                                <div id="epCollapse-<?php echo $pid . '-' . $eid; ?>" class="accordion-collapse collapse" aria-labelledby="epHeading-<?php echo $pid . '-' . $eid; ?>">
                                                     <div class="accordion-body">
                                                         <?php foreach ($ep->Stages->stage as $st): $stid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$st['id']); ?>
                                                             <div class="card mb-2">
