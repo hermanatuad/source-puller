@@ -48,9 +48,12 @@
             </Stages>
         </episode>
 
-        <episode id="EPI-20200920-001" type="inpatient">
-
-            <reasonForVisit>Chest pain and shortness of breath</reasonForVisit>
+        <episode
+            id="EPI-20200920-001"
+            type="inpatient"
+            startDateTime="2020-09-20T07:50:00"
+            endDateTime="2020-09-23T09:00:00"
+            reasonForVisit="Chest pain and shortness of breath">
 
             <Stages>
 
