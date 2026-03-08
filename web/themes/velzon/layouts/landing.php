@@ -498,7 +498,7 @@
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingDemo-<?php echo $pid; ?>">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDemo-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseDemo-<?php echo $pid; ?>">
+                                    <button class="accordion-button fs-3 py-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDemo-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseDemo-<?php echo $pid; ?>">
                                         Demographic
                                     </button>
                                 </h2>
@@ -521,7 +521,7 @@
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingChecks-<?php echo $pid; ?>">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChecks-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseChecks-<?php echo $pid; ?>">
+                                    <button class="accordion-button fs-3 py-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChecks-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseChecks-<?php echo $pid; ?>">
                                         Clinical Checks (<?php echo count($patient->clinicals->clinicalCheck); ?>)
                                     </button>
                                 </h2>
@@ -551,7 +551,7 @@
 
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingEps-<?php echo $pid; ?>">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEps-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseEps-<?php echo $pid; ?>">
+                                    <button class="accordion-button fs-3 py-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEps-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseEps-<?php echo $pid; ?>">
                                         Episodes (<?php echo count($patient->Episodes->episode); ?>)
                                     </button>
                                 </h2>
