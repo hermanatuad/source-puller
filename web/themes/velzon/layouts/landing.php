@@ -623,6 +623,21 @@
                                                                             </div>
                                                                         <?php endif; ?>
 
+                                                                        <?php if (isset($st->documents->document)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Documents</h6>
+                                                                                <ul class="list-unstyled mb-0">
+                                                                                    <?php foreach ($st->documents->document as $doc): ?>
+                                                                                    <li class="mb-1">
+                                                                                        <strong><?php echo htmlspecialchars((string)$doc->documentType); ?></strong>
+                                                                                        <div class="text-muted">Format: <?php echo htmlspecialchars((string)$doc->format); ?><?php if (isset($doc->createdDate) && (string)$doc->createdDate !== ''): ?> &middot; Created: <?php echo htmlspecialchars((string)$doc->createdDate); ?><?php endif; ?></div>
+                                                                                        <?php if (isset($doc->link) && trim((string)$doc->link) !== ''): ?><div><a href="<?php echo htmlspecialchars((string)$doc->link); ?>" target="_blank">Open document</a></div><?php endif; ?>
+                                                                                    </li>
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                            </div>
+                                                                        <?php endif; ?>
+
                                                                         <?php if (isset($st->checkLaboratory->laboratoryTest)): ?>
                                                                             <div class="mb-2">
                                                                                 <h6 class="fs-14 mb-1">Laboratory Tests</h6>

@@ -59,12 +59,47 @@
                     <startDateTime>2020-09-20T07:50:00</startDateTime>
                     <endDateTime>2020-09-20T08:30:00</endDateTime>
 
+                    <documents>
+
+                        <document id="DOC-001">
+                            <documentType>Discharge Summary</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-23</createdDate>
+                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                        </document>
+
+                    </documents>
+
                     <initialAssessment>
                         <symptom>Chest pain</symptom>
                         <symptom>Shortness of breath</symptom>
                         <triageLevel>High</triageLevel>
                     </initialAssessment>
 
+                    <documents>
+
+                        <document id="DOC-001">
+                            <documentType>Discharge Summary</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-23</createdDate>
+                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                        </document>
+
+                        <document id="DOC-002">
+                            <documentType>Laboratory Report</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-20</createdDate>
+                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
+                        </document>
+
+                        <document id="DOC-003">
+                            <documentType>Procedure Consent Form</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-21</createdDate>
+                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
+                        </document>
+
+                    </documents>
                 </stage>
 
                 <stage id="STG-PROC-001" type="procedure">
@@ -143,6 +178,16 @@
 
                     </radiology>
 
+                    <documents>
+                    
+                        <document id="DOC-002">
+                            <documentType>Laboratory Report</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-20</createdDate>
+                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
+                        </document>
+
+                    </documents>
                     <procedures>
 
                         <procedure id="PROC-001">
@@ -163,37 +208,6 @@
 
                 </stage>
 
-
-                <stage id="STG-DOC-001" type="clinical-documents">
-
-                    <documents>
-
-                        <document id="DOC-001">
-                            <documentType>Discharge Summary</documentType>
-                            <format>PDF</format>
-                            <createdDate>2020-09-23</createdDate>
-                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
-                        </document>
-
-                        <document id="DOC-002">
-                            <documentType>Laboratory Report</documentType>
-                            <format>PDF</format>
-                            <createdDate>2020-09-20</createdDate>
-                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
-                        </document>
-
-                        <document id="DOC-003">
-                            <documentType>Procedure Consent Form</documentType>
-                            <format>PDF</format>
-                            <createdDate>2020-09-21</createdDate>
-                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
-                        </document>
-
-                    </documents>
-
-                </stage>
-
-
                 <stage id="STG-DIS-001" type="discharge">
 
                     <dischargeCondition>Stable</dischargeCondition>
@@ -213,6 +227,17 @@
                         </medication>
 
                     </medications>
+
+                    <documents>
+
+                        <document id="DOC-003">
+                            <documentType>Procedure Consent Form</documentType>
+                            <format>PDF</format>
+                            <createdDate>2020-09-21</createdDate>
+                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
+                        </document>
+
+                    </documents>
 
                 </stage>
 
