@@ -481,11 +481,11 @@
                         <?php $pid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$patient['id']); ?>
                         <div class="accordion" id="patientAccordion-<?php echo $pid; ?>">
                             <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingIdentity-<?php echo $pid; ?>">
+                                <h1 class="accordion-header" id="headingIdentity-<?php echo $pid; ?>">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentity-<?php echo $pid; ?>" aria-expanded="true" aria-controls="collapseIdentity-<?php echo $pid; ?>">
                                         Patient Identity
                                     </button>
-                                </h2>
+                                </h1>
                                 <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <p clascs="mb-1"><strong>Patient ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
