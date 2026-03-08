@@ -11,10 +11,11 @@
         <gender>male</gender>
         <race>indian</race>
         <nationality>malaysia</nationality>
-        <address>malaysia</address>
-        <contact>+60 821 9324 2135</contact>
+        <address>Kuala Lumpur, Malaysia</address>
+        <contact>+60-821-9324-2135</contact>
         <preferredLanguage>malay</preferredLanguage>
     </demographic>
+
     <clinicals>
         <clinicalCheck id="1">
             <weight unit="kg">79</weight>
@@ -30,86 +31,135 @@
         </clinicalCheck>
     </clinicals>
     <Episodes>
-        <episode id="91AO1WS" type="inpatient">
+        <episode id="EPI-20200920-001" type="inpatient">
+
+            <reasonForVisit>Chest pain and shortness of breath</reasonForVisit>
+
             <Stages>
-                <stage id="1S21F1" type="admission">
-                    <startDateTime>2020-09-20</startDateTime>
-                    <endDateTime>2020-09-21</endDateTime>
+
+                <stage id="STG-ADM-001" type="admission">
+                    <startDateTime>2020-09-20T07:50:00</startDateTime>
+                    <endDateTime>2020-09-20T08:30:00</endDateTime>
+                    <initialAssessment>
+                        <symptom>Chest pain</symptom>
+                        <symptom>Shortness of breath</symptom>
+                        <triageLevel>High</triageLevel>
+                    </initialAssessment>
                 </stage>
 
-                <stage id="1S21F2" type="ward">
-                    <startDateTime>2020-09-21</startDateTime>
-                    <endDateTime>2020-09-22</endDateTime>
+                <stage id="STG-WARD-001" type="ward">
+                    <startDateTime>2020-09-20T09:00:00</startDateTime>
+                    <endDateTime>2020-09-21T08:00:00</endDateTime>
+
+                    <diagnosis>
+                        <primaryDiagnosis code="I20">Angina Pectoris</primaryDiagnosis>
+                    </diagnosis>
+
                     <checkLaboratory>
-                        <laboratoryTest id="1">
+
+                        <laboratoryTest id="LAB-001">
                             <testName>Blood Test</testName>
-                            <result>Normal</result>
-                            <dateTime>2020-09-21</dateTime>
+                            <testType>Cardiac Enzyme</testType>
+                            <result>Elevated Troponin</result>
+                            <dateTime>2020-09-20T10:00:00</dateTime>
                         </laboratoryTest>
-                        <laboratoryTest id="2">
+
+                        <laboratoryTest id="LAB-002">
                             <testName>Urine Test</testName>
                             <result>Normal</result>
-                            <dateTime>2020-09-21</dateTime>
+                            <dateTime>2020-09-20T10:15:00</dateTime>
                         </laboratoryTest>
+
                     </checkLaboratory>
                 </stage>
-                <stage id="9EWJSASQ" type="procedure" subtype="invasive">
-                    <dateTime>2020-09-21</dateTime>
-                    <endDateTime>2020-09-21</endDateTime>
+
+                <stage id="STG-PROC-001" type="procedure" subtype="invasive">
+
+                    <startDateTime>2020-09-21T09:00:00</startDateTime>
+                    <endDateTime>2020-09-21T11:30:00</endDateTime>
+
                     <procedures>
-                        <procedure id="1">
-                            <procedureName>Angiography</procedureName>
-                            <dateTime>2020-09-21</dateTime>
-                            <result>Successful</result>
+
+                        <procedure id="PROC-001">
+                            <procedureName>Coronary Angiography</procedureName>
+                            <operator>Dr. Rahman</operator>
+                            <dateTime>2020-09-21T09:30:00</dateTime>
+                            <result>Detected arterial blockage</result>
                         </procedure>
-                        <procedure id="2">
-                            <procedureName>Angioplasty</procedureName>
-                            <dateTime>2020-09-21</dateTime>
-                            <result>Successful</result>
+
+                        <procedure id="PROC-002">
+                            <procedureName>Coronary Angioplasty</procedureName>
+                            <operator>Dr. Rahman</operator>
+                            <dateTime>2020-09-21T10:15:00</dateTime>
+                            <result>Successful stent placement</result>
                         </procedure>
+
                     </procedures>
+
                 </stage>
 
-                <stage id="1S21F2" type="ward">
-                    <startDateTime>2020-09-22</startDateTime>
-                    <endDateTime>2020-09-23</endDateTime>
-                    <checkLaboratory>
-                        <laboratoryTest id="1">
-                            <testName>Blood Test</testName>
-                            <result>Normal</result>
-                            <dateTime>2020-09-21</dateTime>
-                        </laboratoryTest>
-                        <laboratoryTest id="2">
-                            <testName>Urine Test</testName>
-                            <result>Normal</result>
-                            <dateTime>2020-09-21</dateTime>
-                        </laboratoryTest>
-                    </checkLaboratory>
+                <stage id="STG-WARD-002" type="ward">
+
+                    <startDateTime>2020-09-21T12:00:00</startDateTime>
+                    <endDateTime>2020-09-23T09:00:00</endDateTime>
+
+                    <monitoring>
+
+                        <vitalSign id="VS-1">
+                            <bloodPressure>130/85</bloodPressure>
+                            <heartRate>76</heartRate>
+                            <dateTime>2020-09-22T08:00:00</dateTime>
+                        </vitalSign>
+
+                        <vitalSign id="VS-2">
+                            <bloodPressure>128/82</bloodPressure>
+                            <heartRate>72</heartRate>
+                            <dateTime>2020-09-23T08:00:00</dateTime>
+                        </vitalSign>
+
+                    </monitoring>
+
                 </stage>
 
-                <stage id="1S21F3" type="discharge">
-                    <startDateTime>2020-09-23</startDateTime>
-                    <endDateTime>2020-09-23</endDateTime>
+                <stage id="STG-DIS-001" type="discharge">
+
+                    <startDateTime>2020-09-23T09:00:00</startDateTime>
+                    <endDateTime>2020-09-23T10:00:00</endDateTime>
+
+                    <dischargeCondition>Stable</dischargeCondition>
+
                     <medications>
-                        <medication id="1">
+
+                        <medication id="MED-001">
                             <medicationName>Aspirin</medicationName>
-                            <dosage>100mg</dosage>
+                            <dosage>100 mg</dosage>
                             <frequency>Once daily</frequency>
                             <startDateTime>2020-09-23</startDateTime>
-                            <endDateTime>2020-10-23</endDateTime>
+                            <endDateTime>2021-03-23</endDateTime>
                         </medication>
-                        <medication id="2">
+
+                        <medication id="MED-002">
                             <medicationName>Atorvastatin</medicationName>
-                            <dosage>20mg</dosage>
+                            <dosage>20 mg</dosage>
                             <frequency>Once daily</frequency>
                             <startDateTime>2020-09-23</startDateTime>
-                            <endDateTime>2020-10-23</endDateTime>
+                            <endDateTime>2021-03-23</endDateTime>
                         </medication>
+
                     </medications>
+
+                    <followUp>
+                        <appointmentDate>2020-10-02</appointmentDate>
+                        <department>Cardiology</department>
+                    </followUp>
+
                 </stage>
 
             </Stages>
+
         </episode>
+
+
         <episode id="0SDF123F" type="outpatient">
             <Stages>
                 <stage id="1S21F1" type="admission">
