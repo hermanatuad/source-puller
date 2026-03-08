@@ -467,137 +467,99 @@
 
                 <!-- <div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-md-2 row-cols-1"> -->
                 <div class="row row-cols-xxl-12 row-cols-lg-12 row-cols-md-12 row-cols-12">
+                    <?php
+                    $xmlPath = __DIR__ . '/../../../patient.xml';
+                    $patient = null;
+                    if (file_exists($xmlPath)) {
+                        libxml_use_internal_errors(true);
+                        $patient = simplexml_load_file($xmlPath);
+                    }
+                    ?>
+
                     <div class="col">
+                        <?php if ($patient): ?>
                         <div class="card">
-                            <a class="card-body bg-warning-subtle" data-bs-toggle="collapse" href="#needsIdentified" role="button" aria-expanded="false" aria-controls="needsIdentified">
-                                <h5 class="card-title text-uppercase fw-semibold mb-1 fs-15">Needs Identified</h5>
-                                <p class="text-muted mb-0">$708,200 <span class="fw-medium">7 Deals</span></p>
-                            </a>
-                        </div>
-                        <!--end card-->
-                        <div class="collapse show" id="needsIdentified">
-                            <!--end card-->
-                            <div class="card mb-1 ribbon-box ribbon-fill ribbon-sm">
-                                <div class="ribbon ribbon-info"><i class="ri-flashlight-fill"></i></div>
-                                <div class="card-body">
-                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified4" role="button" aria-expanded="false" aria-controls="needsIdentified4">
-                                        <div class="flex-shrink-0">
-                                            <img src="/images/users/avatar-1.jpg" alt="" class="avatar-xs rounded-circle" />
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="fs-14 mb-1">Skote React Development</h6>
-                                            <p class="text-muted mb-0">$89.8 - 21 Nov, 2021</p>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="collapse border-top border-top-dashed" id="needsIdentified4">
-                                    <div class="card-body">
-                                        <h6 class="fs-14 mb-1">Themesbrand <small class="badge bg-danger-subtle text-danger">3 Month</small></h6>
-                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
-                                        <ul class="list-unstyled vstack gap-2 mb-0">
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-question-answer-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Meeting with Thomas</h6>
-                                                        <small class="text-muted">Yesterday at 9:12AM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-mac-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Product Demo</h6>
-                                                        <small class="text-muted">Monday at 04:41PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-earth-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Marketing Team Meeting</h6>
-                                                        <small class="text-muted">Monday at 04:41PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1 ms-0">
+                                        <h5 class="card-title text-uppercase fw-semibold mb-1 fs-15"><?php echo htmlspecialchars((string)$patient->identity->patientName); ?></h5>
+                                        <p class="text-muted mb-0">ID: <?php echo htmlspecialchars((string)$patient['id']); ?> &middot; National IC: <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
                                     </div>
-                                    <div class="card-footer hstack gap-2">
-                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
-                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    <div class="flex-shrink-0 ms-3 text-end">
+                                        <small class="text-muted">DOB: <?php echo htmlspecialchars((string)$patient->demographic->dateOfBirth); ?></small>
                                     </div>
                                 </div>
                             </div>
-                            <!--end card-->
-                            <div class="card mb-1 ribbon-box ribbon-fill ribbon-sm">
-                                <div class="ribbon ribbon-info"><i class="ri-flashlight-fill"></i></div>
-                                <div class="card-body">
-                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified5" role="button" aria-expanded="false" aria-controls="needsIdentified5">
-                                        <div class="flex-shrink-0">
-                                            <img src="/images/users/avatar-2.jpg" alt="" class="avatar-xs rounded-circle" />
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="fs-14 mb-1">Velzon - Admin Dashboard</h6>
-                                            <p class="text-muted mb-0">$126.7k - 30 Dec, 2021</p>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="collapse border-top border-top-dashed" id="needsIdentified5">
-                                    <div class="card-body">
-                                        <h6 class="fs-14 mb-1">Themesbrand <small class="badge bg-danger-subtle text-danger">3 Days</small></h6>
-                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
-                                        <ul class="list-unstyled vstack gap-2 mb-0">
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-question-answer-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Meeting with Nancy</h6>
-                                                        <small class="text-muted">Yesterday at 9:12AM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-mac-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Product Demo</h6>
-                                                        <small class="text-muted">Monday at 04:41PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
-                                                        <i class="ri-earth-line"></i>
-                                                    </div>
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-0">Marketing Team Meeting</h6>
-                                                        <small class="text-muted">Monday at 04:41PM</small>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
+                        </div>
+
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="fs-14 mb-2">Demographic</h6>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="mb-1"><strong>Gender:</strong> <?php echo htmlspecialchars((string)$patient->demographic->gender); ?></p>
+                                        <p class="mb-1"><strong>Race:</strong> <?php echo htmlspecialchars((string)$patient->demographic->race); ?></p>
+                                        <p class="mb-1"><strong>Nationality:</strong> <?php echo htmlspecialchars((string)$patient->demographic->nationality); ?></p>
                                     </div>
-                                    <div class="card-footer hstack gap-2">
-                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
-                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    <div class="col-sm-6">
+                                        <p class="mb-1"><strong>Address:</strong> <?php echo htmlspecialchars((string)$patient->demographic->address); ?></p>
+                                        <p class="mb-1"><strong>Contact:</strong> <?php echo htmlspecialchars((string)$patient->demographic->contact); ?></p>
+                                        <p class="mb-1"><strong>Language:</strong> <?php echo htmlspecialchars((string)$patient->demographic->preferredLanguage); ?></p>
                                     </div>
                                 </div>
                             </div>
-                            <!--end card-->
                         </div>
+
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="fs-14 mb-2">Clinical Checks</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <?php foreach ($patient->clinicals->clinicalCheck as $check): ?>
+                                    <li class="mb-2">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>#<?php echo htmlspecialchars((string)$check['id']); ?></strong>
+                                                &nbsp; <small class="text-muted"><?php echo htmlspecialchars((string)$check->dateTime); ?></small>
+                                                <div class="text-muted">Weight: <?php echo htmlspecialchars((string)$check->weight); ?> <?php echo htmlspecialchars((string)$check->weight['unit']); ?>, Height: <?php echo htmlspecialchars((string)$check->height); ?> <?php echo htmlspecialchars((string)$check->height['unit']); ?></div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-info-subtle text-info">BMI: <?php echo htmlspecialchars((string)$check->bmi); ?></span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card mt-2 mb-3">
+                            <div class="card-body">
+                                <h6 class="fs-14 mb-2">Episodes</h6>
+                                <?php foreach ($patient->Episodes->episode as $ep): ?>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong><?php echo htmlspecialchars((string)$ep['id']); ?></strong>
+                                            <div class="text-muted"><?php echo htmlspecialchars((string)$ep['type']); ?></div>
+                                        </div>
+                                        <div class="text-end">
+                                            <?php foreach ($ep->Stages->stage as $st): ?>
+                                                <div><small class="text-muted"><?php echo htmlspecialchars((string)$st['type']); ?><?php if (isset($st->startDateTime) && (string)$st->startDateTime !== ''): ?> &mdash; <?php echo htmlspecialchars((string)$st->startDateTime); ?><?php endif; ?></small></div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <?php else: ?>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="mb-0">No patient data found. Ensure <code>web/patient.xml</code> exists.</p>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     <!--end col-->
                 </div>
