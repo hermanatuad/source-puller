@@ -46,18 +46,6 @@
 
                     <startDateTime>2020-09-20T07:50:00</startDateTime>
 
-                    <documents>
-
-                        <document id="DOC-001">
-                            <documentType>Addmission Data</documentType>
-                            <format>PDF</format>
-                            <createdDate>2020-09-23</createdDate>
-                            <link>
-                                https://hospital-storage.example.com/documents/addmission-data-20200923.pdf</link>
-                        </document>
-
-                    </documents>
-
                     <initialAssessment>
                         <symptom>Chest pain</symptom>
                         <symptom>Shortness of breath</symptom>
@@ -67,11 +55,11 @@
                     <documents>
 
                         <document id="DOC-001">
-                            <documentType>Discharge Summary</documentType>
+                            <documentType>Addmission Data</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-23</createdDate>
                             <link>
-                                https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                                https://hospital-storage.example.com/documents/addmission-data-20200923.pdf</link>
                         </document>
 
                         <document id="DOC-002">
