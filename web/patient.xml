@@ -42,7 +42,7 @@
 
             <Stages>
 
-                <stage id="STG-ADM-001" type="admission">
+                <stage id="S-EI-C0137595-01-ADM" type="admission">
 
                     <startDateTime>2020-09-20T07:50:00</startDateTime>
 
@@ -93,7 +93,7 @@
                     </documents>
                 </stage>
 
-                <stage id="STG-WARD-001" type="ward">
+                <stage id="S-EI-C0137595-01-WARD" type="ward">
                     <startDateTime>2020-09-20T09:00:00</startDateTime>
                     <endDateTime>2020-09-21T08:00:00</endDateTime>
                     <diagnosis>
@@ -114,7 +114,7 @@
                     </checkLaboratory>
                 </stage>
 
-                <stage id="STG-PROC-001" type="procedure">
+                <stage id="S-EI-C0137595-01-PROC" type="procedure">
 
 
                     <radiology>
@@ -226,7 +226,7 @@
 
                 </stage>
 
-                <stage id="STG-WARD-002" type="ward">
+                <stage id="S-EI-C0137595D00-2" type="ward">
                     <startDateTime>2020-09-21T12:00:00</startDateTime>
                     <endDateTime>2020-09-23T09:00:00</endDateTime>
                     <monitoring>
@@ -243,7 +243,7 @@
                     </monitoring>
                 </stage>
 
-                <stage id="STG-DIS-001" type="discharge">
+                <stage id="S-EI-C0137595-01-DIS" type="discharge">
 
                     <dischargeCondition>Stable</dischargeCondition>
 
