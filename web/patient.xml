@@ -62,7 +62,7 @@
                     <documents>
 
                         <document id="DOC-001">
-                            <documentType>Discharge Summary</documentType>
+                            <documentType>Addmission Data</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-23</createdDate>
                             <link>
