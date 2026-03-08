@@ -1,0 +1,65 @@
+<Patient id="1">
+
+    <identity>
+        <patientName>Fulan</patientName>
+        <patientNationalIC>8349305</patientNationalIC>
+        <patientPassport>19SASDAO123X</patientPassport>
+    </identity>
+
+    <demographic>
+        <dateOfBirth>1960-05-27</dateOfBirth>
+        <gender>male</gender>
+        <race>indian</race>
+        <nationality>malaysia</nationality>
+        <address>malaysia</address>
+        <contact>+60 821 9324 2135</contact>
+        <preferredLanguage>malay</preferredLanguage>
+    </demographic>
+    <clinicals>
+        <clinicalCheck id="1">
+            <weight unit="kg">79</weight>
+            <height unit="cm">170</height>
+            <bmi>24</bmi>
+            <dateTime>2020-09-20</dateTime>
+        </clinicalCheck>
+        <clinicalCheck id="2">
+            <weight unit="kg">70</weight>
+            <height unit="cm">170</height>
+            <bmi>21</bmi>
+            <dateTime>2020-10-02</dateTime>
+        </clinicalCheck>
+    </clinicals>
+    <Episodes>
+        <episode id="91AO1WS" type="inpatient">
+            <Stages>
+                <stage id="1S21F1" type="admission">
+                    <startDateTime>2020-09-20</startDateTime>
+                </stage>
+
+                <stage id="1S21F2" type="medical-checkup">
+                    <description>Routine medical examination</description>
+                </stage>
+
+                <stage id="1S21F3" type="discharge">
+                    <description>Patient discharged</description>
+                </stage>
+
+            </Stages>
+        </episode>
+        <episode id="91AO1WS" type="outpatient">
+            <Stages>
+                <stage id="1S21F1" type="admission">
+                    
+                </stage>
+                <stage id="1S21F2" type="medical-checkup">
+                    <description>Routine medical examination</description>
+                </stage>
+
+                <stage id="1S21F3" type="discharge">
+                    <description>Patient discharged</description>
+                </stage>
+
+            </Stages>
+        </episode>
+    </Episodes>
+</Patient>
