@@ -505,7 +505,6 @@
                                     <div class="accordion-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <p class="mb-1"><strong>Contact:</strong> <?php echo htmlspecialchars((string)$patient->demographic->contact); ?></p>
                                                 <p class="mb-1"><strong>Date of Birth:</strong> <?php echo htmlspecialchars((string)$patient->demographic->dateOfBirth); ?></p>
                                                 <p class="mb-1"><strong>Gender:</strong> <?php echo htmlspecialchars((string)$patient->demographic->gender); ?></p>
                                                 <p class="mb-1"><strong>Race:</strong> <?php echo htmlspecialchars((string)$patient->demographic->race); ?></p>
