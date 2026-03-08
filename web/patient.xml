@@ -34,19 +34,83 @@
             <Stages>
                 <stage id="1S21F1" type="admission">
                     <startDateTime>2020-09-20</startDateTime>
+                    <endDateTime>2020-09-21</endDateTime>
                 </stage>
 
-                <stage id="1S21F2" type="medical-checkup">
-                    <description>Routine medical examination</description>
+                <stage id="1S21F2" type="ward">
+                    <startDateTime>2020-09-21</startDateTime>
+                    <endDateTime>2020-09-22</endDateTime>
+                    <checkLaboratory>
+                        <laboratoryTest id="1">
+                            <testName>Blood Test</testName>
+                            <result>Normal</result>
+                            <dateTime>2020-09-21</dateTime>
+                        </laboratoryTest>
+                        <laboratoryTest id="2">
+                            <testName>Urine Test</testName>
+                            <result>Normal</result>
+                            <dateTime>2020-09-21</dateTime>
+                        </laboratoryTest>
+                    </checkLaboratory>
+                </stage>
+                <stage id="9EWJSASQ" type="procedure" subtype="invasive">
+                    <dateTime>2020-09-21</dateTime>
+                    <endDateTime>2020-09-21</endDateTime>
+                    <procedures>
+                        <procedure id="1">
+                            <procedureName>Angiography</procedureName>
+                            <dateTime>2020-09-21</dateTime>
+                            <result>Successful</result>
+                        </procedure>
+                        <procedure id="2">
+                            <procedureName>Angioplasty</procedureName>
+                            <dateTime>2020-09-21</dateTime>
+                            <result>Successful</result>
+                        </procedure>
+                    </procedures>
+                </stage>
+
+                <stage id="1S21F2" type="ward">
+                    <startDateTime>2020-09-22</startDateTime>
+                    <endDateTime>2020-09-23</endDateTime>
+                    <checkLaboratory>
+                        <laboratoryTest id="1">
+                            <testName>Blood Test</testName>
+                            <result>Normal</result>
+                            <dateTime>2020-09-21</dateTime>
+                        </laboratoryTest>
+                        <laboratoryTest id="2">
+                            <testName>Urine Test</testName>
+                            <result>Normal</result>
+                            <dateTime>2020-09-21</dateTime>
+                        </laboratoryTest>
+                    </checkLaboratory>
                 </stage>
 
                 <stage id="1S21F3" type="discharge">
-                    <description>Patient discharged</description>
+                    <startDateTime>2020-09-23</startDateTime>
+                    <endDateTime>2020-09-23</endDateTime>
+                    <medications>
+                        <medication id="1">
+                            <medicationName>Aspirin</medicationName>
+                            <dosage>100mg</dosage>
+                            <frequency>Once daily</frequency>
+                            <startDateTime>2020-09-23</startDateTime>
+                            <endDateTime>2020-10-23</endDateTime>
+                        </medication>
+                        <medication id="2">
+                            <medicationName>Atorvastatin</medicationName>
+                            <dosage>20mg</dosage>
+                            <frequency>Once daily</frequency>
+                            <startDateTime>2020-09-23</startDateTime>
+                            <endDateTime>2020-10-23</endDateTime>
+                        </medication>
+                    </medications>
                 </stage>
 
             </Stages>
         </episode>
-        <episode id="91AO1WS" type="outpatient">
+        <episode id="0SDF123F" type="outpatient">
             <Stages>
                 <stage id="1S21F1" type="admission">
                     
