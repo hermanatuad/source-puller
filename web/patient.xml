@@ -32,74 +32,12 @@
     </clinicals>
     <Episodes>
 
-        <episode
-            id="EX-20201010-002"
-            type="outpatient"
-            startDateTime="2020-10-10T09:00:00"
-            endDateTime="2020-10-10T09:30:00"
-            reasonForVisit="Follow-up for blood pressure check">
-            <Stages>
-                <stage id="1S21F1" type="admission">
-
-                </stage>
-                <stage id="1S21F2" type="medical-checkup">
-                    <description>Routine medical examination</description>
-                </stage>
-
-                <stage id="1S21F3" type="discharge">
-                    <description>Patient discharged</description>
-                </stage>
-
-            </Stages>
-        </episode>
-
-        <episode
-            id="EE-C0137595-002"
-            type="outpatient"
-            startDateTime="2020-10-10T09:00:00"
-            endDateTime="2020-10-10T09:30:00"
-            reasonForVisit="Follow-up for blood pressure check">
-            <Stages>
-                <stage id="1S21F1" type="admission">
-
-                </stage>
-                <stage id="1S21F2" type="medical-checkup">
-                    <description>Routine medical examination</description>
-                </stage>
-
-                <stage id="1S21F3" type="discharge">
-                    <description>Patient discharged</description>
-                </stage>
-
-            </Stages>
-        </episode>
-
-        <episode
-            id="EO-C0137595-002"
-            type="outpatient"
-            startDateTime="2020-10-10T09:00:00"
-            endDateTime="2020-10-10T09:30:00"
-            reasonForVisit="Follow-up for blood pressure check">
-            <Stages>
-                <stage id="1S21F1" type="admission">
-
-                </stage>
-                <stage id="1S21F2" type="medical-checkup">
-                    <description>Routine medical examination</description>
-                </stage>
-
-                <stage id="1S21F3" type="discharge">
-                    <description>Patient discharged</description>
-                </stage>
-
-            </Stages>
-        </episode>
 
         <episode
             id="EI-C0137595-001"
             type="inpatient"
             startDateTime="2020-09-20T07:50:00"
-            endDateTime="2020-09-23T09:00:00"
+            endDateTime=""
             reasonForVisit="Chest pain and shortness of breath">
 
             <Stages>
