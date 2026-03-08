@@ -163,6 +163,24 @@ class SiteController extends Controller
     }
 
     /**
+     * Serve raw patient XML file at /site/xml
+     *
+     * @return string
+     */
+    public function actionXml()
+    {
+        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        if (!file_exists($xmlPath)) {
+            throw new \yii\web\NotFoundHttpException('patient.xml not found');
+        }
+
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->headers->set('Content-Type', 'application/xml; charset=utf-8');
+
+        return file_get_contents($xmlPath);
+    }
+
+    /**
      * Displays contact page.
      *
      * @return Response|string

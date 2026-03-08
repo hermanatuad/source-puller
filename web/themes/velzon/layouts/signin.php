@@ -32,7 +32,7 @@
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
                                                 <a href="/" class="d-block">
-                                                    <img src="/images/logo-light.png" alt="" height="18">
+                                                    Derrick
                                                 </a>
                                             </div>
                                             <div class="mt-auto">
