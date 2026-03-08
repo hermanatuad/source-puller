@@ -6,6 +6,8 @@ use app\helpers\DBHelper;
 use app\helpers\MyHelper;
 use app\models\System;
 use app\models\Affiliation;
+use app\models\Bridge;
+use app\models\BridgeColumn;
 use app\models\SystemSearch;
 use Yii;
 use yii\web\Controller;
@@ -142,7 +144,18 @@ class SystemController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        $bridge = Bridge::find()->where(['system_code' => $model->system_code])->all();
+        foreach ($bridge as $b) {
+            $bridgeColumns = BridgeColumn::find()->where(['bridge_id' => $b->id])->all();
+            foreach ($bridgeColumns as $bc) {
+                $bc->delete();
+            }
+            $b->delete();
+        }
+        $model->delete();
+
 
         return $this->redirect(['index']);
     }
