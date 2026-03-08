@@ -473,6 +473,236 @@
                                 <h5 class="card-title text-uppercase fw-semibold mb-1 fs-15">Needs Identified</h5>
                                 <p class="text-muted mb-0">$708,200 <span class="fw-medium">7 Deals</span></p>
                             </a>
+
+                            
+                        <div class="collapse show" id="needsIdentified">
+                            <div class="card mb-1">
+                                <div class="card-body">
+                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified1" role="button" aria-expanded="false" aria-controls="needsIdentified1">
+                                        <div class="flex-shrink-0">
+                                            <img src="/images/users/avatar-9.jpg" alt="" class="avatar-xs rounded-circle" />
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fs-14 mb-1">Art Studio Design</h6>
+                                            <p class="text-muted mb-0">$147.5k - 24 Sep, 2021</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="collapse border-top border-top-dashed" id="needsIdentified1">
+                                    <div class="card-body">
+                                        <h6 class="fs-14 mb-1">Alexis Clarke <small class="badge bg-danger-subtle text-danger">7 Days</small></h6>
+                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
+                                        <ul class="list-unstyled vstack gap-2 mb-0">
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-question-answer-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Meeting with Alexis</h6>
+                                                        <small class="text-muted">Yesterday at 9:12AM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-mac-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Product Demo</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer hstack gap-2">
+                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
+                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-->
+                            <div class="card mb-1">
+                                <div class="card-body">
+                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified2" role="button" aria-expanded="false" aria-controls="needsIdentified2">
+                                        <div class="flex-shrink-0">
+                                            <img src="/images/users/avatar-8.jpg" alt="" class="avatar-xs rounded-circle" />
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fs-14 mb-1">Billing Page Bug</h6>
+                                            <p class="text-muted mb-0">$15.8k - 17 Dec, 2021</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="collapse border-top border-top-dashed" id="needsIdentified2">
+                                    <div class="card-body">
+                                        <h6 class="fs-14 mb-1">Meta4Systems <small class="badge bg-warning-subtle text-warning">35 Days</small></h6>
+                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
+                                        <ul class="list-unstyled vstack gap-2 mb-0">
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-question-answer-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Meeting with Mary</h6>
+                                                        <small class="text-muted">Yesterday at 9:12AM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-mac-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Product Demo</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-earth-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Marketing Team Meeting</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer hstack gap-2">
+                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
+                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-->
+                            <div class="card mb-1">
+                                <div class="card-body">
+                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified3" role="button" aria-expanded="false" aria-controls="needsIdentified3">
+                                        <div class="flex-shrink-0">
+                                            <img src="/images/brands/dribbble.png" alt="" class="avatar-xs rounded-circle" />
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fs-14 mb-1">Food Selection Platform</h6>
+                                            <p class="text-muted mb-0">$72.5k - 04 Jan, 2022</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="collapse border-top border-top-dashed" id="needsIdentified3">
+                                    <div class="card-body">
+                                        <h6 class="fs-14 mb-1">Syntyce Solutions <small class="badge bg-danger-subtle text-danger">15 Days</small></h6>
+                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
+                                        <ul class="list-unstyled vstack gap-2 mb-0">
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-question-answer-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Meeting with Thomas</h6>
+                                                        <small class="text-muted">Yesterday at 9:12AM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-mac-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Product Demo</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-earth-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Marketing Team Meeting</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer hstack gap-2">
+                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
+                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-->
+                            <div class="card mb-1 ribbon-box ribbon-fill ribbon-sm">
+                                <div class="ribbon ribbon-info"><i class="ri-flashlight-fill"></i></div>
+                                <div class="card-body">
+                                    <a class="d-flex align-items-center" data-bs-toggle="collapse" href="#needsIdentified4" role="button" aria-expanded="false" aria-controls="needsIdentified4">
+                                        <div class="flex-shrink-0">
+                                            <img src="/images/users/avatar-1.jpg" alt="" class="avatar-xs rounded-circle" />
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="fs-14 mb-1">Skote React Development</h6>
+                                            <p class="text-muted mb-0">$89.8 - 21 Nov, 2021</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="collapse border-top border-top-dashed" id="needsIdentified4">
+                                    <div class="card-body">
+                                        <h6 class="fs-14 mb-1">Themesbrand <small class="badge bg-danger-subtle text-danger">3 Month</small></h6>
+                                        <p class="text-muted">As a company grows however, you find it's not as easy to shout across</p>
+                                        <ul class="list-unstyled vstack gap-2 mb-0">
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-question-answer-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Meeting with Thomas</h6>
+                                                        <small class="text-muted">Yesterday at 9:12AM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-mac-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Product Demo</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0 avatar-xxs text-muted">
+                                                        <i class="ri-earth-line"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0">Marketing Team Meeting</h6>
+                                                        <small class="text-muted">Monday at 04:41PM</small>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer hstack gap-2">
+                                        <button class="btn btn-primary btn-sm w-100"><i class="ri-phone-line align-bottom me-1"></i> Call</button>
+                                        <button class="btn btn-secondary btn-sm w-100"><i class="ri-question-answer-line align-bottom me-1"></i> Message</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-->
+                        </div>
                         </div>
                         <!--end card-->
                         <div class="collapse show" id="needsIdentified">
