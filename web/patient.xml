@@ -67,8 +67,8 @@
 
                 </stage>
 
+                <stage id="STG-PROC-001" type="procedure">
 
-                <stage id="STG-RAD-001" type="radiology">
 
                     <radiology>
 
@@ -142,11 +142,6 @@
                         </medicalImaging>
 
                     </radiology>
-
-                </stage>
-
-
-                <stage id="STG-PROC-001" type="procedure">
 
                     <procedures>
 
