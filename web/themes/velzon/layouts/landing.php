@@ -457,7 +457,7 @@
                     <div class="col-lg-8">
                         <div class="text-center mb-5">
                             <h3 class="mb-3 fw-semibold">Human Bamboo</h3>
-                            <p class="text-muted mb-4">Simple pricing. No hidden fees. Advanced features for you business.</p>
+                            <p class="text-muted mb-4">Patient Lifetime Data.</p>
 
                         </div>
                     </div>
