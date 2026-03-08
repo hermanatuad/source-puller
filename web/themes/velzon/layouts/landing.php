@@ -482,14 +482,14 @@
                         <div class="accordion" id="patientAccordion-<?php echo $pid; ?>">
                             <div class="accordion-item">
                                 <h1 class="accordion-header" id="headingIdentity-<?php echo $pid; ?>">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentity-<?php echo $pid; ?>" aria-expanded="true" aria-controls="collapseIdentity-<?php echo $pid; ?>">
+                                    <button class="accordion-button fs-3 py-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentity-<?php echo $pid; ?>" aria-expanded="true" aria-controls="collapseIdentity-<?php echo $pid; ?>">
                                         Patient Identity
                                     </button>
                                 </h1>
                                 <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>">
                                     <div class="accordion-body">
-                                        <p clascs="mb-1"><strong>Patient ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
-                                        <p clascs="mb-1"><strong>Name:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientName); ?></p>
+                                        <p class="mb-1"><strong>Patient ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
+                                        <p class="mb-1"><strong>Name:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientName); ?></p>
                                         <p class="mb-1"><strong>National IC:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
                                         <p class="mb-0"><strong>Passport:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientPassport); ?></p>
                                     </div>
