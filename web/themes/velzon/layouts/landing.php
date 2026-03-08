@@ -174,7 +174,7 @@
                                                                                                             <strong>Files:</strong>
                                                                                                             <ul class="mb-0">
                                                                                                                 <?php foreach ($mi->imageFiles->imageFile as $img): ?>
-                                                                                                                    <li><a href="<?php echo htmlspecialchars((string)$img->link); ?>" target="_blank"><?php echo htmlspecialchars((string)$img->format); ?></a></li>
+                                                                                                                    <li><a href="<?php echo '/file/serve?name=' . urlencode(basename((string)$img->link)); ?>" target="_blank"><?php echo htmlspecialchars((string)$img->format); ?></a></li>
                                                                                                                 <?php endforeach; ?>
                                                                                                             </ul>
                                                                                                         </div>
@@ -184,7 +184,7 @@
                                                                                                         <div>
                                                                                                             <strong>Report:</strong>
                                                                                                             <?php if (isset($mi->radiologyReport->link) && (string)$mi->radiologyReport->link !== ''): ?>
-                                                                                                                <a href="<?php echo htmlspecialchars((string)$mi->radiologyReport->link); ?>" target="_blank">Download (<?php echo htmlspecialchars((string)$mi->radiologyReport->format); ?>)</a>
+                                                                                                                <a href="<?php echo '/file/serve?name=' . urlencode(basename((string)$mi->radiologyReport->link)); ?>" target="_blank">Download (<?php echo htmlspecialchars((string)$mi->radiologyReport->format); ?>)</a>
                                                                                                             <?php endif; ?>
                                                                                                             <?php if (isset($mi->radiologyReport->summary) && trim((string)$mi->radiologyReport->summary) !== ''): ?>
                                                                                                                 <p class="text-muted mb-0 mt-1"><?php echo nl2br(htmlspecialchars(trim((string)$mi->radiologyReport->summary))); ?></p>
@@ -205,7 +205,7 @@
                                                                                                 <li class="mb-1">
                                                                                                     <strong><?php echo htmlspecialchars((string)$doc->documentType); ?></strong>
                                                                                                     <div class="text-muted">Format: <?php echo htmlspecialchars((string)$doc->format); ?><?php if (isset($doc->createdDate) && (string)$doc->createdDate !== ''): ?> &middot; Created: <?php echo htmlspecialchars((string)$doc->createdDate); ?><?php endif; ?></div>
-                                                                                                    <?php if (isset($doc->link) && trim((string)$doc->link) !== ''): ?><div><a href="<?php echo htmlspecialchars((string)$doc->link); ?>" target="_blank">Open document</a></div><?php endif; ?>
+                                                                                                    <?php if (isset($doc->link) && trim((string)$doc->link) !== ''): ?><div><a href="<?php echo '/file/serve?name=' . urlencode(basename((string)$doc->link)); ?>" target="_blank">Open document</a></div><?php endif; ?>
                                                                                                 </li>
                                                                                             <?php endforeach; ?>
                                                                                         </ul>
