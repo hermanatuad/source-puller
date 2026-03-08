@@ -567,9 +567,81 @@
                                                 </h2>
                                                 <div id="epCollapse-<?php echo $pid . '-' . $eid; ?>" class="accordion-collapse collapse" aria-labelledby="epHeading-<?php echo $pid . '-' . $eid; ?>" data-bs-parent="#epsAccordion-<?php echo $pid; ?>">
                                                     <div class="accordion-body">
-                                                        <?php foreach ($ep->Stages->stage as $st): ?>
-                                                            <p class="mb-1"><strong><?php echo htmlspecialchars((string)$st['type']); ?></strong><?php if (isset($st->startDateTime) && (string)$st->startDateTime !== ''): ?> — <small class="text-muted"><?php echo htmlspecialchars((string)$st->startDateTime); ?></small><?php endif; ?></p>
-                                                            <?php if (isset($st->description) && (string)$st->description !== ''): ?><p class="text-muted mb-1"><?php echo htmlspecialchars((string)$st->description); ?></p><?php endif; ?>
+                                                        <?php foreach ($ep->Stages->stage as $st): $stid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$st['id']); ?>
+                                                            <div class="card mb-2">
+                                                                <div class="card-body p-2">
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <div>
+                                                                            <h6 class="mb-1">Stage: <?php echo htmlspecialchars((string)$st['type']); ?> <small class="text-muted">#<?php echo htmlspecialchars((string)$st['id']); ?></small></h6>
+                                                                            <?php if (isset($st['subtype']) && (string)$st['subtype'] !== ''): ?><p class="mb-1"><strong>Subtype:</strong> <?php echo htmlspecialchars((string)$st['subtype']); ?></p><?php endif; ?>
+                                                                            <?php if (isset($st->startDateTime) && (string)$st->startDateTime !== ''): ?><p class="mb-1"><strong>Start:</strong> <?php echo htmlspecialchars((string)$st->startDateTime); ?></p><?php endif; ?>
+                                                                            <?php if (isset($st->endDateTime) && (string)$st->endDateTime !== ''): ?><p class="mb-1"><strong>End:</strong> <?php echo htmlspecialchars((string)$st->endDateTime); ?></p><?php endif; ?>
+                                                                            <?php if (isset($st->dateTime) && (string)$st->dateTime !== ''): ?><p class="mb-1"><strong>Date:</strong> <?php echo htmlspecialchars((string)$st->dateTime); ?></p><?php endif; ?>
+                                                                            <?php if (isset($st->description) && (string)$st->description !== ''): ?><p class="text-muted mb-1"><?php echo htmlspecialchars((string)$st->description); ?></p><?php endif; ?>
+                                                                        </div>
+                                                                        <div class="text-end">
+                                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#stageDetails-<?php echo $pid . '-' . $stid; ?>" aria-expanded="false" aria-controls="stageDetails-<?php echo $pid . '-' . $stid; ?>">Detail</button>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="collapse mt-2" id="stageDetails-<?php echo $pid . '-' . $stid; ?>">
+                                                                        <?php if (isset($st->checkLaboratory->laboratoryTest)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Laboratory Tests</h6>
+                                                                                <div class="table-responsive">
+                                                                                    <table class="table table-sm mb-0">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>Test</th>
+                                                                                                <th>Result</th>
+                                                                                                <th>Date</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <?php foreach ($st->checkLaboratory->laboratoryTest as $lt): ?>
+                                                                                            <tr>
+                                                                                                <td><?php echo htmlspecialchars((string)$lt->testName); ?></td>
+                                                                                                <td><?php echo htmlspecialchars((string)$lt->result); ?></td>
+                                                                                                <td class="text-muted"><?php echo htmlspecialchars((string)$lt->dateTime); ?></td>
+                                                                                            </tr>
+                                                                                            <?php endforeach; ?>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        <?php endif; ?>
+
+                                                                        <?php if (isset($st->procedures->procedure)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Procedures</h6>
+                                                                                <ul class="list-unstyled mb-0">
+                                                                                    <?php foreach ($st->procedures->procedure as $proc): ?>
+                                                                                    <li class="mb-1">
+                                                                                        <strong><?php echo htmlspecialchars((string)$proc->procedureName); ?></strong>
+                                                                                        <div class="text-muted">Date: <?php echo htmlspecialchars((string)$proc->dateTime); ?> &middot; Result: <?php echo htmlspecialchars((string)$proc->result); ?></div>
+                                                                                    </li>
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                            </div>
+                                                                        <?php endif; ?>
+
+                                                                        <?php if (isset($st->medications->medication)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Medications</h6>
+                                                                                <ul class="list-unstyled mb-0">
+                                                                                    <?php foreach ($st->medications->medication as $med): ?>
+                                                                                    <li class="mb-1">
+                                                                                        <strong><?php echo htmlspecialchars((string)$med->medicationName); ?></strong>
+                                                                                        <div class="text-muted">Dosage: <?php echo htmlspecialchars((string)$med->dosage); ?> &middot; Frequency: <?php echo htmlspecialchars((string)$med->frequency); ?></div>
+                                                                                        <div class="text-muted">Start: <?php echo htmlspecialchars((string)$med->startDateTime); ?> &middot; End: <?php echo htmlspecialchars((string)$med->endDateTime); ?></div>
+                                                                                    </li>
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                            </div>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         <?php endforeach; ?>
                                                     </div>
                                                 </div>
