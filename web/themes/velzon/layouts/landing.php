@@ -504,12 +504,10 @@
                                 <div id="collapseDemo-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingDemo-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-12">
                                                 <p class="mb-1"><strong>Gender:</strong> <?php echo htmlspecialchars((string)$patient->demographic->gender); ?></p>
                                                 <p class="mb-1"><strong>Race:</strong> <?php echo htmlspecialchars((string)$patient->demographic->race); ?></p>
                                                 <p class="mb-1"><strong>Nationality:</strong> <?php echo htmlspecialchars((string)$patient->demographic->nationality); ?></p>
-                                            </div>
-                                            <div class="col-sm-6">
                                                 <p class="mb-1"><strong>Address:</strong> <?php echo htmlspecialchars((string)$patient->demographic->address); ?></p>
                                                 <p class="mb-1"><strong>Contact:</strong> <?php echo htmlspecialchars((string)$patient->demographic->contact); ?></p>
                                                 <p class="mb-0"><strong>Language:</strong> <?php echo htmlspecialchars((string)$patient->demographic->preferredLanguage); ?></p>
