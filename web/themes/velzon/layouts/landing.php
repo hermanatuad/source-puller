@@ -465,7 +465,8 @@
                 </div>
                 <!-- end row -->
 
-                <div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-md-2 row-cols-1">
+                <!-- <div class="row row-cols-xxl-5 row-cols-lg-3 row-cols-md-2 row-cols-1"> -->
+                <div class="row row-cols-xxl-12 row-cols-lg-12 row-cols-md-12 row-cols-12">
                     <div class="col">
                         <div class="card">
                             <a class="card-body bg-warning-subtle" data-bs-toggle="collapse" href="#needsIdentified" role="button" aria-expanded="false" aria-controls="needsIdentified">
