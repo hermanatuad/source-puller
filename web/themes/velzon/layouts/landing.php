@@ -489,7 +489,7 @@
                                 <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>">
                                     <div class="accordion-body">
                                         <p clascs="mb-1"><strong>Patient ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
-                                        <p clascs="mb-1"><strong>Name:<?php echo htmlspecialchars((string)$patient->identity->patientName); ?></p>
+                                        <p clascs="mb-1"><strong>Name:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientName); ?></p>
                                         <p class="mb-1"><strong>National IC:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
                                         <p class="mb-0"><strong>Passport:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientPassport); ?></p>
                                     </div>
