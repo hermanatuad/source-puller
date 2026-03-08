@@ -35,7 +35,7 @@
         <episode id="EPI-20201010-002" type="outpatient">
             <Stages>
                 <stage id="1S21F1" type="admission">
-                    
+
                 </stage>
                 <stage id="1S21F2" type="medical-checkup">
                     <description>Routine medical examination</description>
@@ -65,7 +65,8 @@
                             <documentType>Discharge Summary</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-23</createdDate>
-                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
                         </document>
 
                     </documents>
@@ -82,24 +83,48 @@
                             <documentType>Discharge Summary</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-23</createdDate>
-                            <link>https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
                         </document>
 
                         <document id="DOC-002">
                             <documentType>Laboratory Report</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-20</createdDate>
-                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
                         </document>
 
                         <document id="DOC-003">
                             <documentType>Procedure Consent Form</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-21</createdDate>
-                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
                         </document>
 
                     </documents>
+                </stage>
+
+                <stage id="STG-WARD-001" type="ward">
+                    <startDateTime>2020-09-20T09:00:00</startDateTime>
+                    <endDateTime>2020-09-21T08:00:00</endDateTime>
+                    <diagnosis>
+                        <primaryDiagnosis code="I20">Angina Pectoris</primaryDiagnosis>
+                    </diagnosis>
+                    <checkLaboratory>
+                        <laboratoryTest id="LAB-001">
+                            <testName>Blood Test</testName>
+                            <testType>Cardiac Enzyme</testType>
+                            <result>Elevated Troponin</result>
+                            <dateTime>2020-09-20T10:00:00</dateTime>
+                        </laboratoryTest>
+                        <laboratoryTest id="LAB-002">
+                            <testName>Urine Test</testName>
+                            <result>Normal</result>
+                            <dateTime>2020-09-20T10:15:00</dateTime>
+                        </laboratoryTest>
+                    </checkLaboratory>
                 </stage>
 
                 <stage id="STG-PROC-001" type="procedure">
@@ -120,12 +145,14 @@
 
                                 <imageFile>
                                     <format>DICOM</format>
-                                    <link>https://hospital-storage.example.com/pacs/ct/IMG-CT-001/series1.dcm</link>
+                                    <link>
+                                        https://hospital-storage.example.com/pacs/ct/IMG-CT-001/series1.dcm</link>
                                 </imageFile>
 
                                 <imageFile>
                                     <format>JPEG Preview</format>
-                                    <link>https://hospital-storage.example.com/pacs/ct/IMG-CT-001/preview.jpg</link>
+                                    <link>
+                                        https://hospital-storage.example.com/pacs/ct/IMG-CT-001/preview.jpg</link>
                                 </imageFile>
 
                             </imageFiles>
@@ -134,7 +161,8 @@
 
                                 <reportType>Radiologist Report</reportType>
                                 <format>PDF</format>
-                                <link>https://hospital-storage.example.com/reports/ct/IMG-CT-001-report.pdf</link>
+                                <link>
+                                    https://hospital-storage.example.com/reports/ct/IMG-CT-001-report.pdf</link>
 
                                 <summary>
                                     Mild coronary artery calcification detected.
@@ -158,7 +186,8 @@
 
                                 <imageFile>
                                     <format>DICOM</format>
-                                    <link>https://hospital-storage.example.com/pacs/mri/IMG-MRI-001/series1.dcm</link>
+                                    <link>
+                                        https://hospital-storage.example.com/pacs/mri/IMG-MRI-001/series1.dcm</link>
                                 </imageFile>
 
                             </imageFiles>
@@ -166,7 +195,8 @@
                             <radiologyReport>
 
                                 <format>PDF</format>
-                                <link>https://hospital-storage.example.com/reports/mri/IMG-MRI-001-report.pdf</link>
+                                <link>
+                                    https://hospital-storage.example.com/reports/mri/IMG-MRI-001-report.pdf</link>
 
                                 <summary>
                                     Evidence of reduced myocardial perfusion in the left ventricle.
@@ -179,12 +209,13 @@
                     </radiology>
 
                     <documents>
-                    
+
                         <document id="DOC-002">
                             <documentType>Laboratory Report</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-20</createdDate>
-                            <link>https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/lab-report-20200920.pdf</link>
                         </document>
 
                     </documents>
@@ -206,6 +237,23 @@
 
                     </procedures>
 
+                </stage>
+
+                <stage id="STG-WARD-002" type="ward">
+                    <startDateTime>2020-09-21T12:00:00</startDateTime>
+                    <endDateTime>2020-09-23T09:00:00</endDateTime>
+                    <monitoring>
+                        <vitalSign id="VS-1">
+                            <bloodPressure>130/85</bloodPressure>
+                            <heartRate>76</heartRate>
+                            <dateTime>2020-09-22T08:00:00</dateTime>
+                        </vitalSign>
+                        <vitalSign id="VS-2">
+                            <bloodPressure>128/82</bloodPressure>
+                            <heartRate>72</heartRate>
+                            <dateTime>2020-09-23T08:00:00</dateTime>
+                        </vitalSign>
+                    </monitoring>
                 </stage>
 
                 <stage id="STG-DIS-001" type="discharge">
@@ -234,7 +282,8 @@
                             <documentType>Procedure Consent Form</documentType>
                             <format>PDF</format>
                             <createdDate>2020-09-21</createdDate>
-                            <link>https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
+                            <link>
+                                https://hospital-storage.example.com/documents/consent-angioplasty.pdf</link>
                         </document>
 
                     </documents>
