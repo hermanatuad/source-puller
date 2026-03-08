@@ -664,6 +664,32 @@
                                                                             </div>
                                                                         <?php endif; ?>
 
+                                                                        <?php if (isset($st->monitoring->vitalSign)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Monitoring - Vital Signs</h6>
+                                                                                <div class="table-responsive">
+                                                                                    <table class="table table-sm mb-0">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th>BP</th>
+                                                                                                <th>Heart Rate</th>
+                                                                                                <th>Date</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <?php foreach ($st->monitoring->vitalSign as $vs): ?>
+                                                                                            <tr>
+                                                                                                <td><?php echo htmlspecialchars((string)$vs->bloodPressure); ?></td>
+                                                                                                <td><?php echo htmlspecialchars((string)$vs->heartRate); ?></td>
+                                                                                                <td class="text-muted"><?php echo htmlspecialchars((string)$vs->dateTime); ?></td>
+                                                                                            </tr>
+                                                                                            <?php endforeach; ?>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        <?php endif; ?>
+
                                                                         <?php if (isset($st->procedures->procedure)): ?>
                                                                             <div class="mb-2">
                                                                                 <h6 class="fs-14 mb-1">Procedures</h6>
