@@ -585,6 +585,44 @@
                                                                     </div>
 
                                                                     <div class="collapse mt-2" id="stageDetails-<?php echo $pid . '-' . $stid; ?>">
+                                                                        <?php if (isset($st->radiology->medicalImaging)): ?>
+                                                                            <div class="mb-2">
+                                                                                <h6 class="fs-14 mb-1">Radiology / Medical Imaging</h6>
+                                                                                <?php foreach ($st->radiology->medicalImaging as $mi): $miid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$mi['id']); ?>
+                                                                                <div class="card mb-2">
+                                                                                    <div class="card-body p-2">
+                                                                                        <p class="mb-1"><strong><?php echo htmlspecialchars((string)$mi['id']); ?></strong> &mdash; <?php echo htmlspecialchars((string)$mi->modality); ?> (<?php echo htmlspecialchars((string)$mi->bodyPart); ?>)</p>
+                                                                                        <p class="text-muted mb-1">Machine: <?php echo htmlspecialchars((string)$mi->machine); ?> &middot; Date: <?php echo htmlspecialchars((string)$mi->dateTime); ?></p>
+                                                                                        <?php if (isset($mi->dicomStudyUID) && (string)$mi->dicomStudyUID !== ''): ?><p class="text-muted mb-1">Study UID: <?php echo htmlspecialchars((string)$mi->dicomStudyUID); ?></p><?php endif; ?>
+
+                                                                                        <?php if (isset($mi->imageFiles->imageFile)): ?>
+                                                                                        <div class="mb-1">
+                                                                                            <strong>Files:</strong>
+                                                                                            <ul class="mb-0">
+                                                                                                <?php foreach ($mi->imageFiles->imageFile as $img): ?>
+                                                                                                <li><a href="<?php echo htmlspecialchars((string)$img->link); ?>" target="_blank"><?php echo htmlspecialchars((string)$img->format); ?></a></li>
+                                                                                                <?php endforeach; ?>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                        <?php endif; ?>
+
+                                                                                        <?php if (isset($mi->radiologyReport)): ?>
+                                                                                            <div>
+                                                                                                <strong>Report:</strong>
+                                                                                                <?php if (isset($mi->radiologyReport->link) && (string)$mi->radiologyReport->link !== ''): ?>
+                                                                                                    <a href="<?php echo htmlspecialchars((string)$mi->radiologyReport->link); ?>" target="_blank">Download (<?php echo htmlspecialchars((string)$mi->radiologyReport->format); ?>)</a>
+                                                                                                <?php endif; ?>
+                                                                                                <?php if (isset($mi->radiologyReport->summary) && trim((string)$mi->radiologyReport->summary) !== ''): ?>
+                                                                                                    <p class="text-muted mb-0 mt-1"><?php echo nl2br(htmlspecialchars(trim((string)$mi->radiologyReport->summary))); ?></p>
+                                                                                                <?php endif; ?>
+                                                                                            </div>
+                                                                                        <?php endif; ?>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <?php endforeach; ?>
+                                                                            </div>
+                                                                        <?php endif; ?>
+
                                                                         <?php if (isset($st->checkLaboratory->laboratoryTest)): ?>
                                                                             <div class="mb-2">
                                                                                 <h6 class="fs-14 mb-1">Laboratory Tests</h6>
