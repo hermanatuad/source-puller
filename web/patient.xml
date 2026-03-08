@@ -57,7 +57,6 @@
                 <stage id="STG-ADM-001" type="admission">
 
                     <startDateTime>2020-09-20T07:50:00</startDateTime>
-                    <endDateTime>2020-09-20T08:30:00</endDateTime>
 
                     <documents>
 
@@ -66,7 +65,7 @@
                             <format>PDF</format>
                             <createdDate>2020-09-23</createdDate>
                             <link>
-                                https://hospital-storage.example.com/documents/discharge-summary-20200923.pdf</link>
+                                https://hospital-storage.example.com/documents/addmission-data-20200923.pdf</link>
                         </document>
 
                     </documents>
