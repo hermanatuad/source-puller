@@ -478,78 +478,106 @@
 
                     <div class="col">
                         <?php if ($patient): ?>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 ms-0">
-                                        <h5 class="card-title text-uppercase fw-semibold mb-1 fs-15"><?php echo htmlspecialchars((string)$patient->identity->patientName); ?></h5>
-                                        <p class="text-muted mb-0">ID: <?php echo htmlspecialchars((string)$patient['id']); ?> &middot; National IC: <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
-                                    </div>
-                                    <div class="flex-shrink-0 ms-3 text-end">
-                                        <small class="text-muted">DOB: <?php echo htmlspecialchars((string)$patient->demographic->dateOfBirth); ?></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card mt-2">
-                            <div class="card-body">
-                                <h6 class="fs-14 mb-2">Demographic</h6>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p class="mb-1"><strong>Gender:</strong> <?php echo htmlspecialchars((string)$patient->demographic->gender); ?></p>
-                                        <p class="mb-1"><strong>Race:</strong> <?php echo htmlspecialchars((string)$patient->demographic->race); ?></p>
-                                        <p class="mb-1"><strong>Nationality:</strong> <?php echo htmlspecialchars((string)$patient->demographic->nationality); ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <p class="mb-1"><strong>Address:</strong> <?php echo htmlspecialchars((string)$patient->demographic->address); ?></p>
-                                        <p class="mb-1"><strong>Contact:</strong> <?php echo htmlspecialchars((string)$patient->demographic->contact); ?></p>
-                                        <p class="mb-1"><strong>Language:</strong> <?php echo htmlspecialchars((string)$patient->demographic->preferredLanguage); ?></p>
+                        <?php $pid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$patient['id']); ?>
+                        <div class="accordion" id="patientAccordion-<?php echo $pid; ?>">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingIdentity-<?php echo $pid; ?>">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIdentity-<?php echo $pid; ?>" aria-expanded="true" aria-controls="collapseIdentity-<?php echo $pid; ?>">
+                                        Identity — <?php echo htmlspecialchars((string)$patient->identity->patientName); ?>
+                                    </button>
+                                </h2>
+                                <div id="collapseIdentity-<?php echo $pid; ?>" class="accordion-collapse collapse show" aria-labelledby="headingIdentity-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                    <div class="accordion-body">
+                                        <p class="mb-1"><strong>ID:</strong> <?php echo htmlspecialchars((string)$patient['id']); ?></p>
+                                        <p class="mb-1"><strong>National IC:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientNationalIC); ?></p>
+                                        <p class="mb-0"><strong>Passport:</strong> <?php echo htmlspecialchars((string)$patient->identity->patientPassport); ?></p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="card mt-2">
-                            <div class="card-body">
-                                <h6 class="fs-14 mb-2">Clinical Checks</h6>
-                                <ul class="list-unstyled mb-0">
-                                    <?php foreach ($patient->clinicals->clinicalCheck as $check): ?>
-                                    <li class="mb-2">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <strong>#<?php echo htmlspecialchars((string)$check['id']); ?></strong>
-                                                &nbsp; <small class="text-muted"><?php echo htmlspecialchars((string)$check->dateTime); ?></small>
-                                                <div class="text-muted">Weight: <?php echo htmlspecialchars((string)$check->weight); ?> <?php echo htmlspecialchars((string)$check->weight['unit']); ?>, Height: <?php echo htmlspecialchars((string)$check->height); ?> <?php echo htmlspecialchars((string)$check->height['unit']); ?></div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingDemo-<?php echo $pid; ?>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDemo-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseDemo-<?php echo $pid; ?>">
+                                        Demographic
+                                    </button>
+                                </h2>
+                                <div id="collapseDemo-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingDemo-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="mb-1"><strong>Gender:</strong> <?php echo htmlspecialchars((string)$patient->demographic->gender); ?></p>
+                                                <p class="mb-1"><strong>Race:</strong> <?php echo htmlspecialchars((string)$patient->demographic->race); ?></p>
+                                                <p class="mb-1"><strong>Nationality:</strong> <?php echo htmlspecialchars((string)$patient->demographic->nationality); ?></p>
                                             </div>
-                                            <div class="text-end">
-                                                <span class="badge bg-info-subtle text-info">BMI: <?php echo htmlspecialchars((string)$check->bmi); ?></span>
+                                            <div class="col-sm-6">
+                                                <p class="mb-1"><strong>Address:</strong> <?php echo htmlspecialchars((string)$patient->demographic->address); ?></p>
+                                                <p class="mb-1"><strong>Contact:</strong> <?php echo htmlspecialchars((string)$patient->demographic->contact); ?></p>
+                                                <p class="mb-0"><strong>Language:</strong> <?php echo htmlspecialchars((string)$patient->demographic->preferredLanguage); ?></p>
                                             </div>
                                         </div>
-                                    </li>
-                                    <?php endforeach; ?>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="card mt-2 mb-3">
-                            <div class="card-body">
-                                <h6 class="fs-14 mb-2">Episodes</h6>
-                                <?php foreach ($patient->Episodes->episode as $ep): ?>
-                                <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong><?php echo htmlspecialchars((string)$ep['id']); ?></strong>
-                                            <div class="text-muted"><?php echo htmlspecialchars((string)$ep['type']); ?></div>
-                                        </div>
-                                        <div class="text-end">
-                                            <?php foreach ($ep->Stages->stage as $st): ?>
-                                                <div><small class="text-muted"><?php echo htmlspecialchars((string)$st['type']); ?><?php if (isset($st->startDateTime) && (string)$st->startDateTime !== ''): ?> &mdash; <?php echo htmlspecialchars((string)$st->startDateTime); ?><?php endif; ?></small></div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingChecks-<?php echo $pid; ?>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseChecks-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseChecks-<?php echo $pid; ?>">
+                                        Clinical Checks (<?php echo count($patient->clinicals->clinicalCheck); ?>)
+                                    </button>
+                                </h2>
+                                <div id="collapseChecks-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingChecks-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="checksAccordion-<?php echo $pid; ?>">
+                                            <?php foreach ($patient->clinicals->clinicalCheck as $check): $cid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$check['id']); ?>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="checkHeading-<?php echo $pid . '-' . $cid; ?>">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#checkCollapse-<?php echo $pid . '-' . $cid; ?>" aria-expanded="false" aria-controls="checkCollapse-<?php echo $pid . '-' . $cid; ?>">
+                                                        Check #<?php echo htmlspecialchars((string)$check['id']); ?> — <?php echo htmlspecialchars((string)$check->dateTime); ?>
+                                                    </button>
+                                                </h2>
+                                                <div id="checkCollapse-<?php echo $pid . '-' . $cid; ?>" class="accordion-collapse collapse" aria-labelledby="checkHeading-<?php echo $pid . '-' . $cid; ?>" data-bs-parent="#checksAccordion-<?php echo $pid; ?>">
+                                                    <div class="accordion-body">
+                                                        <p class="mb-1"><strong>Weight:</strong> <?php echo htmlspecialchars((string)$check->weight); ?> <?php echo htmlspecialchars((string)$check->weight['unit']); ?></p>
+                                                        <p class="mb-1"><strong>Height:</strong> <?php echo htmlspecialchars((string)$check->height); ?> <?php echo htmlspecialchars((string)$check->height['unit']); ?></p>
+                                                        <p class="mb-0"><strong>BMI:</strong> <?php echo htmlspecialchars((string)$check->bmi); ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <?php endforeach; ?>
                                         </div>
                                     </div>
                                 </div>
-                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingEps-<?php echo $pid; ?>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEps-<?php echo $pid; ?>" aria-expanded="false" aria-controls="collapseEps-<?php echo $pid; ?>">
+                                        Episodes (<?php echo count($patient->Episodes->episode); ?>)
+                                    </button>
+                                </h2>
+                                <div id="collapseEps-<?php echo $pid; ?>" class="accordion-collapse collapse" aria-labelledby="headingEps-<?php echo $pid; ?>" data-bs-parent="#patientAccordion-<?php echo $pid; ?>">
+                                    <div class="accordion-body">
+                                        <div class="accordion" id="epsAccordion-<?php echo $pid; ?>">
+                                            <?php foreach ($patient->Episodes->episode as $ep): $eid = preg_replace('/[^a-zA-Z0-9_-]/','', (string)$ep['id']); ?>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header" id="epHeading-<?php echo $pid . '-' . $eid; ?>">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#epCollapse-<?php echo $pid . '-' . $eid; ?>" aria-expanded="false" aria-controls="epCollapse-<?php echo $pid . '-' . $eid; ?>">
+                                                        Episode <?php echo htmlspecialchars((string)$ep['id']); ?> — <?php echo htmlspecialchars((string)$ep['type']); ?>
+                                                    </button>
+                                                </h2>
+                                                <div id="epCollapse-<?php echo $pid . '-' . $eid; ?>" class="accordion-collapse collapse" aria-labelledby="epHeading-<?php echo $pid . '-' . $eid; ?>" data-bs-parent="#epsAccordion-<?php echo $pid; ?>">
+                                                    <div class="accordion-body">
+                                                        <?php foreach ($ep->Stages->stage as $st): ?>
+                                                            <p class="mb-1"><strong><?php echo htmlspecialchars((string)$st['type']); ?></strong><?php if (isset($st->startDateTime) && (string)$st->startDateTime !== ''): ?> — <small class="text-muted"><?php echo htmlspecialchars((string)$st->startDateTime); ?></small><?php endif; ?></p>
+                                                            <?php if (isset($st->description) && (string)$st->description !== ''): ?><p class="text-muted mb-1"><?php echo htmlspecialchars((string)$st->description); ?></p><?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
