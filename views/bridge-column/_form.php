@@ -50,7 +50,6 @@ use yii\widgets\ActiveForm;
                     ])->label('Source Column Name') ?>
                 </div>
 
-
                 <div class="col-md-4">
                     <?= $form->field($model, 'target_column_name')->dropDownList($listColumnTarget, [
                         'prompt' => 'Select target column name',
@@ -58,7 +57,6 @@ use yii\widgets\ActiveForm;
                         'data-choices' => 'true',
                     ])->label('Warehouse Column Name') ?>
                 </div>
-
 
                 <div class="col-md-4">
                     <?= $form->field($model, 'column_type')->dropDownList(MyHelper::ColumnTypeList(), [
