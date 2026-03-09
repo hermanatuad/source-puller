@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $dbInfo = DBHelper::getDatabaseInfoFromCache($model->system_code);
                             echo '<pre>';print_r($dbInfo);exit;
                             $columns = $dbInfo['result']['data']['tables'][$model->bridge_table_source]['columns'] ?? [];
-                            if (!empty($columns)):
+                            // if (!empty($columns)):
                             ?>
                             <?php
                             $dwInfo = DWHelper::getDWInfoFromCache();
