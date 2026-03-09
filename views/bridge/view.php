@@ -120,8 +120,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <table class="table table-hover align-middle table-nowrap mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Column Warehouse</th>
                                 <th>Column Sources</th>
+                                <th>Column Warehouse</th>
                                 <th>Column Type</th>
                                 <th>Actions</th>
                             </tr>
@@ -139,8 +139,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
-                                        <td><?= Html::encode($colName ?: 'N/A') ?></td>
                                         <td><?= $bridgeColumnList[$colName] ?? 'N/A' ?></td>
+                                        <td><?= Html::encode($colName ?: 'N/A') ?></td>
                                         <td><?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$colName] ?? ''] ?? 'N/A' ?></td>
                                         <td>
                                             <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
