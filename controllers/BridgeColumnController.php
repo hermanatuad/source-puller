@@ -106,8 +106,7 @@ class BridgeColumnController extends Controller
         }
 
         $dwInfo = DWHelper::getDWInfoFromCache();
-        echo '<pre>';print_r($dwInfo['result']['data']['tables']);exit;
-        $names = array_column($dwInfo['result']['data']['tables'][$model->bridge->bridge_table_source]['columns'], 'name');
+        $names = array_column($dwInfo['result']['data']['tables'][$model->bridge->bridge_table_target]['columns'], 'name');
         $listColumnTarget = array_combine($names, $names);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
