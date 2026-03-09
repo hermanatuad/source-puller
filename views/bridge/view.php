@@ -87,8 +87,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
-                                        <td><?= $bridgeColumnList[$colName] ?? 'N/A' ?></td>
                                         <td><?= Html::encode($colName ?: 'N/A') ?></td>
+                                        <td></td>
                                         <td><?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$colName] ?? ''] ?? 'N/A' ?></td>
                                         <td>
                                             <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
