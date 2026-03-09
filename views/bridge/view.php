@@ -39,6 +39,10 @@ KonvaAsset::register($this);
         'model' => $model,
         'attributes' => [
             'id',
+            [
+                'attribute' => 'bridge_name',
+                'label' => 'Extraction Pipeline Name',
+            ],
             'system_code',
             'bridge_table_source',
             'bridge_table_target',
