@@ -189,8 +189,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     echo '<tr>';
                                     echo '<td>' . Html::encode($sys->system_code) . '</td>';
                                     echo '<td>' . Html::encode($sys->system_name) . '</td>';
-                                    echo '<td>' . Html::a($sys->system_type, ['system/index']) . '</td>';
-                                    echo '<td>' . Html::encode($sys->database_name) . '</td>';
+                                    echo '<td>' . Html::encode($sys->system_type) . '</td>';
+                                    echo '<td>' . Html::a($sys->database_name, ['system/index']) . '</td>';
                                     if ($err !== null) {
                                         echo '<td class="text-danger">' . Html::encode($err) . '</td>';
                                     } else {
