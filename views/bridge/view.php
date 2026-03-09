@@ -112,6 +112,9 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
         });
         var layer = new Konva.Layer();
         stage.add(layer);
+        // separate layer for arrows so they can be drawn above tables
+        var arrowsLayer = new Konva.Layer();
+        stage.add(arrowsLayer);
 
         var paddingX = 20,
             paddingY = 20,
@@ -141,49 +144,69 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 draggable: true
             });
 
-            var header = new Konva.Rect({
+            // container background with shadow
+            var containerRect = new Konva.Rect({
+                x: 0,
+                y: 0,
+                width: w,
+                height: h,
+                fill: '#ffffff',
+                cornerRadius: 6,
+                shadowColor: '#000',
+                shadowBlur: 6,
+                shadowOffset: { x: 2, y: 2 },
+                shadowOpacity: 0.08,
+            });
+
+            // header
+            var headerRect = new Konva.Rect({
                 x: 0,
                 y: 0,
                 width: w,
                 height: headerHeight,
-                fill: isSource ? '#198754' : '#0d6efd',
-                cornerRadius: 4
+                fill: isSource ? '#0b5e3b' : '#0d6efd',
+                cornerRadius: 6
             });
             var headerText = new Konva.Text({
-                x: 8,
-                y: 4,
+                x: 10,
+                y: Math.max(2, (headerHeight - (isSource ? 16 : 14)) / 2),
                 text: tbl.name || '(table)',
                 fontSize: isSource ? 14 : 13,
                 fontStyle: 'bold',
+                fontFamily: 'Courier New, monospace',
                 fill: '#fff'
             });
 
-            var body = new Konva.Rect({
-                x: 0,
-                y: headerHeight,
-                width: w,
-                height: h - headerHeight,
-                fill: '#fff',
-                stroke: isSource ? '#0f5132' : '#0d6efd',
-                strokeWidth: 1,
-                cornerRadius: 4
-            });
-            group.add(body);
-            group.add(header);
+            // separator line
+            var sep = new Konva.Rect({ x: 0, y: headerHeight - 1, width: w, height: 1, fill: '#e9ecef' });
+
+            group.add(containerRect);
+            group.add(headerRect);
+            group.add(sep);
             group.add(headerText);
 
+            // add row backgrounds and texts
             (cols || []).forEach(function(col, i) {
                 var y = headerHeight + 6 + i * lineHeight;
+                var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: (i % 2 === 0) ? '#ffffff' : '#fbfbfb' });
                 var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({
-                    x: 8,
+                    x: 10,
                     y: y,
                     text: text,
                     fontSize: 12,
+                    fontFamily: 'Courier New, monospace',
                     fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333'
                 });
+                group.add(rowBg);
                 group.add(txt);
             });
+
+            // visual stroke for highlighted source
+            if (isSource) {
+                var border = new Konva.Rect({ x: 0, y: 0, width: w, height: h, stroke: '#0f5132', strokeWidth: 2, cornerRadius: 6 });
+                group.add(border);
+            }
 
             layer.add(group);
             groups[tbl.name] = {
