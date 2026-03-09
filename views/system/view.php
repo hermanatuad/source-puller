@@ -294,7 +294,7 @@ KonvaAsset::register($this);
                                                 <div class="modal-dialog modal-xl modal-dialog-scrollable">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Table Preview : <?= Html::encode($table['name'] ?: '-') ?></h5>
+                                                            <h5 class="modal-title">Table Preview </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
@@ -314,7 +314,7 @@ KonvaAsset::register($this);
                                                 </div>
                                             </div>
 
-                                            <button type="button" class="btn btn-sm btn-outline-primary btn-show-table" data-url="<?= Html::encode(Url::to(['system/table-data', 'id' => $model->id, 'table' => $table['name']])) ?>">View</button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary btn-show-table" data-url="<?= Html::encode(Url::to(['system/table-data', 'id' => $model->id, 'table' => $table['name']])) ?>" data-table="<?= Html::encode($table['name']) ?>">View</button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -346,10 +346,14 @@ $this->registerJsFile('/react/bundle.js', ['position' => \yii\web\View::POS_END]
 // Register JS to handle click and fetch table data
 $this->registerJs(
     <<<JS
-$(document).on('click', '.btn-show-table', function () {
+    $(document).on('click', '.btn-show-table', function () {
     var btn = $(this);
     var url = btn.data('url');
-    var modal = new bootstrap.Modal(document.getElementById('modal-table-data'));
+    var tableName = btn.data('table') || btn.attr('data-table') || '';
+    var modalEl = document.getElementById('modal-table-data');
+    var modal = new bootstrap.Modal(modalEl);
+    // set modal title to include table name
+    try { $('#modal-table-data .modal-title').text('Table Preview: ' + (tableName || '')); } catch (e) {}
     $('#modal-table-message').text('Loading...');
     $('#modal-table-preview thead').empty();
     $('#modal-table-preview tbody').empty();
