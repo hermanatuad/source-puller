@@ -194,6 +194,7 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
         });
 
         // second pass: draw simple links for foreign keys if present
+        var links = [];
         schema.forEach(function(tbl) {
             var fks = tbl.foreign_keys || [];
             if (!Array.isArray(fks)) return;
@@ -219,9 +220,34 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     strokeWidth: 1
                 });
                 layer.add(arrow);
+                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable });
             });
         });
 
+        // update arrow points when groups move
+        function updateArrows() {
+            links.forEach(function(l) {
+                var src = groups[l.srcName];
+                var dst = groups[l.dstName];
+                if (!src || !dst) return;
+                var sx = src.group.x() + src.w - 6;
+                var sy = src.group.y() + headerHeight + 10;
+                var dx = dst.group.x() + 6;
+                var dy = dst.group.y() + headerHeight + 10;
+                l.arrow.points([sx, sy, dx, dy]);
+            });
+            layer.batchDraw();
+        }
+
+        // attach drag listeners for each group
+        Object.keys(groups).forEach(function(name) {
+            var g = groups[name].group;
+            g.on('dragmove', updateArrows);
+            g.on('dragend', updateArrows);
+        });
+
+        // initial draw and ensure arrows positioned correctly
+        updateArrows();
         layer.draw();
     })();
 </script>
