@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
+    <p class="text-end mb-3">
         <?= Html::a('<i class="ri-arrow-left-line"></i> Back', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('<i class="ri-delete-bin-2-line"></i> Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
