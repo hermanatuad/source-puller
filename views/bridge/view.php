@@ -93,8 +93,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= Html::encode($targetCol ?: 'N/A') ?></td>
                                         <td><?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$colName] ?? ''] ?? 'N/A' ?></td>
                                         <td>
-                                            <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
-                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'target_column_name' => $colName], [
+                                            <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'source_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
+                                            <?= Html::a('<i class="ri-delete-bin-2-line"></i>', ['bridge-column/delete', 'bridge_id' => $model->id, 'source_column_name' => $colName], [
                                                 'class' => 'btn btn-sm btn-outline-danger',
                                                 'data' => [
                                                     'confirm' => 'Are you sure you want to delete this item?',
