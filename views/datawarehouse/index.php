@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <div class="small text-muted">Columns: <?= Html::encode(count($cols)) ?></div>
                                             </div>
                                             <div>
-                                                <?= Html::a('View Schema', ['datawarehouse/view', 'table' => $tableName], ['class' => 'btn btn-sm btn-outline-primary me-2']) ?>
+                                                <?= Html::a('View Data', ['datawarehouse/view', 'table' => $tableName], ['class' => 'btn btn-sm btn-outline-primary me-2']) ?>
                                             </div>
                                         </div>
 
