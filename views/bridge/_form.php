@@ -73,7 +73,7 @@ use app\models\System;
                         'class' => 'form-control',
                         'data-choices' => 'true',
                         'id' => 'bridge-bridge_type'
-                    ])->label('Bridge Type') ?>
+                    ])->label('Pipeline Type') ?>
                 </div>
 
             </div>

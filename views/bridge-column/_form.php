@@ -24,6 +24,13 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'bridge_id')->hiddenInput(['maxlength' => true])->label(false) ?>
 
             <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="bridge-bridge_name">Bridge Name</label>
+                    <input type="form-control" class="form-control" value="<?= Html::encode($model->bridge->bridge_name) ?>" disabled>
+                </div>
+            </div>
+
+            <div class="row g-3">
 
                 <div class="col-md-4">
                     <?= $form->field($model, 'target_column_name')->textInput([
