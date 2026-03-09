@@ -6,6 +6,7 @@ use app\helpers\MyHelper;
 use app\models\BridgeColumn;
 use app\models\System;
 use yii\helpers\Html;
+use app\assets\KonvaAsset;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
@@ -17,6 +18,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $system->system_name, 'url' => ['system/view', 'id' => $system->id]];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+KonvaAsset::register($this);
 ?>
 <div class="bridge-view">
 
@@ -85,6 +87,121 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+<!-- Konva schema visualization for source DB -->
+<?php
+// prepare schema payload for Konva
+$schemaPayload = [];
+foreach (($dbInfoAll['result']['tables'] ?? []) as $tname => $t) {
+    $cols = [];
+    if (!empty($t['columns']) && is_array($t['columns'])) {
+        foreach ($t['columns'] as $c) {
+            if (is_array($c)) {
+                $cols[] = [
+                    'name' => $c['name'] ?? '',
+                    'type' => $c['data_type'] ?? ($c['column_type'] ?? ''),
+                    'nullable' => !empty($c['nullable']),
+                    'key' => $c['key'] ?? '',
+                    'extra' => $c['extra'] ?? '',
+                ];
+            } else {
+                $cols[] = ['name' => (string)$c, 'type' => '', 'nullable' => false, 'key' => '', 'extra' => ''];
+            }
+        }
+    }
+    $schemaPayload[] = ['name' => $tname, 'columns' => $cols, 'foreign_keys' => $t['foreign_keys'] ?? []];
+}
+$schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+?>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-3">
+            <div class="card-header"><strong>Schema Diagram (visual)</strong></div>
+            <div class="card-body">
+                <div id="bridge-schema-canvas" style="width:100%; height:420px; border:1px solid #eee;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php \richardfan\widget\JSRegister::begin(); ?>
+<script>
+(function(){
+    var schema = <?= $schemaJson ?> || [];
+    var sourceTable = <?= json_encode($sourceTable) ?> || '';
+    var container = document.getElementById('bridge-schema-canvas');
+    if (!container) return;
+
+    var width = Math.max(container.clientWidth, 900);
+    var height = Math.max(container.clientHeight, 420);
+
+    var stage = new Konva.Stage({ container: 'bridge-schema-canvas', width: width, height: height });
+    var layer = new Konva.Layer();
+    stage.add(layer);
+
+    var paddingX = 20, paddingY = 20, boxWidth = 220, boxHeightBase = 24, lineHeight = 18, headerHeight = 28;
+    var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
+
+    var groups = {};
+
+    // first pass: create groups
+    schema.forEach(function(tbl, idx){
+        var row = Math.floor(idx / colsPerRow);
+        var col = idx % colsPerRow;
+        var x = paddingX + col * (boxWidth + paddingX);
+        var cols = tbl.columns || [];
+        var boxH = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
+
+        var isSource = (tbl.name === sourceTable);
+        var w = isSource ? boxWidth * 1.3 : boxWidth;
+        var h = isSource ? boxH * 1.15 : boxH;
+
+        var group = new Konva.Group({ x: x, y: paddingY + row * (h + paddingY), draggable: true });
+
+        var header = new Konva.Rect({ x: 0, y: 0, width: w, height: headerHeight, fill: isSource ? '#198754' : '#0d6efd', cornerRadius: 4 });
+        var headerText = new Konva.Text({ x: 8, y: 4, text: tbl.name || '(table)', fontSize: isSource ? 14 : 13, fontStyle: 'bold', fill: '#fff' });
+
+        var body = new Konva.Rect({ x: 0, y: headerHeight, width: w, height: h - headerHeight, fill: '#fff', stroke: isSource ? '#0f5132' : '#0d6efd', strokeWidth: 1, cornerRadius: 4 });
+        group.add(body); group.add(header); group.add(headerText);
+
+        (cols || []).forEach(function(col, i){
+            var y = headerHeight + 6 + i * lineHeight;
+            var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+            var txt = new Konva.Text({ x: 8, y: y, text: text, fontSize: 12, fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333' });
+            group.add(txt);
+        });
+
+        layer.add(group);
+        groups[tbl.name] = { group: group, w: w, h: h };
+    });
+
+    // second pass: draw simple links for foreign keys if present
+    schema.forEach(function(tbl){
+        var fks = tbl.foreign_keys || [];
+        if (!Array.isArray(fks)) return;
+        fks.forEach(function(fk){
+            // try common properties for referenced table
+            var refTable = fk.referenced_table || fk.reference_table || fk.foreign_table || fk.table || null;
+            if (!refTable) return;
+            var src = groups[tbl.name];
+            var dst = groups[refTable];
+            if (!src || !dst) return;
+
+            var sx = src.group.x() + src.w - 6;
+            var sy = src.group.y() + headerHeight + 10;
+            var dx = dst.group.x() + 6;
+            var dy = dst.group.y() + headerHeight + 10;
+
+            var arrow = new Konva.Arrow({ points: [sx, sy, dx, dy], pointerLength: 8, pointerWidth: 8, fill: '#666', stroke: '#666', strokeWidth: 1 });
+            layer.add(arrow);
+        });
+    });
+
+    layer.draw();
+})();
+</script>
+<?php \richardfan\widget\JSRegister::end(); ?>
 
 <div class="row">
 
