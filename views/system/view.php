@@ -7,6 +7,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\BridgeSearch;
 use richardfan\widget\JSRegister;
+use app\assets\KonvaAsset;
 
 /** @var yii\web\View $this */
 /** @var app\models\System $model */
@@ -15,6 +16,7 @@ $this->title = $model->system_name ?: $model->system_code;
 $this->params['breadcrumbs'][] = ['label' => 'Systems', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+KonvaAsset::register($this);
 
 ?>
 
@@ -261,7 +263,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                                 $schemaPayload[] = ['name' => $t['name'] ?? '', 'columns' => $cols, 'foreign_keys' => $t['foreign_keys'] ?? []];
                             }
-                            $schemaJson = json_encode($schemaPayload);
+                            $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);
                             ?>
 
                             <div class="card mt-3">
@@ -273,60 +275,110 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             </div>
 
+                            <?php \richardfan\widget\JSRegister::begin(); ?>
                             <script>
-                            (function(){
-                                var schema = <?= $schemaJson ?> || [];
-                                var container = document.getElementById('schema-canvas-container');
-                                if (!container) return;
-                                var width = Math.max(container.clientWidth, 800);
-                                var height = Math.max(container.clientHeight, 380);
+                                (function() {
+                                    var schema = <?= $schemaJson ?> || [];
+                                    var container = document.getElementById('schema-canvas-container');
+                                    if (!container) return;
+                                    var width = Math.max(container.clientWidth, 800);
+                                    var height = Math.max(container.clientHeight, 380);
 
-                                var stage = new Konva.Stage({ container: 'schema-canvas-container', width: width, height: height });
-                                var layer = new Konva.Layer();
-                                stage.add(layer);
+                                    var stage = new Konva.Stage({
+                                        container: 'schema-canvas-container',
+                                        width: width,
+                                        height: height
+                                    });
+                                    var layer = new Konva.Layer();
+                                    stage.add(layer);
 
-                                var paddingX = 20, paddingY = 20, boxWidth = 260, lineHeight = 18, headerHeight = 26;
-                                var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
+                                    var paddingX = 20,
+                                        paddingY = 20,
+                                        boxWidth = 260,
+                                        lineHeight = 18,
+                                        headerHeight = 26;
+                                    var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
 
-                                schema.forEach(function(tbl, idx){
-                                    var row = Math.floor(idx / colsPerRow);
-                                    var col = idx % colsPerRow;
-                                    var x = paddingX + col * (boxWidth + paddingX);
-                                    var cols = tbl.columns || [];
-                                    var boxHeight = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
+                                    schema.forEach(function(tbl, idx) {
+                                        var row = Math.floor(idx / colsPerRow);
+                                        var col = idx % colsPerRow;
+                                        var x = paddingX + col * (boxWidth + paddingX);
+                                        var cols = tbl.columns || [];
+                                        var boxHeight = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
 
-                                    var group = new Konva.Group({ x: x, y: paddingY + row * (boxHeight + paddingY), draggable: true });
+                                        var group = new Konva.Group({
+                                            x: x,
+                                            y: paddingY + row * (boxHeight + paddingY),
+                                            draggable: true
+                                        });
 
-                                    var header = new Konva.Rect({ x: 0, y: 0, width: boxWidth, height: headerHeight, fill: '#0d6efd', cornerRadius: 4 });
-                                    var headerText = new Konva.Text({ x: 8, y: 4, text: tbl.name || '(table)', fontSize: 13, fontStyle: 'bold', fill: '#fff' });
+                                        var header = new Konva.Rect({
+                                            x: 0,
+                                            y: 0,
+                                            width: boxWidth,
+                                            height: headerHeight,
+                                            fill: '#0d6efd',
+                                            cornerRadius: 4
+                                        });
+                                        var headerText = new Konva.Text({
+                                            x: 8,
+                                            y: 4,
+                                            text: tbl.name || '(table)',
+                                            fontSize: 13,
+                                            fontStyle: 'bold',
+                                            fill: '#fff'
+                                        });
 
-                                    var body = new Konva.Rect({ x: 0, y: headerHeight, width: boxWidth, height: boxHeight - headerHeight, fill: '#fff', stroke: '#0d6efd', strokeWidth: 1, cornerRadius: 4 });
-                                    group.add(body); group.add(header); group.add(headerText);
+                                        var body = new Konva.Rect({
+                                            x: 0,
+                                            y: headerHeight,
+                                            width: boxWidth,
+                                            height: boxHeight - headerHeight,
+                                            fill: '#fff',
+                                            stroke: '#0d6efd',
+                                            strokeWidth: 1,
+                                            cornerRadius: 4
+                                        });
+                                        group.add(body);
+                                        group.add(header);
+                                        group.add(headerText);
 
-                                    cols.forEach(function(col, i){
-                                        var y = headerHeight + 6 + i * lineHeight;
-                                        var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
-                                        var txt = new Konva.Text({ x: 8, y: y, text: text, fontSize: 12, fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333' });
-                                        group.add(txt);
+                                        cols.forEach(function(col, i) {
+                                            var y = headerHeight + 6 + i * lineHeight;
+                                            var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+                                            var txt = new Konva.Text({
+                                                x: 8,
+                                                y: y,
+                                                text: text,
+                                                fontSize: 12,
+                                                fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333'
+                                            });
+                                            group.add(txt);
+                                        });
+
+                                        // tooltip on hover: show comment or extra
+                                        group.on('mouseover', function() {
+                                            var comments = [];
+                                            (tbl.columns || []).forEach(function(c) {
+                                                if (c.comment) comments.push(c.name + ': ' + c.comment);
+                                            });
+                                            if (comments.length) {
+                                                // simple title attribute fallback
+                                                container.title = comments.join('\n');
+                                            }
+                                        });
+                                        group.on('mouseout', function() {
+                                            container.title = '';
+                                        });
+
+                                        layer.add(group);
                                     });
 
-                                    // tooltip on hover: show comment or extra
-                                    group.on('mouseover', function(){
-                                        var comments = [];
-                                        (tbl.columns || []).forEach(function(c){ if (c.comment) comments.push(c.name + ': ' + c.comment); });
-                                        if (comments.length) {
-                                            // simple title attribute fallback
-                                            container.title = comments.join('\n');
-                                        }
-                                    });
-                                    group.on('mouseout', function(){ container.title = ''; });
-
-                                    layer.add(group);
-                                });
-
-                                layer.draw();
-                            })();
+                                    layer.draw();
+                                })();
                             </script>
+                            <?php \richardfan\widget\JSRegister::end(); ?>
+
                             <?php
 
                             if (!empty($tables)):
