@@ -52,7 +52,7 @@ use yii\widgets\ActiveForm;
 
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'target_column_name')->dropDownList($listColumnSource, [
+                    <?= $form->field($model, 'target_column_name')->dropDownList($listColumnTarget, [
                         'prompt' => 'Select target column name',
                         'class' => 'form-control',
                         'data-choices' => 'true',
