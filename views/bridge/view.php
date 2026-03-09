@@ -99,6 +99,10 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
     (function() {
         var schema = <?= $schemaJson ?> || [];
         var sourceTable = <?= json_encode($sourceTable) ?> || '';
+        var bridgeMap = <?= json_encode($bridgeColumnList ?? []) ?> || {};
+        // build quick lookup of linked source columns (bridgeMap: target => source)
+        var linkedSources = {};
+        Object.keys(bridgeMap).forEach(function(t){ var s = bridgeMap[t]; if (s) linkedSources[s] = true; });
         var container = document.getElementById('bridge-schema-canvas');
         if (!container) return;
 
@@ -188,7 +192,8 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
             // add row backgrounds and texts
             (cols || []).forEach(function(col, i) {
                 var y = headerHeight + 6 + i * lineHeight;
-                var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: (i % 2 === 0) ? '#ffffff' : '#fbfbfb' });
+                var isLinkedCol = linkedSources[col.name] === true;
+                var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: isLinkedCol ? '#e9f7ef' : ((i % 2 === 0) ? '#ffffff' : '#fbfbfb') });
                 var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({
                     x: 10,
@@ -196,7 +201,7 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     text: text,
                     fontSize: 12,
                     fontFamily: 'Courier New, monospace',
-                    fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333'
+                    fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : (isLinkedCol ? '#0b5e3b' : '#333')
                 });
                 group.add(rowBg);
                 group.add(txt);
@@ -242,7 +247,7 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     stroke: '#666',
                     strokeWidth: 1
                 });
-                layer.add(arrow);
+                arrowsLayer.add(arrow);
                 links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable });
             });
         });
@@ -258,8 +263,8 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 var dx = dst.group.x() + 6;
                 var dy = dst.group.y() + headerHeight + 10;
                 l.arrow.points([sx, sy, dx, dy]);
-            });
-            layer.batchDraw();
+                });
+                arrowsLayer.batchDraw();
         }
 
         // attach drag listeners for each group
