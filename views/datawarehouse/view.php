@@ -53,34 +53,6 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
                     <div class="text-muted small">Columns: <?= Html::encode($columnsCount) ?> • Size: <?= Html::encode($totalSize) ?> MB</div>
                 </div>
 
-                <h6>Columns</h6>
-                <?php if (empty($columns)): ?>
-                    <div class="alert alert-info">No column information available in cache.</div>
-                <?php else: ?>
-                    <div class="table-responsive mb-4">
-                        <table class="table table-sm table-bordered mb-0">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Nullable</th>
-                                <th>Default</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php foreach ($columns as $c): ?>
-                                <tr>
-                                    <td><?= Html::encode($c['name'] ?? '') ?></td>
-                                    <td><?= Html::encode($c['data_type'] ?? '') ?></td>
-                                    <td><?= (!empty($c['nullable']) ? 'YES' : 'NO') ?></td>
-                                    <td><?= Html::encode($c['default'] ?? '') ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-
                 <h6>Sample Rows (up to 50)</h6>
                 <?php if ($sampleError): ?>
                     <div class="alert alert-warning"><?= Html::encode($sampleError) ?></div>
