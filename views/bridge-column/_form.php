@@ -37,6 +37,7 @@ use yii\widgets\ActiveForm;
                     <input type="form-control" class="form-control" value="<?= Html::encode($model->bridge->bridge_table_source) ?>" disabled>
                 </div>
             </div>
+            <br>
 
             <div class="row g-3">
 
