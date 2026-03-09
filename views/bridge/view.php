@@ -192,7 +192,7 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
             // add row backgrounds and texts
             (cols || []).forEach(function(col, i) {
                 var y = headerHeight + 6 + i * lineHeight;
-                var isLinkedCol = linkedSources[col.name] === true;
+                var isLinkedCol = (tbl.name === sourceTable) && (linkedSources[col.name] === true);
                 var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: isLinkedCol ? '#e9f7ef' : ((i % 2 === 0) ? '#ffffff' : '#fbfbfb') });
                 var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({
