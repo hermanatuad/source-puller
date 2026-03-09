@@ -54,40 +54,6 @@ KonvaAsset::register($this);
 
 </div>
 
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card mb-3">
-            <div class="card-header">
-                <strong>Database Tables</strong>
-            </div>
-            <div class="card-body">
-                <?php
-                $dbInfoAll = DBHelper::getDatabaseInfoFromCache($system);
-                $allTables = array_keys($dbInfoAll['result']['tables'] ?? []);
-                $sourceTable = $model->bridge_table_source ?? null;
-                ?>
-
-                <?php if (!empty($allTables)): ?>
-                    <div class="list-group list-group-horizontal flex-wrap">
-                        <?php foreach ($allTables as $tbl):
-                            $isSource = ($tbl === $sourceTable);
-                        ?>
-                            <div class="list-group-item list-group-item-action <?= $isSource ? 'active' : '' ?>" style="margin:2px;">
-                                <?= Html::encode($tbl) ?>
-                                <?php if ($isSource): ?>
-                                    <span class="badge bg-light text-dark ms-2">source</span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="small text-muted">No tables available or unable to fetch schema</div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Konva schema visualization for source DB -->
 <?php
 // prepare schema payload for Konva
