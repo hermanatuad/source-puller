@@ -77,19 +77,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php
                             $system = System::find()->where(['system_code' => $model->system_code])->one();
                             $dbInfo = DBHelper::getDatabaseInfoFromCache($system);
-                            // echo '<pre>';print_r($dbInfo);exit;
                             $columns = $dbInfo['result']['tables'][$model->bridge_table_source]['columns'] ?? [];
-                            // if (!empty($columns)):
-                            ?>
-                            <?php
-                            // $dwInfo = DWHelper::getDWInfoFromCache();
-                            // $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target]['columns'] ?? [];
                             if (!empty($columns)):
                             ?>
                                 <?php foreach ($columns as $column): ?>
                                     <?php
                                     $colName = $column['name'] ?? null;
                                     $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
+                                    echo '<pre>';print_r($isLinked);exit;
                                     $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
