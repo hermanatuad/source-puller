@@ -200,8 +200,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                                 ?>
                                 <tr>
-                                    <td colspan="3" class="text-center">
-                                        <strong>Total:</strong>
+                                    <td colspan="3" class="">
+                                        <strong>Total Patients:</strong>
                                     </td>
                                     <td>
                                         <strong><?= Html::encode($totalCount) ?></strong>
