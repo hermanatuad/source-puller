@@ -106,7 +106,10 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
         var bridgeMap = <?= json_encode($bridgeColumnList ?? []) ?> || {};
         // build quick lookup of linked source columns (bridgeMap: target => source)
         var linkedSources = {};
-        Object.keys(bridgeMap).forEach(function(t){ var s = bridgeMap[t]; if (s) linkedSources[s] = true; });
+        Object.keys(bridgeMap).forEach(function(t) {
+            var s = bridgeMap[t];
+            if (s) linkedSources[s] = true;
+        });
         var container = document.getElementById('bridge-schema-canvas');
         if (!container) return;
 
@@ -162,7 +165,10 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 cornerRadius: 6,
                 shadowColor: '#000',
                 shadowBlur: 6,
-                shadowOffset: { x: 2, y: 2 },
+                shadowOffset: {
+                    x: 2,
+                    y: 2
+                },
                 shadowOpacity: 0.08,
             });
 
@@ -186,7 +192,13 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
             });
 
             // separator line
-            var sep = new Konva.Rect({ x: 0, y: headerHeight - 1, width: w, height: 1, fill: '#e9ecef' });
+            var sep = new Konva.Rect({
+                x: 0,
+                y: headerHeight - 1,
+                width: w,
+                height: 1,
+                fill: '#e9ecef'
+            });
 
             group.add(containerRect);
             group.add(headerRect);
@@ -197,7 +209,13 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
             (cols || []).forEach(function(col, i) {
                 var y = headerHeight + 6 + i * lineHeight;
                 var isLinkedCol = (tbl.name === sourceTable) && (linkedSources[col.name] === true);
-                var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: isLinkedCol ? '#e9f7ef' : ((i % 2 === 0) ? '#ffffff' : '#fbfbfb') });
+                var rowBg = new Konva.Rect({
+                    x: 0,
+                    y: y - 4,
+                    width: w,
+                    height: lineHeight + 6,
+                    fill: isLinkedCol ? '#e9f7ef' : ((i % 2 === 0) ? '#ffffff' : '#fbfbfb')
+                });
                 var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({
                     x: 10,
@@ -213,7 +231,15 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
 
             // visual stroke for highlighted source
             if (isSource) {
-                var border = new Konva.Rect({ x: 0, y: 0, width: w, height: h, stroke: '#0f5132', strokeWidth: 2, cornerRadius: 6 });
+                var border = new Konva.Rect({
+                    x: 0,
+                    y: 0,
+                    width: w,
+                    height: h,
+                    stroke: '#0f5132',
+                    strokeWidth: 2,
+                    cornerRadius: 6
+                });
                 group.add(border);
             }
 
@@ -253,7 +279,12 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     lineJoin: 'round'
                 });
                 arrowsLayer.add(arrow);
-                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable, idx: links.length });
+                links.push({
+                    arrow: arrow,
+                    srcName: tbl.name,
+                    dstName: refTable,
+                    idx: links.length
+                });
             });
         });
 
@@ -261,7 +292,10 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
         function computeBrokenPath(start, end, offsetIndex) {
             var gap = 20;
             var offset = (offsetIndex % 3) * 8;
-            var sx = start.x, sy = start.y, dx = end.x, dy = end.y;
+            var sx = start.x,
+                sy = start.y,
+                dx = end.x,
+                dy = end.y;
             var midX;
             if (sx < dx) {
                 midX = Math.max(sx + gap, Math.min(dx - gap, sx + (dx - sx) / 2));
@@ -281,7 +315,13 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 var sy = src.group.y() + headerHeight + 10;
                 var dx = dst.group.x() + 6;
                 var dy = dst.group.y() + headerHeight + 10;
-                var pts = computeBrokenPath({ x: sx, y: sy }, { x: dx, y: dy }, l.idx || 0);
+                var pts = computeBrokenPath({
+                    x: sx,
+                    y: sy
+                }, {
+                    x: dx,
+                    y: dy
+                }, l.idx || 0);
                 l.arrow.points(pts);
             });
             arrowsLayer.batchDraw();
@@ -316,8 +356,8 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     <table class="table table-hover align-middle table-nowrap mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Column Sources</th>
-                                <th>Column Warehouse</th>
+                                <th>Sources Column</th>
+                                <th>Warehouse Column</th>
                                 <th>Column Type</th>
                                 <th>Actions</th>
                             </tr>
