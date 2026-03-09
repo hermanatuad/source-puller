@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <th>System Name</th>
                                     <th>DB Type</th>
                                     <th>Database Name</th>
-                                    <th>Patient Count</th>
+                                    <th>Number of Patients</th>
                                 </tr>
                             </thead>
                             <tbody>
