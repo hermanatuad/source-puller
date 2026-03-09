@@ -453,7 +453,7 @@ JS
 
             var group = new Konva.Group({ x: x, y: paddingY + row * (h + paddingY), draggable: true });
 
-            var containerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#ffffff', cornerRadius: 6, shadowColor: '#000', shadowBlur: 6, shadowOffset: { x: 2, y: 2 }, shadowOpacity: 0.08 });
+            var containerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#ffffff', cornerRadius: 6, shadowColor: '#000', shadowBlur: 6, shadowOffset: { x: 4, y: 4 }, shadowOpacity: 0.08 });
             var headerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: headerHeight, fill: '#0d6efd', cornerRadius: 6 });
             var headerText = new Konva.Text({ x: 10, y: Math.max(2, (headerHeight - 14) / 2), text: tbl.name || '(table)', fontSize: 13, fontStyle: 'bold', fontFamily: 'Arial', fill: '#fff' });
             var sep = new Konva.Rect({ x: 0, y: headerHeight - 1, width: w, height: 1, fill: '#e9ecef' });
