@@ -25,8 +25,16 @@ use yii\widgets\ActiveForm;
 
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label for="bridge-bridge_name">Bridge Name</label>
+                    <label for="bridge-bridge_name">Pipeline Name</label>
                     <input type="form-control" class="form-control" value="<?= Html::encode($model->bridge->bridge_name) ?>" disabled>
+                </div>
+                <div class="col-md-4">
+                    <label for="bridge-bridge_name">Warehouse Table</label>
+                    <input type="form-control" class="form-control" value="<?= Html::encode($model->bridge->bridge_table_target) ?>" disabled>
+                </div>
+                <div class="col-md-4">
+                    <label for="bridge-bridge_name">Source Table</label>
+                    <input type="form-control" class="form-control" value="<?= Html::encode($model->bridge->bridge_table_source) ?>" disabled>
                 </div>
             </div>
 
