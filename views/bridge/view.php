@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </thead>
                         <tbody>
                             <?php
+                            echo '<pre>';print_r($model->system_code);exit;
                             $dbInfo = DBHelper::getDatabaseInfoFromCache($model->system_code);
                             echo '<pre>';print_r($dbInfo);exit;
                             $columns = $dbInfo['result']['data']['tables'][$model->bridge_table_source]['columns'] ?? [];
