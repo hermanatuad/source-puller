@@ -56,6 +56,9 @@ KonvaAsset::register($this);
 
 <!-- Konva schema visualization for source DB -->
 <?php
+$dbInfoAll = DBHelper::getDatabaseInfoFromCache($system);
+$allTables = array_keys($dbInfoAll['result']['tables'] ?? []);
+$sourceTable = $model->bridge_table_source ?? null;
 // prepare schema payload for Konva
 $schemaPayload = [];
 foreach (($dbInfoAll['result']['tables'] ?? []) as $tname => $t) {
@@ -93,79 +96,134 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
 
 <?php \richardfan\widget\JSRegister::begin(); ?>
 <script>
-(function(){
-    var schema = <?= $schemaJson ?> || [];
-    var sourceTable = <?= json_encode($sourceTable) ?> || '';
-    var container = document.getElementById('bridge-schema-canvas');
-    if (!container) return;
+    (function() {
+        var schema = <?= $schemaJson ?> || [];
+        var sourceTable = <?= json_encode($sourceTable) ?> || '';
+        var container = document.getElementById('bridge-schema-canvas');
+        if (!container) return;
 
-    var width = Math.max(container.clientWidth, 900);
-    var height = Math.max(container.clientHeight, 420);
+        var width = Math.max(container.clientWidth, 900);
+        var height = Math.max(container.clientHeight, 420);
 
-    var stage = new Konva.Stage({ container: 'bridge-schema-canvas', width: width, height: height });
-    var layer = new Konva.Layer();
-    stage.add(layer);
+        var stage = new Konva.Stage({
+            container: 'bridge-schema-canvas',
+            width: width,
+            height: height
+        });
+        var layer = new Konva.Layer();
+        stage.add(layer);
 
-    var paddingX = 20, paddingY = 20, boxWidth = 220, boxHeightBase = 24, lineHeight = 18, headerHeight = 28;
-    var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
+        var paddingX = 20,
+            paddingY = 20,
+            boxWidth = 220,
+            boxHeightBase = 24,
+            lineHeight = 18,
+            headerHeight = 28;
+        var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
 
-    var groups = {};
+        var groups = {};
 
-    // first pass: create groups
-    schema.forEach(function(tbl, idx){
-        var row = Math.floor(idx / colsPerRow);
-        var col = idx % colsPerRow;
-        var x = paddingX + col * (boxWidth + paddingX);
-        var cols = tbl.columns || [];
-        var boxH = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
+        // first pass: create groups
+        schema.forEach(function(tbl, idx) {
+            var row = Math.floor(idx / colsPerRow);
+            var col = idx % colsPerRow;
+            var x = paddingX + col * (boxWidth + paddingX);
+            var cols = tbl.columns || [];
+            var boxH = headerHeight + Math.max(1, cols.length) * lineHeight + 12;
 
-        var isSource = (tbl.name === sourceTable);
-        var w = isSource ? boxWidth * 1.3 : boxWidth;
-        var h = isSource ? boxH * 1.15 : boxH;
+            var isSource = (tbl.name === sourceTable);
+            var w = isSource ? boxWidth * 1.3 : boxWidth;
+            var h = isSource ? boxH * 1.15 : boxH;
 
-        var group = new Konva.Group({ x: x, y: paddingY + row * (h + paddingY), draggable: true });
+            var group = new Konva.Group({
+                x: x,
+                y: paddingY + row * (h + paddingY),
+                draggable: true
+            });
 
-        var header = new Konva.Rect({ x: 0, y: 0, width: w, height: headerHeight, fill: isSource ? '#198754' : '#0d6efd', cornerRadius: 4 });
-        var headerText = new Konva.Text({ x: 8, y: 4, text: tbl.name || '(table)', fontSize: isSource ? 14 : 13, fontStyle: 'bold', fill: '#fff' });
+            var header = new Konva.Rect({
+                x: 0,
+                y: 0,
+                width: w,
+                height: headerHeight,
+                fill: isSource ? '#198754' : '#0d6efd',
+                cornerRadius: 4
+            });
+            var headerText = new Konva.Text({
+                x: 8,
+                y: 4,
+                text: tbl.name || '(table)',
+                fontSize: isSource ? 14 : 13,
+                fontStyle: 'bold',
+                fill: '#fff'
+            });
 
-        var body = new Konva.Rect({ x: 0, y: headerHeight, width: w, height: h - headerHeight, fill: '#fff', stroke: isSource ? '#0f5132' : '#0d6efd', strokeWidth: 1, cornerRadius: 4 });
-        group.add(body); group.add(header); group.add(headerText);
+            var body = new Konva.Rect({
+                x: 0,
+                y: headerHeight,
+                width: w,
+                height: h - headerHeight,
+                fill: '#fff',
+                stroke: isSource ? '#0f5132' : '#0d6efd',
+                strokeWidth: 1,
+                cornerRadius: 4
+            });
+            group.add(body);
+            group.add(header);
+            group.add(headerText);
 
-        (cols || []).forEach(function(col, i){
-            var y = headerHeight + 6 + i * lineHeight;
-            var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
-            var txt = new Konva.Text({ x: 8, y: y, text: text, fontSize: 12, fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333' });
-            group.add(txt);
+            (cols || []).forEach(function(col, i) {
+                var y = headerHeight + 6 + i * lineHeight;
+                var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+                var txt = new Konva.Text({
+                    x: 8,
+                    y: y,
+                    text: text,
+                    fontSize: 12,
+                    fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333'
+                });
+                group.add(txt);
+            });
+
+            layer.add(group);
+            groups[tbl.name] = {
+                group: group,
+                w: w,
+                h: h
+            };
         });
 
-        layer.add(group);
-        groups[tbl.name] = { group: group, w: w, h: h };
-    });
+        // second pass: draw simple links for foreign keys if present
+        schema.forEach(function(tbl) {
+            var fks = tbl.foreign_keys || [];
+            if (!Array.isArray(fks)) return;
+            fks.forEach(function(fk) {
+                // try common properties for referenced table
+                var refTable = fk.referenced_table || fk.reference_table || fk.foreign_table || fk.table || null;
+                if (!refTable) return;
+                var src = groups[tbl.name];
+                var dst = groups[refTable];
+                if (!src || !dst) return;
 
-    // second pass: draw simple links for foreign keys if present
-    schema.forEach(function(tbl){
-        var fks = tbl.foreign_keys || [];
-        if (!Array.isArray(fks)) return;
-        fks.forEach(function(fk){
-            // try common properties for referenced table
-            var refTable = fk.referenced_table || fk.reference_table || fk.foreign_table || fk.table || null;
-            if (!refTable) return;
-            var src = groups[tbl.name];
-            var dst = groups[refTable];
-            if (!src || !dst) return;
+                var sx = src.group.x() + src.w - 6;
+                var sy = src.group.y() + headerHeight + 10;
+                var dx = dst.group.x() + 6;
+                var dy = dst.group.y() + headerHeight + 10;
 
-            var sx = src.group.x() + src.w - 6;
-            var sy = src.group.y() + headerHeight + 10;
-            var dx = dst.group.x() + 6;
-            var dy = dst.group.y() + headerHeight + 10;
-
-            var arrow = new Konva.Arrow({ points: [sx, sy, dx, dy], pointerLength: 8, pointerWidth: 8, fill: '#666', stroke: '#666', strokeWidth: 1 });
-            layer.add(arrow);
+                var arrow = new Konva.Arrow({
+                    points: [sx, sy, dx, dy],
+                    pointerLength: 8,
+                    pointerWidth: 8,
+                    fill: '#666',
+                    stroke: '#666',
+                    strokeWidth: 1
+                });
+                layer.add(arrow);
+            });
         });
-    });
 
-    layer.draw();
-})();
+        layer.draw();
+    })();
 </script>
 <?php \richardfan\widget\JSRegister::end(); ?>
 
