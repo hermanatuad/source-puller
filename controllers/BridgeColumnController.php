@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\helpers\DBHelper;
+use app\helpers\DWHelper;
 use app\helpers\MyHelper;
 use app\models\BridgeColumn;
 use app\models\BridgeColumnSearch;
@@ -93,20 +94,20 @@ class BridgeColumnController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
 
-    public function actionUpdate($bridge_id, $target_column_name)
+    public function actionUpdate($bridge_id, $source_column_name)
     {
-        $model = $this->findModelBridge($bridge_id, $target_column_name);
+        $model = $this->findModelBridge($bridge_id, $source_column_name);
 
         if (empty($model)) {
             $model = new BridgeColumn();
             $model->id = MyHelper::genuuid();
             $model->bridge_id = $bridge_id;
-            $model->target_column_name = $target_column_name;
+            $model->source_column_name = $source_column_name;
         }
 
-        $database = System::find()->where(['system_code' => $model->bridge->system_code])->one();
-        $dbInfo = DBHelper::getDatabaseInfoFromCache($database);
-        $names = array_column($dbInfo['result']['tables'][$model->bridge->bridge_table_source]['columns'], 'name');
+        $dwInfo = DWHelper::getDWInfoFromCache();
+        echo '<pre>';print_r($dwInfo);exit;
+        $names = array_column($dwInfo['result']['tables'][$model->bridge->bridge_table_source]['columns'], 'name');
         $listColumnSource = array_combine($names, $names);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
@@ -151,8 +152,8 @@ class BridgeColumnController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
-    protected function findModelBridge($bridge_id, $target_column_name)
+    protected function findModelBridge($bridge_id, $source_column_name)
     {
-        return BridgeColumn::find()->where(['bridge_id' => $bridge_id, 'target_column_name' => $target_column_name])->one();
+        return BridgeColumn::find()->where(['bridge_id' => $bridge_id, 'source_column_name' => $source_column_name])->one();
     }
 }

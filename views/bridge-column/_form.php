@@ -42,22 +42,24 @@ use yii\widgets\ActiveForm;
             <div class="row g-3">
 
                 <div class="col-md-4">
-                    <?= $form->field($model, 'target_column_name')->textInput([
+                    <?= $form->field($model, 'source_column_name')->textInput([
                         'maxlength' => true,
-                        'placeholder' => 'Enter target column name',
+                        'placeholder' => 'Enter source column name',
                         'class' => 'form-control',
+                        'disabled' => true
+                    ])->label('Source Column Name') ?>
+                </div>
+
+
+                <div class="col-md-4">
+                    <?= $form->field($model, 'target_column_name')->dropDownList($listColumnSource, [
+                        'prompt' => 'Select target column name',
+                        'class' => 'form-control',
+                        'data-choices' => 'true',
                         'disabled' => true
                     ])->label('Warehouse Column Name') ?>
                 </div>
 
-                <div class="col-md-4">
-                    <?= $form->field($model, 'source_column_name')->dropDownList($listColumnSource, [
-                        'prompt' => 'Select source column name',
-                        'class' => 'form-control',
-                        'data-choices' => 'true',
-                        'id' => 'source_column_name'
-                    ])->label('Source Column Name') ?>
-                </div>
 
                 <div class="col-md-4">
                     <?= $form->field($model, 'column_type')->dropDownList(MyHelper::ColumnTypeList(), [
