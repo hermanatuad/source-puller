@@ -83,12 +83,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($columns as $column): ?>
                                     <?php
                                     $colName = $column['name'] ?? null;
-                                    $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
+                                    // bridgeColumnList is target => source, so find target for this source
+                                    $targetCol = $colName ? array_search($colName, $bridgeColumnList, true) : false;
+                                    $isLinked = $targetCol !== false && $targetCol !== null;
                                     $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
                                         <td><?= Html::encode($colName ?: 'N/A') ?></td>
-                                        <td></td>
+                                        <td><?= Html::encode($targetCol ?: 'N/A') ?></td>
                                         <td><?= MyHelper::ColumnTypeList()[$bridgeColumnTypeList[$colName] ?? ''] ?? 'N/A' ?></td>
                                         <td>
                                             <?= Html::a('<i class="ri-edit-2-line"></i>', ['bridge-column/update', 'bridge_id' => $model->id, 'target_column_name' => $colName], ['class' => 'btn btn-sm btn-outline-primary']) ?>
