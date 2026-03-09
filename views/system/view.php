@@ -453,7 +453,7 @@ JS
 
             var group = new Konva.Group({ x: x, y: paddingY + row * (h + paddingY), draggable: true });
 
-            var containerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#ffffff', cornerRadius: 6, shadowColor: '#000', shadowBlur: 6, shadowOffset: { x: 4, y: 4 }, shadowOpacity: 0.08 });
+            var containerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#ffffff', cornerRadius: 6, shadowColor: '#000', shadowBlur: 6, shadowOffset: { x: 5, y: 5 }, shadowOpacity: 0.08 });
             var headerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: headerHeight, fill: '#0d6efd', cornerRadius: 6 });
             var headerText = new Konva.Text({ x: 10, y: Math.max(2, (headerHeight - 14) / 2), text: tbl.name || '(table)', fontSize: 13, fontStyle: 'bold', fontFamily: 'Arial', fill: '#fff' });
             var sep = new Konva.Rect({ x: 0, y: headerHeight - 1, width: w, height: 1, fill: '#e9ecef' });
@@ -502,11 +502,32 @@ JS
                 var dx = dst.group.x() + 6;
                 var dy = dst.group.y() + headerHeight + 10;
 
-                var arrow = new Konva.Arrow({ points: [sx, sy, dx, dy], pointerLength: 8, pointerWidth: 8, fill: '#666', stroke: '#666', strokeWidth: 1 });
+                var arrow = new Konva.Arrow({ points: [sx, sy, dx, dy], pointerLength: 8, pointerWidth: 8, fill: '#666', stroke: '#666', strokeWidth: 1, lineJoin: 'round' });
                 arrowsLayer.add(arrow);
-                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable });
+                // store source/dest and arrow index for offsetting
+                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable, idx: links.length });
             });
         });
+
+        function computeBrokenPath(start, end, offsetIndex) {
+            // produce an orthogonal (elbow) path from start to end
+            var gap = 24; // minimal horizontal gap from box
+            var offset = (offsetIndex % 3) * 8; // small offset to separate parallel links
+
+            var sx = start.x, sy = start.y, dx = end.x, dy = end.y;
+            // if source is left of destination, path: start -> midX -> end
+            var midX;
+            if (sx < dx) {
+                midX = Math.max(sx + gap, Math.min(dx - gap, sx + (dx - sx) / 2));
+            } else {
+                midX = Math.min(sx - gap, Math.max(dx + gap, sx - (sx - dx) / 2));
+            }
+            // offset midX slightly per index to avoid exact overlap
+            midX += (sx < dx ? 1 : -1) * offset;
+
+            // build points: start -> (midX, sy) -> (midX, dy) -> end
+            return [sx, sy, midX, sy, midX, dy, dx, dy];
+        }
 
         function updateArrows() {
             links.forEach(function(l) {
@@ -517,7 +538,9 @@ JS
                 var sy = src.group.y() + headerHeight + 10;
                 var dx = dst.group.x() + 6;
                 var dy = dst.group.y() + headerHeight + 10;
-                l.arrow.points([sx, sy, dx, dy]);
+
+                var pts = computeBrokenPath({ x: sx, y: sy }, { x: dx, y: dy }, l.idx || 0);
+                l.arrow.points(pts);
             });
             arrowsLayer.batchDraw();
         }

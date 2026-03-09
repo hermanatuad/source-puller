@@ -249,14 +249,29 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     pointerWidth: 8,
                     fill: '#666',
                     stroke: '#666',
-                    strokeWidth: 1
+                    strokeWidth: 1,
+                    lineJoin: 'round'
                 });
                 arrowsLayer.add(arrow);
-                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable });
+                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable, idx: links.length });
             });
         });
 
         // update arrow points when groups move
+        function computeBrokenPath(start, end, offsetIndex) {
+            var gap = 20;
+            var offset = (offsetIndex % 3) * 8;
+            var sx = start.x, sy = start.y, dx = end.x, dy = end.y;
+            var midX;
+            if (sx < dx) {
+                midX = Math.max(sx + gap, Math.min(dx - gap, sx + (dx - sx) / 2));
+            } else {
+                midX = Math.min(sx - gap, Math.max(dx + gap, sx - (sx - dx) / 2));
+            }
+            midX += (sx < dx ? 1 : -1) * offset;
+            return [sx, sy, midX, sy, midX, dy, dx, dy];
+        }
+
         function updateArrows() {
             links.forEach(function(l) {
                 var src = groups[l.srcName];
@@ -266,9 +281,10 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 var sy = src.group.y() + headerHeight + 10;
                 var dx = dst.group.x() + 6;
                 var dy = dst.group.y() + headerHeight + 10;
-                l.arrow.points([sx, sy, dx, dy]);
-                });
-                arrowsLayer.batchDraw();
+                var pts = computeBrokenPath({ x: sx, y: sy }, { x: dx, y: dy }, l.idx || 0);
+                l.arrow.points(pts);
+            });
+            arrowsLayer.batchDraw();
         }
 
         // attach drag listeners for each group
