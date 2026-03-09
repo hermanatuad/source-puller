@@ -76,9 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-sm table-striped">
                             <thead>
                                 <tr>
-                                    <th>System</th>
+                                    <th>System Code</th>
+                                    <th>System Name</th>
                                     <th>DB Type</th>
-                                    <th>Database</th>
+                                    <th>Database Name</th>
                                     <th>Patient Count</th>
                                 </tr>
                             </thead>
@@ -187,6 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     echo '<tr>';
                                     echo '<td>' . Html::encode($sys->system_code) . '</td>';
+                                    echo '<td>' . Html::encode($sys->system_name) . '</td>';
                                     echo '<td>' . Html::encode($sys->system_type) . '</td>';
                                     echo '<td>' . Html::encode($sys->database_name) . '</td>';
                                     if ($err !== null) {
