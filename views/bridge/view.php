@@ -75,6 +75,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         </thead>
                         <tbody>
                             <?php
+                            $dbInfo = DBHelper::getDatabaseInfoFromCache($model->system_code);
+                            echo '<pre>';print_r($dbInfo);exit;
+                            $columns = $dbInfo['result']['data']['tables'][$model->bridge_table_source]['columns'] ?? [];
+                            if (!empty($columns)):
+                            ?>
+                            <?php
                             $dwInfo = DWHelper::getDWInfoFromCache();
                             $columns = $dwInfo['result']['data']['tables'][$model->bridge_table_target]['columns'] ?? [];
                             if (!empty($columns)):
