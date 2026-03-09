@@ -467,8 +467,8 @@ JS
                 var y = headerHeight + 6 + i * lineHeight;
                 var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: ((i % 2 === 0) ? '#ffffff' : '#fbfbfb') });
                 var isPK = col.key && String(col.key).toUpperCase() === 'PRI';
-                var text = (isPK ? 'PK ' : '') + (col.name || '') + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
-                var txt = new Konva.Text({ x: 10, y: y, text: text, fontSize: 12, fontFamily: 'Courier New, monospace', fill: isPK ? '#c7254e' : '#333' });
+                var text = (isPK ? 'PK ' : '') + (col.name || '') + (col.type ? ' ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+                var txt = new Konva.Text({ x: 10, y: y, text: text, fontSize: 12, fontFamily: 'Arial', fill: isPK ? '#c7254e' : '#333' });
                 if (isPK) {
                     var circle = new Konva.Circle({ x: 6, y: y + lineHeight/2 - 1, radius: 4, fill: '#d9534f' });
                     group.add(circle);
