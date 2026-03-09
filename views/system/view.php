@@ -200,7 +200,7 @@ KonvaAsset::register($this);
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <i class="ri-server-line me-2"></i>Schema Diagram
+                <i class="ri-server-line me-2"></i>Database Schema (ER Diagram)
             </div>
             <div class="card-body">
                 <div id="schema-canvas-container" style="width:100%; height:380px; border:1px solid #eee;"></div>
@@ -455,7 +455,7 @@ JS
 
             var containerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: h, fill: '#ffffff', cornerRadius: 6, shadowColor: '#000', shadowBlur: 6, shadowOffset: { x: 2, y: 2 }, shadowOpacity: 0.08 });
             var headerRect = new Konva.Rect({ x: 0, y: 0, width: w, height: headerHeight, fill: '#0d6efd', cornerRadius: 6 });
-            var headerText = new Konva.Text({ x: 10, y: Math.max(2, (headerHeight - 14) / 2), text: tbl.name || '(table)', fontSize: 13, fontStyle: 'bold', fontFamily: 'Courier New, monospace', fill: '#fff' });
+            var headerText = new Konva.Text({ x: 10, y: Math.max(2, (headerHeight - 14) / 2), text: tbl.name || '(table)', fontSize: 13, fontStyle: 'bold', fontFamily: 'Arial', fill: '#fff' });
             var sep = new Konva.Rect({ x: 0, y: headerHeight - 1, width: w, height: 1, fill: '#e9ecef' });
 
             group.add(containerRect);
@@ -467,7 +467,7 @@ JS
                 var y = headerHeight + 6 + i * lineHeight;
                 var rowBg = new Konva.Rect({ x: 0, y: y - 4, width: w, height: lineHeight + 6, fill: ((i % 2 === 0) ? '#ffffff' : '#fbfbfb') });
                 var isPK = col.key && String(col.key).toUpperCase() === 'PRI';
-                var text = (isPK ? 'PK ' : '') + (col.name || '') + (col.type ? ' ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+                var text = (isPK ? 'PK ' : '') + (col.name || '') + (col.type ? ': ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({ x: 10, y: y, text: text, fontSize: 12, fontFamily: 'Arial', fill: isPK ? '#c7254e' : '#333' });
                 if (isPK) {
                     var circle = new Konva.Circle({ x: 6, y: y + lineHeight/2 - 1, radius: 4, fill: '#d9534f' });
