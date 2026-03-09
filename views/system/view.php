@@ -420,25 +420,32 @@ JS
         var schema = <?= $schemaJson ?> || [];
         var container = document.getElementById('schema-canvas-container');
         if (!container) return;
-        var width = Math.max(container.clientWidth, 800);
-        var height = Math.max(container.clientHeight, 380);
+
+        var width = Math.max(container.clientWidth, 900);
+        var height = Math.max(container.clientHeight, 480);
 
         var stage = new Konva.Stage({
             container: 'schema-canvas-container',
             width: width,
             height: height
         });
-        var layer = new Konva.Layer();
-        stage.add(layer);
 
-        var paddingX = 20,
-            paddingY = 20,
-            boxWidth = 260,
-            lineHeight = 18,
-            headerHeight = 26;
+        var arrowsLayer = new Konva.Layer();
+        var tablesLayer = new Konva.Layer();
+        stage.add(arrowsLayer);
+        stage.add(tablesLayer);
+
+        var paddingX = 24,
+            paddingY = 24,
+            boxWidth = 300,
+            lineHeight = 20,
+            headerHeight = 34;
+
         var colsPerRow = Math.max(1, Math.ceil(Math.sqrt(schema.length)));
+        var groupMap = {}; // map tableName -> group
+        var links = []; // relation arrows
 
-        schema.forEach(function(tbl, idx) {
+        function createTable(tbl, idx) {
             var row = Math.floor(idx / colsPerRow);
             var col = idx % colsPerRow;
             var x = paddingX + col * (boxWidth + paddingX);
@@ -448,72 +455,193 @@ JS
             var group = new Konva.Group({
                 x: x,
                 y: paddingY + row * (boxHeight + paddingY),
-                draggable: true
+                draggable: true,
+                name: tbl.name || ''
             });
 
+            // shadow/background card
+            var card = new Konva.Rect({
+                x: -6,
+                y: -6,
+                width: boxWidth + 12,
+                height: boxHeight + 12,
+                fill: '#ffffff',
+                cornerRadius: 6,
+                shadowColor: 'rgba(15,23,42,0.12)',
+                shadowBlur: 12,
+                shadowOffset: { x: 0, y: 6 }
+            });
+
+            // header with subtle gradient
             var header = new Konva.Rect({
                 x: 0,
                 y: 0,
                 width: boxWidth,
                 height: headerHeight,
-                fill: '#0d6efd',
-                cornerRadius: 4
+                cornerRadius: 4,
+                fillLinearGradientStartPoint: { x: 0, y: 0 },
+                fillLinearGradientEndPoint: { x: boxWidth, y: 0 },
+                fillLinearGradientColorStops: [0, '#0d6efd', 1, '#0b5ed7']
             });
+
             var headerText = new Konva.Text({
-                x: 8,
-                y: 4,
+                x: 10,
+                y: 7,
                 text: tbl.name || '(table)',
                 fontSize: 13,
                 fontStyle: 'bold',
-                fill: '#fff'
+                fill: '#fff',
+                fontFamily: 'monospace'
             });
 
+            // body rect
             var body = new Konva.Rect({
                 x: 0,
                 y: headerHeight,
                 width: boxWidth,
                 height: boxHeight - headerHeight,
                 fill: '#fff',
-                stroke: '#0d6efd',
+                stroke: '#e6eefc',
                 strokeWidth: 1,
                 cornerRadius: 4
             });
+
+            group.add(card);
             group.add(body);
             group.add(header);
             group.add(headerText);
 
-            cols.forEach(function(col, i) {
+            // columns list with alternating background and monospace font
+            cols.forEach(function(c, i) {
                 var y = headerHeight + 6 + i * lineHeight;
-                var text = (col.key && col.key.toUpperCase() === 'PRI' ? 'PK ' : '') + col.name + (col.type ? ' : ' + col.type : '') + (col.nullable ? '' : ' (NOT NULL)');
+                if (i % 2 === 0) {
+                    var r = new Konva.Rect({ x: 0, y: y - 2, width: boxWidth, height: lineHeight, fill: 'rgba(14, 74, 255, 0.02)' });
+                    group.add(r);
+                }
+
+                var isPK = c.key && String(c.key).toUpperCase() === 'PRI';
+                var text = (isPK ? 'PK ' : '') + (c.name || '') + (c.type ? ' : ' + c.type : '') + (c.nullable ? '' : ' (NOT NULL)');
                 var txt = new Konva.Text({
-                    x: 8,
+                    x: 10,
                     y: y,
                     text: text,
                     fontSize: 12,
-                    fill: col.key && col.key.toUpperCase() === 'PRI' ? '#c7254e' : '#333'
+                    fill: isPK ? '#c7254e' : '#243238',
+                    fontFamily: 'monospace'
                 });
+
+                // small PK badge
+                if (isPK) {
+                    var circle = new Konva.Circle({ x: 6, y: y + lineHeight/2 - 1, radius: 4, fill: '#d9534f' });
+                    group.add(circle);
+                }
+
                 group.add(txt);
             });
 
-            // tooltip on hover: show comment or extra
-            group.on('mouseover', function() {
-                var comments = [];
-                (tbl.columns || []).forEach(function(c) {
-                    if (c.comment) comments.push(c.name + ': ' + c.comment);
-                });
-                if (comments.length) {
-                    // simple title attribute fallback
-                    container.title = comments.join('\n');
-                }
-            });
-            group.on('mouseout', function() {
-                container.title = '';
-            });
+            // hover cursor and bring to top on drag
+            group.on('mouseover', function() { document.body.style.cursor = 'grab'; });
+            group.on('mouseout', function() { document.body.style.cursor = ''; });
+            group.on('dragstart', function() { this.moveToTop(); arrowsLayer.batchDraw(); });
+            group.on('dragmove', function() { updateArrows(); });
+            group.on('dragend', function() { updateArrows(); });
 
-            layer.add(group);
+            tablesLayer.add(group);
+            groupMap[tbl.name] = { group: group, meta: tbl, boxHeight: boxHeight };
+        }
+
+        // create all tables
+        schema.forEach(function(tbl, idx) { createTable(tbl, idx); });
+
+        // create relation arrows
+        function normalizeFK(fk) {
+            // try common properties
+            return {
+                column: fk.column || fk.src_column || fk.local || fk.column_name || fk.fk_column || fk.source || fk.from_column || fk.from || '',
+                referenced_table: fk.referenced_table || fk.ref_table || fk.target_table || fk.references || fk.to_table || fk.table || fk.target || fk.referenced || '',
+                referenced_column: fk.referenced_column || fk.ref_column || fk.pk_column || fk.to_column || fk.references_column || fk.to || ''
+            };
+        }
+
+        schema.forEach(function(tbl) {
+            (tbl.foreign_keys || []).forEach(function(fk) {
+                var n = normalizeFK(fk);
+                var fromTable = tbl.name;
+                var toTable = n.referenced_table;
+                if (!fromTable || !toTable) return;
+                var from = groupMap[fromTable];
+                var to = groupMap[toTable];
+                if (!from || !to) return;
+
+                var arrow = new Konva.Arrow({
+                    points: [0,0, 0,0],
+                    stroke: '#6c757d',
+                    fill: '#6c757d',
+                    strokeWidth: 2,
+                    pointerLength: 10,
+                    pointerWidth: 10,
+                    opacity: 0.95
+                });
+
+                var label = new Konva.Text({ text: (n.column || '') + (n.referenced_column ? ' → ' + n.referenced_column : ''), fontSize: 12, fill: '#394a56', fontFamily: 'monospace' });
+
+                arrowsLayer.add(arrow);
+                arrowsLayer.add(label);
+
+                links.push({ arrow: arrow, label: label, from: { table: fromTable, column: n.column }, to: { table: toTable, column: n.referenced_column } });
+            });
         });
 
-        layer.draw();
+        function getColumnPoint(info, columnName, preferLeft) {
+            var g = info.group;
+            var x = g.x();
+            var yBase = g.y();
+            var texts = g.find('Text');
+            // find matching column text (skip header)
+            for (var i = 0; i < texts.length; i++) {
+                var t = texts[i];
+                if (t.y() >= headerHeight - 2) {
+                    var txt = t.text() || '';
+                    if (columnName && txt.indexOf(columnName) !== -1) {
+                        var px = g.x() + (preferLeft ? 0 : boxWidth);
+                        var py = g.y() + t.y() + (t.fontSize() / 2) + 2;
+                        return { x: px, y: py };
+                    }
+                }
+            }
+            // fallback: center-right or center-left
+            var fallbackX = g.x() + (preferLeft ? 0 : boxWidth);
+            var fallbackY = g.y() + (info.boxHeight / 2);
+            return { x: fallbackX, y: fallbackY };
+        }
+
+        function updateArrows() {
+            links.forEach(function(l) {
+                var fromInfo = groupMap[l.from.table];
+                var toInfo = groupMap[l.to.table];
+                if (!fromInfo || !toInfo) return;
+                var start = getColumnPoint(fromInfo, l.from.column, false);
+                var end = getColumnPoint(toInfo, l.to.column, true);
+                l.arrow.points([start.x, start.y, end.x, end.y]);
+                // position label at mid point
+                var mx = (start.x + end.x) / 2;
+                var my = (start.y + end.y) / 2 - 8;
+                l.label.position({ x: mx - (l.label.width() / 2), y: my - (l.label.height() / 2) });
+            });
+            arrowsLayer.batchDraw();
+        }
+
+        // initial draw
+        tablesLayer.draw();
+        updateArrows();
+
+        // keep responsive
+        window.addEventListener('resize', function() {
+            stage.width(Math.max(container.clientWidth, 800));
+            stage.height(Math.max(container.clientHeight, 380));
+            updateArrows();
+        });
+
     })();
 </script>
 <?php \richardfan\widget\JSRegister::end(); ?>
