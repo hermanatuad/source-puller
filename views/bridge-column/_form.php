@@ -56,7 +56,6 @@ use yii\widgets\ActiveForm;
                         'prompt' => 'Select target column name',
                         'class' => 'form-control',
                         'data-choices' => 'true',
-                        'disabled' => true
                     ])->label('Warehouse Column Name') ?>
                 </div>
 
