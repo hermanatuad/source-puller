@@ -120,38 +120,37 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">
-                    <i class="ri-server-line me-2"></i> Columns Source
+                    <i class="ri-server-line me-2"></i> Column Warehouse
                 </h4>
             </div>
             <div class="card-body">
                 <?php
-                $dbInfo = DBHelper::getDatabaseInfoFromCache($system);
-                $sourceColumns = $dbInfo['result']['tables'][$model->bridge_table_source]['columns'] ?? [];
-                $linkedSourceCols = array_filter(array_values($bridgeColumnList));
+                $DWInfo = DWHelper::getDWInfoFromCache();
+                $targetColumns = $DWInfo['result']['data']['tables'][$model->bridge_table_target]['columns'] ?? [];
                 ?>
 
                 <div class="table-responsive">
                     <table class="table table-hover align-middle table-nowrap mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Source Column</th>
+                                <th>Warehouse Column</th>
                                 <th>Type</th>
-                                <th>Status</th>
+                                <th>Mapped Source</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($sourceColumns)): ?>
-                                <?php foreach ($sourceColumns as $col):
-                                    $colName = $col['name'] ?? null;
-                                    $isLinked = in_array($colName, $linkedSourceCols, true);
-                                    $rowClass = $isLinked ? 'table-success' : 'table-danger';
+                            <?php if (!empty($targetColumns)): ?>
+                                <?php foreach ($targetColumns as $tcol):
+                                    $tName = $tcol['name'] ?? null;
+                                    $mappedSource = $tName ? ($bridgeColumnList[$tName] ?? null) : null;
+                                    $rowClass = $mappedSource ? 'table-success' : 'table-danger';
                                 ?>
                                     <tr class="<?= $rowClass ?>">
-                                        <td><?= Html::encode($colName ?: '-') ?></td>
-                                        <td><?= Html::encode($col['data_type'] ?? $col['column_type'] ?? '-') ?></td>
+                                        <td><?= Html::encode($tName ?: '-') ?></td>
+                                        <td><?= Html::encode($tcol['data_type'] ?? $tcol['column_type'] ?? '-') ?></td>
                                         <td>
-                                            <?php if ($isLinked): ?>
-                                                <span class="badge bg-success">Linked</span>
+                                            <?php if ($mappedSource): ?>
+                                                <span class="badge bg-success">Linked: <?= Html::encode($mappedSource) ?></span>
                                             <?php else: ?>
                                                 <span class="badge bg-danger">Unlinked</span>
                                             <?php endif; ?>
@@ -160,7 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">No source columns available or unable to fetch schema</td>
+                                    <td colspan="3" class="text-center text-muted">No warehouse columns available or unable to fetch schema</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
