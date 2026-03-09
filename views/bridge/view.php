@@ -84,7 +84,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php
                                     $colName = $column['name'] ?? null;
                                     $isLinked = isset($bridgeColumnList[$colName]) && !empty($bridgeColumnList[$colName]);
-                                    echo '<pre>';print_r($isLinked);exit;
                                     $rowClass = $isLinked ? 'table-success' : 'table-warning';
                                     ?>
                                     <tr class="<?= $rowClass ?>">
