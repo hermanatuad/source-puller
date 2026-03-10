@@ -50,7 +50,7 @@ class MenuHelper
 
             $menuItems[] = [
                 'type' => 'title',
-                'label' => 'Sources (Existing Database System)'
+                'label' => 'Data Sources (Existing Database System)'
             ];
 
             // // Landing
@@ -122,7 +122,7 @@ class MenuHelper
             // ];
 
             $menuItems[] = [
-                'label' => '<i class="ri-database-2-line"></i> <span>Database System</span>',
+                'label' => '<i class="ri-database-2-line"></i> <span>Source DBS</span>',
                 'url' => ['system/index'],
                 'visible' => Yii::$app->user->can('admin')
             ];
