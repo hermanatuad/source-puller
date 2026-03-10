@@ -4,7 +4,7 @@
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
         <a href="/" class="logo logo-dark">
-            Derrick
+            Source Puller
             <!-- <span class="logo-sm">
                 <img src="/images/logo-sm.png" alt="" height="22">
             </span>
@@ -14,7 +14,7 @@
         </a>
         <!-- Light Logo-->
         <a href="/" class="logo logo-light">
-            Derrick
+            Source Puller
             <!-- <span class="logo-sm">
                 <img src="/images/logo-sm.png" alt="" height="22">
             </span>

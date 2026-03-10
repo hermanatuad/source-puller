@@ -32,7 +32,7 @@
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
                                                 <a href="/" class="d-block">
-                                                    Derrick
+                                                    Source Puller
                                                 </a>
                                             </div>
                                             <div class="mt-auto">
