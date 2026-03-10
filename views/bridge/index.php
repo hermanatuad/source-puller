@@ -30,6 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
 
             <div class="card-body d-flex flex-column flex-grow-1">
+                <?php foreach (['success' => 'success', 'error' => 'danger', 'warning' => 'warning', 'info' => 'info'] as $flashKey => $flashClass): ?>
+                    <?php if (Yii::$app->session->hasFlash($flashKey)): ?>
+                        <div class="alert alert-<?= $flashClass ?> alert-dismissible fade show" role="alert">
+                            <?= Html::encode(Yii::$app->session->getFlash($flashKey)) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+
                 <div class="table-responsive flex-grow-1 overflow-auto">
                     <table class="table table-hover table-striped align-middle table-nowrap mb-0">
                         <thead class="table-light">
@@ -63,9 +72,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <?= Html::a('<i class="ri-play-line align-bottom me-2 text-primary"></i> Run', ['run', 'id' => $model->id], [
-                                                            'class' => 'dropdown-item'
-                                                        ]) ?>
+                                                        <button
+                                                            type="button"
+                                                            class="dropdown-item run-btn"
+                                                            data-run-url="<?= Url::to(['run', 'id' => $model->id]) ?>"
+                                                            data-bridge-name="<?= Html::encode($model->bridge_name ?: $model->bridge_table_source) ?>">
+                                                            <i class="ri-play-line align-bottom me-2 text-primary"></i> Run
+                                                        </button>
+
+
+
                                                     </li>
                                                     <li class="dropdown-divider"></li>
                                                     <li>
@@ -83,6 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     </li>
                                                 </ul>
                                             </div>
+
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -96,6 +113,31 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php endif; ?>
                         </tbody>
                     </table>
+
+                    <div class="modal fade" id="runConfirmModal" tabindex="-1" aria-labelledby="runConfirmModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="runConfirmModalLabel">Konfirmasi Run Pipeline</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form id="runConfirmForm" method="post">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
+                                        <p class="mb-2">Anda yakin ingin menjalankan pipeline berikut?</p>
+                                        <div class="fw-semibold" id="runPipelineName">-</div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary" id="runConfirmSubmitBtn">
+                                            <span class="spinner-border spinner-border-sm me-2 d-none" id="runLoadingSpinner" role="status" aria-hidden="true"></span>
+                                            <span id="runSubmitText">Ya, Jalankan</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <?php if ($dataProvider->pagination->pageCount > 1): ?>
@@ -124,3 +166,40 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
+
+<?php
+$this->registerJs(<<<JS
+(function () {
+    const modalElement = document.getElementById('runConfirmModal');
+    if (!modalElement) {
+        return;
+    }
+
+    const modal = new bootstrap.Modal(modalElement);
+    const runButtons = document.querySelectorAll('.run-btn');
+    const runForm = document.getElementById('runConfirmForm');
+    const pipelineNameElement = document.getElementById('runPipelineName');
+    const submitButton = document.getElementById('runConfirmSubmitBtn');
+    const submitText = document.getElementById('runSubmitText');
+    const spinner = document.getElementById('runLoadingSpinner');
+
+    runButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            runForm.setAttribute('action', button.dataset.runUrl || '#');
+            pipelineNameElement.textContent = button.dataset.bridgeName || '-';
+            submitButton.disabled = false;
+            spinner.classList.add('d-none');
+            submitText.textContent = 'Ya, Jalankan';
+            modal.show();
+        });
+    });
+
+    runForm.addEventListener('submit', function () {
+        submitButton.disabled = true;
+        spinner.classList.remove('d-none');
+        submitText.textContent = 'Running...';
+    });
+})();
+JS);
+?>

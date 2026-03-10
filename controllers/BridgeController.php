@@ -162,6 +162,7 @@ class BridgeController extends Controller
     {
         $model = $this->findModel($id);
         $database = System::findOne(['system_code' => $model->system_code]);
+        $extractedCount = 0;
 
         if (!$database) {
             throw new Exception("System configuration not found.");
@@ -433,6 +434,7 @@ class BridgeController extends Controller
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($params);
                     $pdo->commit();
+                    $extractedCount = count($pgRows);
                 } catch (\Throwable $e) {
                     $pdo->rollBack();
                     throw $e;
@@ -631,6 +633,7 @@ class BridgeController extends Controller
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
                 $pdo->commit();
+                $extractedCount = count($pgRows);
             } catch (\Throwable $e) {
                 $pdo->rollBack();
                 throw $e;
@@ -639,7 +642,7 @@ class BridgeController extends Controller
             throw new Exception("Unknown bridge type: " . $model->bridge_type);
         }
 
-        Yii::$app->session->setFlash('success', 'Bridge execution completed.');
+        Yii::$app->session->setFlash('success', "Bridge execution completed. {$extractedCount} data berhasil diekstrak.");
         return $this->redirect(['index']);
         // return $this->redirect(['view', 'id' => $id]);
     }
