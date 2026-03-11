@@ -126,6 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
                                         <p class="mb-2">Anda yakin ingin menjalankan pipeline berikut?</p>
                                         <div class="fw-semibold" id="runPipelineName">-</div>
+                                        <div id="runExecutionResult" class="alert mt-3 mb-0 d-none" role="alert"></div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
@@ -183,22 +184,73 @@ $this->registerJs(<<<JS
     const submitButton = document.getElementById('runConfirmSubmitBtn');
     const submitText = document.getElementById('runSubmitText');
     const spinner = document.getElementById('runLoadingSpinner');
+    const resultAlert = document.getElementById('runExecutionResult');
 
     runButtons.forEach(function (button) {
         button.addEventListener('click', function () {
             runForm.setAttribute('action', button.dataset.runUrl || '#');
             pipelineNameElement.textContent = button.dataset.bridgeName || '-';
             submitButton.disabled = false;
+            submitButton.dataset.mode = 'run';
             spinner.classList.add('d-none');
             submitText.textContent = 'Ya, Jalankan';
+            resultAlert.classList.add('d-none');
+            resultAlert.classList.remove('alert-success', 'alert-danger', 'alert-warning', 'alert-info');
+            resultAlert.textContent = '';
             modal.show();
         });
     });
 
-    runForm.addEventListener('submit', function () {
+    runForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        if (submitButton.dataset.mode === 'done') {
+            modal.hide();
+            return;
+        }
+
         submitButton.disabled = true;
         spinner.classList.remove('d-none');
         submitText.textContent = 'Running...';
+
+        const formData = new FormData(runForm);
+
+        fetch(runForm.getAttribute('action'), {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                const isSuccess = data && data.status === 'success';
+                resultAlert.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning', 'alert-info');
+                resultAlert.classList.add(isSuccess ? 'alert-success' : 'alert-danger');
+
+                if (isSuccess) {
+                    resultAlert.textContent = data.message || 'Bridge execution completed.';
+                    submitText.textContent = 'Selesai';
+                    submitButton.dataset.mode = 'done';
+                } else {
+                    resultAlert.textContent = (data && data.message) ? data.message : 'Terjadi kesalahan saat menjalankan pipeline.';
+                    submitText.textContent = 'Coba Lagi';
+                    submitButton.dataset.mode = 'run';
+                }
+            })
+            .catch(function () {
+                resultAlert.classList.remove('d-none', 'alert-success', 'alert-warning', 'alert-info');
+                resultAlert.classList.add('alert-danger');
+                resultAlert.textContent = 'Terjadi kesalahan jaringan saat menjalankan pipeline.';
+                submitText.textContent = 'Coba Lagi';
+                submitButton.dataset.mode = 'run';
+            })
+            .finally(function () {
+                spinner.classList.add('d-none');
+                submitButton.disabled = false;
+            });
     });
 })();
 JS);

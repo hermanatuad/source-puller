@@ -21,6 +21,7 @@ use Yii;
 use yii\db\mssql\PDO;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 
@@ -160,6 +161,12 @@ class BridgeController extends Controller
 
     public function actionRun($id)
     {
+        $isAjax = Yii::$app->request->isAjax;
+        if ($isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+        }
+
+        try {
         $model = $this->findModel($id);
         $database = System::findOne(['system_code' => $model->system_code]);
         $extractedCount = 0;
@@ -642,9 +649,33 @@ class BridgeController extends Controller
             throw new Exception("Unknown bridge type: " . $model->bridge_type);
         }
 
-        Yii::$app->session->setFlash('success', "Bridge execution completed. {$extractedCount} data berhasil diekstrak.");
+        $successMessage = "Bridge execution completed. {$extractedCount} data berhasil diekstrak.";
+
+        if ($isAjax) {
+            return [
+                'status' => 'success',
+                'message' => $successMessage,
+                'extractedCount' => $extractedCount,
+            ];
+        }
+
+        Yii::$app->session->setFlash('success', $successMessage);
         return $this->redirect(['index']);
         // return $this->redirect(['view', 'id' => $id]);
+        } catch (\Throwable $e) {
+            Yii::error('Bridge run failed: ' . $e->getMessage(), __METHOD__);
+
+            if ($isAjax) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Bridge execution failed: ' . $e->getMessage(),
+                    'extractedCount' => 0,
+                ];
+            }
+
+            Yii::$app->session->setFlash('error', 'Bridge execution failed: ' . $e->getMessage());
+            return $this->redirect(['index']);
+        }
     }
 
     /**
