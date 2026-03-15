@@ -328,6 +328,9 @@ class DBHelper
                 // Ambil foreign keys
                 $foreignKeys = self::getForeignKeysInfo($mysqli, $database, $tableName);
 
+                // Ambil seluruh row data tabel untuk disimpan ke cache
+                $tableDataRows = self::getTableRowsData($mysqli, $tableName);
+
                 $tables[$tableName] = [
                     'name' => $tableName,
                     'type' => $table['TABLE_TYPE'],
@@ -345,12 +348,33 @@ class DBHelper
                     'foreign_keys_count' => count($foreignKeys),
                     'columns' => $columns,
                     'indexes' => $indexes,
-                    'foreign_keys' => $foreignKeys
+                    'foreign_keys' => $foreignKeys,
+                    'data_rows_count' => count($tableDataRows),
+                    'data_rows' => $tableDataRows
                 ];
             }
         }
 
         return $tables;
+    }
+
+    private static function getTableRowsData($mysqli, $tableName)
+    {
+        $rows = [];
+        $safeTableName = str_replace('`', '``', $tableName);
+        $result = $mysqli->query("SELECT * FROM `{$safeTableName}`");
+
+        if ($result === false) {
+            return $rows;
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        $result->free();
+
+        return $rows;
     }
 
     private static function getColumnsInfo($mysqli, $database, $tableName)

@@ -271,6 +271,68 @@ class SystemController extends Controller
         $database = $model->database_name;
         $port = $model->port;
 
+        $cacheLookup = DBHelper::getDatabaseInfoFromCache([
+            'system_code' => $model->system_code,
+            'hostname' => $hostname,
+            'username' => $username,
+            'password' => $password,
+            'port' => $port,
+            'database_name' => $database,
+        ]);
+
+        if (($cacheLookup['status'] ?? '') === 'success') {
+            $cachedTables = $cacheLookup['result']['tables'] ?? [];
+            $cachedTable = $cachedTables[$table] ?? null;
+
+            if (is_array($cachedTable)) {
+                $rows = $cachedTable['data_rows'] ?? [];
+                $columnsMeta = $cachedTable['columns'] ?? [];
+                $columns = [];
+
+                foreach ($columnsMeta as $columnMeta) {
+                    if (is_array($columnMeta) && !empty($columnMeta['name'])) {
+                        $columns[] = $columnMeta['name'];
+                    }
+                }
+
+                if (empty($columns) && !empty($rows)) {
+                    $columns = array_keys((array) reset($rows));
+                }
+
+                // Determine which source columns are already linked for this system/table
+                $linkedColumns = [];
+                try {
+                    $bridge = \app\models\Bridge::find()->where([
+                        'system_code' => $model->system_code,
+                        'bridge_table_source' => $table
+                    ])->one();
+
+                    if ($bridge) {
+                        foreach ($bridge->bridgeColumns as $bc) {
+                            if (!empty($bc->source_column_name)) {
+                                $linkedColumns[] = $bc->source_column_name;
+                            }
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    // ignore relation errors
+                }
+
+                $unlinked = array_values(array_diff($columns, $linkedColumns));
+
+                return $this->asJson([
+                    'status' => 'success',
+                    'message' => 'OK',
+                    'data' => [
+                        'columns' => $columns,
+                        'rows' => $rows,
+                        'unlinked_columns' => $unlinked,
+                        'source' => 'cache',
+                    ]
+                ]);
+            }
+        }
+
         try {
             $mysqli = new \mysqli($hostname, $username, $password, $database, $port);
             if ($mysqli->connect_error) {
@@ -321,7 +383,7 @@ class SystemController extends Controller
             $res->free();
             $mysqli->close();
 
-            return $this->asJson(['status' => 'success', 'message' => 'OK', 'data' => ['columns' => $columns, 'rows' => $rows, 'unlinked_columns' => $unlinked]]);
+            return $this->asJson(['status' => 'success', 'message' => 'OK', 'data' => ['columns' => $columns, 'rows' => $rows, 'unlinked_columns' => $unlinked, 'source' => 'live']]);
         } catch (\Exception $e) {
             return $this->asJson(['status' => 'error', 'message' => $e->getMessage()]);
         }
