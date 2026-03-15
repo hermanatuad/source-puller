@@ -244,6 +244,47 @@ class SystemController extends Controller
     }
 
     /**
+     * Return full cached payload for the selected system.
+     * @param string $id System id
+     * @return \yii\web\Response
+     */
+    public function actionCacheData($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model) {
+            return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
+        }
+
+        if ($model->system_type !== 'mysql') {
+            return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for cache data.']);
+        }
+
+        $cacheInfo = DBHelper::getDatabaseInfoFromCache([
+            'system_code' => $model->system_code,
+            'hostname' => $model->hostname,
+            'username' => $model->username,
+            'password' => $model->password,
+            'port' => $model->port,
+            'database_name' => $model->database_name,
+        ]);
+
+        if (($cacheInfo['status'] ?? '') !== 'success') {
+            return $this->asJson([
+                'status' => 'error',
+                'message' => $cacheInfo['message'] ?? 'Failed to retrieve cache data',
+                'details' => $cacheInfo,
+            ]);
+        }
+
+        return $this->asJson([
+            'status' => 'success',
+            'message' => 'Cache data loaded',
+            'cache_info' => $cacheInfo['cache_info'] ?? null,
+            'data' => $cacheInfo['result'] ?? [],
+        ]);
+    }
+
+    /**
      * Return sample rows for a table from the system's database.
      * @param string $id System id
      * @param string $table Table name

@@ -44,6 +44,9 @@ KonvaAsset::register($this);
                     <?= Html::a('<i class="ri-refresh-line align-bottom me-1"></i> Clear Cache', ['clear-cache', 'id' => $model->id], [
                         'class' => 'btn btn-secondary btn-sm me-2'
                     ]) ?>
+                    <button type="button" class="btn btn-warning btn-sm me-2 btn-show-cache" data-url="<?= Html::encode(Url::to(['system/cache-data', 'id' => $model->id])) ?>">
+                        <i class="ri-database-2-line align-bottom me-1"></i> View Cache Data
+                    </button>
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
                     ]) ?>
@@ -189,6 +192,24 @@ KonvaAsset::register($this);
                                 </div><!--end col-->
                             </div><!--end row-->
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-cache-data" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cache Data</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modal-cache-message" class="mb-2 text-muted">Loading...</div>
+                        <pre id="modal-cache-json" style="max-height:70vh; overflow:auto; white-space:pre-wrap; word-break:break-word;"></pre>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -407,6 +428,46 @@ $this->registerJs(
         var text = 'Request failed';
         try { text = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText; } catch (e) {}
         $('#modal-table-message').text(text);
+    });
+});
+JS
+);
+
+$this->registerJs(
+    <<<JS
+$(document).on('click', '.btn-show-cache', function () {
+    var url = $(this).data('url');
+    var modalEl = document.getElementById('modal-cache-data');
+    var modal = new bootstrap.Modal(modalEl);
+
+    $('#modal-cache-message').text('Loading cache data...').removeClass('text-danger').addClass('text-muted');
+    $('#modal-cache-json').text('');
+    modal.show();
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        dataType: 'json'
+    }).done(function (res) {
+        if (res.status === 'success') {
+            var payload = {
+                cache_info: res.cache_info || {},
+                data: res.data || {}
+            };
+            $('#modal-cache-message').text('Cache loaded successfully.');
+            $('#modal-cache-json').text(JSON.stringify(payload, null, 2));
+        } else {
+            $('#modal-cache-message').text(res.message || 'Failed to load cache data').removeClass('text-muted').addClass('text-danger');
+            $('#modal-cache-json').text(JSON.stringify(res, null, 2));
+        }
+    }).fail(function (xhr) {
+        var text = 'Request failed';
+        try {
+            text = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : xhr.statusText;
+        } catch (e) {}
+
+        $('#modal-cache-message').text(text).removeClass('text-muted').addClass('text-danger');
+        $('#modal-cache-json').text('');
     });
 });
 JS
