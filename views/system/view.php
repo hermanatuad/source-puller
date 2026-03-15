@@ -483,8 +483,25 @@ JS
             group.on('dragstart', function() { this.moveToTop(); arrowsLayer.batchDraw(); });
 
             layer.add(group);
-            groups[tbl.name] = { group: group, w: w, h: h };
+            var columnAnchors = {};
+            (cols || []).forEach(function(col, i) {
+                columnAnchors[col.name] = headerHeight + 6 + i * lineHeight + (lineHeight / 2);
+            });
+
+            groups[tbl.name] = { group: group, w: w, h: h, columnAnchors: columnAnchors };
         });
+
+        function getColumnAnchor(tableName, columnName, preferredSide) {
+            var table = groups[tableName];
+            if (!table) return null;
+
+            var anchorY = table.group.y() + (table.columnAnchors[columnName] || (headerHeight + 10));
+            var anchorX = preferredSide === 'left'
+                ? table.group.x() + 6
+                : table.group.x() + table.w - 6;
+
+            return { x: anchorX, y: anchorY };
+        }
 
         // draw FK arrows similar to bridge/view
         schema.forEach(function(tbl) {
@@ -497,15 +514,19 @@ JS
                 var dst = groups[refTable];
                 if (!src || !dst) return;
 
-                var sx = src.group.x() + src.w - 6;
-                var sy = src.group.y() + headerHeight + 10;
-                var dx = dst.group.x() + 6;
-                var dy = dst.group.y() + headerHeight + 10;
+                var sourceOnLeft = src.group.x() <= dst.group.x();
+                var sourceAnchor = getColumnAnchor(tbl.name, fk.column, sourceOnLeft ? 'right' : 'left');
+                var targetAnchor = getColumnAnchor(refTable, fk.referenced_column, sourceOnLeft ? 'left' : 'right');
+
+                var sx = sourceAnchor ? sourceAnchor.x : src.group.x() + src.w - 6;
+                var sy = sourceAnchor ? sourceAnchor.y : src.group.y() + headerHeight + 10;
+                var dx = targetAnchor ? targetAnchor.x : dst.group.x() + 6;
+                var dy = targetAnchor ? targetAnchor.y : dst.group.y() + headerHeight + 10;
 
                 var arrow = new Konva.Arrow({ points: [sx, sy, dx, dy], pointerLength: 8, pointerWidth: 8, fill: '#666', stroke: '#666', strokeWidth: 1, lineJoin: 'round' });
                 arrowsLayer.add(arrow);
                 // store source/dest and arrow index for offsetting
-                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable, idx: links.length });
+                links.push({ arrow: arrow, srcName: tbl.name, dstName: refTable, srcColumn: fk.column || '', dstColumn: fk.referenced_column || '', idx: links.length });
             });
         });
 
@@ -534,10 +555,14 @@ JS
                 var src = groups[l.srcName];
                 var dst = groups[l.dstName];
                 if (!src || !dst) return;
-                var sx = src.group.x() + src.w - 6;
-                var sy = src.group.y() + headerHeight + 10;
-                var dx = dst.group.x() + 6;
-                var dy = dst.group.y() + headerHeight + 10;
+                var sourceOnLeft = src.group.x() <= dst.group.x();
+                var sourceAnchor = getColumnAnchor(l.srcName, l.srcColumn, sourceOnLeft ? 'right' : 'left');
+                var targetAnchor = getColumnAnchor(l.dstName, l.dstColumn, sourceOnLeft ? 'left' : 'right');
+
+                var sx = sourceAnchor ? sourceAnchor.x : src.group.x() + src.w - 6;
+                var sy = sourceAnchor ? sourceAnchor.y : src.group.y() + headerHeight + 10;
+                var dx = targetAnchor ? targetAnchor.x : dst.group.x() + 6;
+                var dy = targetAnchor ? targetAnchor.y : dst.group.y() + headerHeight + 10;
 
                 var pts = computeBrokenPath({ x: sx, y: sy }, { x: dx, y: dy }, l.idx || 0);
                 l.arrow.points(pts);
