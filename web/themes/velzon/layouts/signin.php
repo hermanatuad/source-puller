@@ -30,11 +30,6 @@
                                     <div class="p-lg-5 p-4 auth-one-bg h-100">
                                         <div class="bg-overlay"></div>
                                         <div class="position-relative h-100 d-flex flex-column">
-                                            <div class="mb-4">
-                                                <a href="/" class="d-block">
-                                                    Source Puller
-                                                </a>
-                                            </div>
                                             <div class="mt-auto">
                                                 <div class="mb-3">
                                                     <i class="ri-double-quotes-l display-4 text-success"></i>
