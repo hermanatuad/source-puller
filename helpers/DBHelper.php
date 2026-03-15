@@ -390,6 +390,9 @@ class DBHelper
         }
 
         while ($row = $result->fetch_assoc()) {
+            if (!array_key_exists('is_extracted', $row)) {
+                $row['is_extracted'] = 0;
+            }
             $rows[] = $row;
         }
 
