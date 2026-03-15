@@ -247,9 +247,29 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
             groups[tbl.name] = {
                 group: group,
                 w: w,
-                h: h
+                h: h,
+                columnAnchors: (function() {
+                    var anchors = {};
+                    (cols || []).forEach(function(col, i) {
+                        anchors[col.name] = headerHeight + 6 + i * lineHeight + (lineHeight / 2);
+                    });
+                    return anchors;
+                })()
             };
         });
+
+        function getColumnAnchor(tableName, columnName, preferredSide) {
+            var table = groups[tableName];
+            if (!table) return null;
+
+            var anchorY = table.group.y() + (table.columnAnchors[columnName] || (headerHeight + 10));
+            var anchorX = preferredSide === 'left' ? (table.group.x() + 6) : (table.group.x() + table.w - 6);
+
+            return {
+                x: anchorX,
+                y: anchorY
+            };
+        }
 
         // second pass: draw simple links for foreign keys if present
         var links = [];
@@ -264,10 +284,14 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 var dst = groups[refTable];
                 if (!src || !dst) return;
 
-                var sx = src.group.x() + src.w - 6;
-                var sy = src.group.y() + headerHeight + 10;
-                var dx = dst.group.x() + 6;
-                var dy = dst.group.y() + headerHeight + 10;
+                var sourceOnLeft = src.group.x() <= dst.group.x();
+                var sourceAnchor = getColumnAnchor(tbl.name, fk.column, sourceOnLeft ? 'right' : 'left');
+                var targetAnchor = getColumnAnchor(refTable, fk.referenced_column, sourceOnLeft ? 'left' : 'right');
+
+                var sx = sourceAnchor ? sourceAnchor.x : src.group.x() + src.w - 6;
+                var sy = sourceAnchor ? sourceAnchor.y : src.group.y() + headerHeight + 10;
+                var dx = targetAnchor ? targetAnchor.x : dst.group.x() + 6;
+                var dy = targetAnchor ? targetAnchor.y : dst.group.y() + headerHeight + 10;
 
                 var arrow = new Konva.Arrow({
                     points: [sx, sy, dx, dy],
@@ -283,6 +307,8 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                     arrow: arrow,
                     srcName: tbl.name,
                     dstName: refTable,
+                    srcColumn: fk.column || '',
+                    dstColumn: fk.referenced_column || '',
                     idx: links.length
                 });
             });
@@ -311,10 +337,14 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
                 var src = groups[l.srcName];
                 var dst = groups[l.dstName];
                 if (!src || !dst) return;
-                var sx = src.group.x() + src.w - 6;
-                var sy = src.group.y() + headerHeight + 10;
-                var dx = dst.group.x() + 6;
-                var dy = dst.group.y() + headerHeight + 10;
+                var sourceOnLeft = src.group.x() <= dst.group.x();
+                var sourceAnchor = getColumnAnchor(l.srcName, l.srcColumn, sourceOnLeft ? 'right' : 'left');
+                var targetAnchor = getColumnAnchor(l.dstName, l.dstColumn, sourceOnLeft ? 'left' : 'right');
+
+                var sx = sourceAnchor ? sourceAnchor.x : src.group.x() + src.w - 6;
+                var sy = sourceAnchor ? sourceAnchor.y : src.group.y() + headerHeight + 10;
+                var dx = targetAnchor ? targetAnchor.x : dst.group.x() + 6;
+                var dy = targetAnchor ? targetAnchor.y : dst.group.y() + headerHeight + 10;
                 var pts = computeBrokenPath({
                     x: sx,
                     y: sy
