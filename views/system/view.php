@@ -257,6 +257,7 @@ KonvaAsset::register($this);
                                 'password' => $model->password,
                                 'port' => $model->port,
                                 'database_name' => $model->database_name,
+                                'refresh_on_miss' => false,
                             ];
 
                             $dataInfo = DBHelper::getDatabaseInfoFromCache($params);

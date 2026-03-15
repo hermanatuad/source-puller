@@ -63,10 +63,6 @@ class SystemController extends Controller
     {
         $model = $this->findModel($id);
 
-        $dataCache = DBHelper::getDatabaseInfoFromCache($model);
-        if ($dataCache['status'] == 'success') {
-            // echo '<pre>';print_r($dataCache['result']['data']);exit;
-        }
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -266,6 +262,7 @@ class SystemController extends Controller
             'password' => $model->password,
             'port' => $model->port,
             'database_name' => $model->database_name,
+            'refresh_on_miss' => false,
         ]);
 
         if (($cacheInfo['status'] ?? '') !== 'success') {

@@ -27,6 +27,7 @@ class DBHelper
         $username = $params['username'] ?? '';
         $port = $params['port'] ?? '';
         $database = $params['database_name'] ?? '';
+        $refreshOnMiss = $params['refresh_on_miss'] ?? true;
 
         // Validate required parameters for cache lookup
         $missing = [];
@@ -68,6 +69,26 @@ class DBHelper
             if (time() - $cachedData['cached_at'] >= $cacheTTL) {
                 $needRefresh = true;
             }
+        }
+
+        if ($needRefresh && !$refreshOnMiss) {
+            if ($cachedData === null) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Cache not found',
+                    'result' => []
+                ];
+            }
+
+            return [
+                'status' => 'warning',
+                'message' => 'Cache expired',
+                'cache_info' => [
+                    'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                    'expires_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+                ],
+                'result' => $cachedData['data'] ?? $cachedData
+            ];
         }
 
         if ($needRefresh) {
