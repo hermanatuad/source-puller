@@ -126,11 +126,11 @@ class MenuHelper
                 'visible' => Yii::$app->user->can('admin')
             ];
 
-            $menuItems[] = [
-                'label' => '<i class="ri-file-code-line"></i> <span>Patient XML</span>',
-                'url' => ['site/xml-editor'],
-                'visible' => Yii::$app->user->can('admin')
-            ];
+            // $menuItems[] = [
+            //     'label' => '<i class="ri-file-code-line"></i> <span>Patient XML</span>',
+            //     'url' => ['site/xml-editor'],
+            //     'visible' => Yii::$app->user->can('admin')
+            // ];
 
             $menuItems[] = [
                 'type' => 'title',

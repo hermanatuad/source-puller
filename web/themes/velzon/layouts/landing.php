@@ -32,6 +32,7 @@
 
                             <a href="site/signin" class="btn btn-link fw-medium text-decoration-none text-body">Sign in</a>
                             <a href="site/xml" class="btn btn-link fw-medium text-decoration-none text-body" target="_blank">XML File</a>
+                            <a href="site/xml-editor" class="btn btn-link fw-medium text-decoration-none text-body" target="_blank">XML Editor</a>
 
                         </div>
                     </div>

@@ -28,11 +28,11 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [
-                        'actions' => ['xml-editor'],
-                        'allow' => true,
-                        'roles' => ['admin'],
-                    ],
+                    // [
+                    //     'actions' => ['xml-editor'],
+                    //     'allow' => true,
+                    //     'roles' => ['admin'],
+                    // ],
                 ],
             ],
             'verbs' => [
