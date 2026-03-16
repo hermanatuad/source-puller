@@ -44,9 +44,9 @@ KonvaAsset::register($this);
                     <?= Html::a('<i class="ri-refresh-line align-bottom me-1"></i> Clear Cache', ['clear-cache', 'id' => $model->id], [
                         'class' => 'btn btn-secondary btn-sm me-2'
                     ]) ?>
-                    <button type="button" class="btn btn-warning btn-sm me-2 btn-show-cache" data-url="<?= Html::encode(Url::to(['system/cache-data', 'id' => $model->id])) ?>">
+                    <!-- <button type="button" class="btn btn-warning btn-sm me-2 btn-show-cache" data-url="<?= Html::encode(Url::to(['system/cache-data', 'id' => $model->id])) ?>">
                         <i class="ri-database-2-line align-bottom me-1"></i> View Cache Data
-                    </button>
+                    </button> -->
                     <?= Html::a('<i class="ri-arrow-left-line align-bottom me-1"></i> Back', ['index'], [
                         'class' => 'btn btn-secondary btn-sm'
                     ]) ?>
