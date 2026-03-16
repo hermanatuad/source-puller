@@ -90,7 +90,7 @@ $schemaJson = json_encode($schemaPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX
 <div class="row">
     <div class="col-lg-12">
         <div class="card mb-3">
-            <div class="card-header"><strong>Schema Diagram (visual)</strong></div>
+            <div class="card-header"><strong>Database Source Schema Diagram (visual)</strong></div>
             <div class="card-body">
                 <div id="bridge-schema-canvas" style="width:100%; height:420px; border:1px solid #eee;"></div>
             </div>
