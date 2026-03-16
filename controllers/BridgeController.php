@@ -646,7 +646,166 @@ class BridgeController extends Controller
                 throw $e;
             }
         } else {
-            throw new Exception("Unknown bridge type: " . $model->bridge_type);
+
+            $RAW_DATA = [];
+
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
+                throw new Exception("Invalid source table name.");
+            }
+
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_target)) {
+                throw new Exception("Invalid target table name.");
+            }
+
+            $bridgeCols = BridgeColumn::find()->where(['bridge_id' => $id])->all();
+            if (empty($bridgeCols)) {
+                throw new Exception("No bridge columns defined.");
+            }
+
+            $mapTargetToSource = [];
+            foreach ($bridgeCols as $bc) {
+                if (!empty($bc->target_column_name) && !empty($bc->source_column_name)) {
+                    $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
+                }
+            }
+
+            if (empty($mapTargetToSource)) {
+                throw new Exception("No valid source-target column mapping found.");
+            }
+
+            $sourceCols = array_values(array_unique(array_values($mapTargetToSource)));
+
+            foreach ($sourceCols as $col) {
+                if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                    throw new Exception("Invalid source column name: {$col}");
+                }
+            }
+
+            foreach (array_keys($mapTargetToSource) as $col) {
+                if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                    throw new Exception("Invalid target column name: {$col}");
+                }
+            }
+
+            $mysqli = new mysqli(
+                $database->hostname,
+                $database->username,
+                $database->password,
+                $database->database_name,
+                $database->port
+            );
+
+            if ($mysqli->connect_error) {
+                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
+            }
+
+            $escapedColumns = array_map(function ($col) {
+                return "`" . $col . "`";
+            }, $sourceCols);
+
+            $sql = "SELECT " . implode(',', $escapedColumns) . "\n                FROM `{$model->bridge_table_source}`\n                LIMIT 100";
+
+            $result = $mysqli->query($sql);
+
+            if (!$result) {
+                throw new Exception("MySQL query error: " . $mysqli->error);
+            }
+
+            while ($row = $result->fetch_assoc()) {
+                $RAW_DATA[] = $row;
+            }
+
+            $result->free();
+            $mysqli->close();
+
+            if (empty($RAW_DATA)) {
+                Yii::$app->session->setFlash('info', 'No data found.');
+                return $this->redirect(['view', 'id' => $id]);
+            }
+
+            $pgRows = [];
+            foreach ($RAW_DATA as $row) {
+                $mapped = [];
+                foreach ($mapTargetToSource as $targetCol => $sourceCol) {
+                    $mapped[$targetCol] = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
+                }
+                $pgRows[] = $mapped;
+            }
+
+            if (empty($pgRows)) {
+                Yii::$app->session->setFlash('info', 'No mapped data to insert.');
+                return $this->redirect(['view', 'id' => $id]);
+            }
+
+            $columns = array_keys($pgRows[0]);
+
+            $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
+
+            $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            ]);
+
+            $colStmt = $pdo->prepare("SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
+            $colStmt->execute([':table' => $model->bridge_table_target]);
+            $colInfoRows = $colStmt->fetchAll(\PDO::FETCH_ASSOC);
+            $existingCols = array_map(function ($r) {
+                return $r['column_name'];
+            }, $colInfoRows);
+            $colMaxLenMap = [];
+            foreach ($colInfoRows as $ir) {
+                $colMaxLenMap[$ir['column_name']] = isset($ir['character_maximum_length']) ? (int)$ir['character_maximum_length'] : null;
+            }
+
+            $missing = array_diff($columns, $existingCols ?: []);
+            if (!empty($missing)) {
+                Yii::warning('Missing target columns: ' . implode(', ', $missing), __METHOD__);
+                Yii::$app->session->setFlash('warning', 'Some target columns do not exist in warehouse table and will be skipped: ' . implode(', ', $missing));
+
+                $columns = array_values(array_intersect($columns, $existingCols ?: []));
+                if (empty($columns)) {
+                    Yii::$app->session->setFlash('info', 'No valid target columns remain after filtering.');
+                    return $this->redirect(['view', 'id' => $id]);
+                }
+                foreach ($pgRows as &$r) {
+                    $r = array_intersect_key($r, array_flip($columns));
+                }
+                unset($r);
+            }
+
+            $values = [];
+            $params = [];
+            foreach ($pgRows as $i => $row) {
+                $placeholders = [];
+                foreach ($columns as $col) {
+                    $param = ":{$col}_{$i}";
+                    $placeholders[] = $param;
+                    $val = $row[$col] ?? null;
+                    if (is_string($val) && !empty($colMaxLenMap[$col]) && mb_strlen($val) > $colMaxLenMap[$col]) {
+                        Yii::warning("Truncating value for column {$col} from length " . mb_strlen($val) . " to {$colMaxLenMap[$col]}", __METHOD__);
+                        $val = mb_substr($val, 0, $colMaxLenMap[$col]);
+                    }
+                    $params[$param] = $val;
+                }
+                $values[] = "(" . implode(',', $placeholders) . ")";
+            }
+
+            $quotedCols = array_map(function ($c) {
+                return '"' . $c . '"';
+            }, $columns);
+
+            $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
+
+            $pdo->beginTransaction();
+
+            try {
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+                $pdo->commit();
+                $extractedCount = count($pgRows);
+            } catch (\Throwable $e) {
+                $pdo->rollBack();
+                throw $e;
+            }
         }
 
         $successMessage = "Bridge execution completed. {$extractedCount} data berhasil diekstrak.";
