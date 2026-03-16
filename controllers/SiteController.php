@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
@@ -20,12 +21,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => ['logout', 'xml-editor'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['xml-editor'],
+                        'allow' => true,
+                        'roles' => ['admin'],
                     ],
                 ],
             ],
@@ -33,6 +39,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'xml-editor' => ['get', 'post'],
                 ],
             ],
         ];
@@ -171,13 +178,89 @@ class SiteController extends Controller
     {
         $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
         if (!file_exists($xmlPath)) {
-            throw new \yii\web\NotFoundHttpException('patient.xml not found');
+            throw new NotFoundHttpException('patient.xml not found');
         }
 
         Yii::$app->response->format = Response::FORMAT_RAW;
         Yii::$app->response->headers->set('Content-Type', 'application/xml; charset=utf-8');
 
         return file_get_contents($xmlPath);
+    }
+
+    /**
+     * Displays and updates patient.xml from a single page editor.
+     *
+     * @return string|Response
+     * @throws NotFoundHttpException
+     */
+    public function actionXmlEditor()
+    {
+        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        if (!file_exists($xmlPath)) {
+            throw new NotFoundHttpException('patient.xml not found');
+        }
+
+        $this->view->title = 'Patient XML Editor';
+        $this->view->params['pagetitle'] = 'Data Sources';
+        $this->view->params['title'] = 'Patient XML Editor';
+        $this->view->params['breadcrumbs'] = [
+            ['label' => 'Data Sources', 'url' => ['system/index']],
+            'Patient XML Editor',
+        ];
+
+        $xmlContent = file_get_contents($xmlPath);
+        $request = Yii::$app->request;
+
+        if ($request->isPost) {
+            $xmlContent = (string) $request->post('xml_content', '');
+
+            if (trim($xmlContent) === '') {
+                Yii::$app->session->setFlash('error', 'XML content cannot be empty.');
+            } else {
+                $previousUseInternalErrors = libxml_use_internal_errors(true);
+                libxml_clear_errors();
+
+                $dom = new \DOMDocument('1.0', 'UTF-8');
+                $dom->preserveWhiteSpace = false;
+                $dom->formatOutput = true;
+
+                if ($dom->loadXML($xmlContent, LIBXML_NOBLANKS)) {
+                    $formattedXml = $dom->saveXML();
+
+                    if (file_put_contents($xmlPath, $formattedXml, LOCK_EX) === false) {
+                        Yii::$app->session->setFlash('error', 'Failed to save patient.xml. Please check file permissions.');
+                    } else {
+                        Yii::$app->session->setFlash('success', 'patient.xml updated successfully.');
+                        libxml_clear_errors();
+                        libxml_use_internal_errors($previousUseInternalErrors);
+
+                        return $this->redirect(['xml-editor']);
+                    }
+                } else {
+                    $errors = array_map(static function (\LibXMLError $error) {
+                        return sprintf(
+                            'Line %d, column %d: %s',
+                            $error->line,
+                            $error->column,
+                            trim($error->message)
+                        );
+                    }, libxml_get_errors());
+
+                    Yii::$app->session->setFlash('error', 'XML is invalid. ' . implode(' | ', $errors));
+                }
+
+                libxml_clear_errors();
+                libxml_use_internal_errors($previousUseInternalErrors);
+            }
+        }
+
+        clearstatcache(true, $xmlPath);
+
+        return $this->render('xml-editor', [
+            'xmlContent' => $xmlContent,
+            'xmlPath' => $xmlPath,
+            'lastModifiedAt' => filemtime($xmlPath) ?: null,
+        ]);
     }
 
     /**

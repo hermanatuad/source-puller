@@ -127,6 +127,12 @@ class MenuHelper
             ];
 
             $menuItems[] = [
+                'label' => '<i class="ri-file-code-line"></i> <span>Patient XML</span>',
+                'url' => ['site/xml-editor'],
+                'visible' => Yii::$app->user->can('admin')
+            ];
+
+            $menuItems[] = [
                 'type' => 'title',
                 'label' => '<strong>Destination (Data Warehouse)</strong>'
             ];
