@@ -21,18 +21,13 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'xml-editor'],
+                'only' => ['logout'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    // [
-                    //     'actions' => ['xml-editor'],
-                    //     'allow' => true,
-                    //     'roles' => ['admin'],
-                    // ],
                 ],
             ],
             'verbs' => [
