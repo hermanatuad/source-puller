@@ -47,7 +47,7 @@ use app\models\System;
                     ])->label('Database Source') ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'bridge_table_source')->dropDownList([], [
                         'prompt' => 'Select table source',
                         'class' => 'form-control',
@@ -55,7 +55,7 @@ use app\models\System;
                     ])->label('Table Source') ?>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <?= $form->field($model, 'bridge_table_target')->dropDownList($dwTables, [
                         'prompt' => 'Select table warehouse',
                         'class' => 'form-control',
