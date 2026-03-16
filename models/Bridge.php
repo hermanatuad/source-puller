@@ -37,7 +37,8 @@ class Bridge extends \yii\db\ActiveRecord
     {
         return [
             // [['bridge_name'], 'default', 'value' => 'automatic'],
-            [['id', 'system_code', 'bridge_table_source', 'bridge_table_target', 'status'], 'required'],
+            [['bridge_type'], 'default', 'value' => 'other'],
+            [['id', 'system_code', 'bridge_table_source', 'bridge_table_target', 'status', 'bridge_type'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['id'], 'string', 'max' => 36],
             [['bridge_name', 'bridge_table_source', 'bridge_table_target'], 'string', 'max' => 255],
