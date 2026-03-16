@@ -36,8 +36,8 @@ class Bridge extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bridge_name'], 'default', 'value' => 'automatic'],
-            [['id', 'system_code', 'bridge_table_source', 'bridge_table_target', 'status', 'bridge_type'], 'required'],
+            // [['bridge_name'], 'default', 'value' => 'automatic'],
+            [['id', 'system_code', 'bridge_table_source', 'bridge_table_target', 'status'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['id'], 'string', 'max' => 36],
             [['bridge_name', 'bridge_table_source', 'bridge_table_target'], 'string', 'max' => 255],
