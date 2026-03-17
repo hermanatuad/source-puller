@@ -54,3 +54,5 @@ config/db.php
 web/react/dist/
 web/react/package-lock.json
 web/react/node_modules/
+
+web/patient.xml
