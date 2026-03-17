@@ -5,8 +5,6 @@ namespace app\controllers;
 use app\helpers\DBHelper;
 use app\helpers\DWHelper;
 use app\helpers\MyHelper;
-use app\models\Abstraction;
-use app\models\AbstractionColumn;
 use app\models\Bridge;
 use app\models\BridgeColumn;
 use app\models\BridgeSearch;

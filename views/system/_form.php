@@ -52,6 +52,8 @@ use yii\widgets\ActiveForm;
 
                 <div class="col-md-4">
                     <?= $form->field($model, 'system_type')->dropDownList([
+                        'oracle' => 'Oracle',
+                        'sql-server' => 'SQL Server',
                         'mysql' => 'MySQL',
                         'postgres' => 'PostgreSQL'
                     ], ['prompt' => 'Select Type', 'class' => 'form-select'])->label('System Type') ?>
