@@ -31,7 +31,6 @@ use app\models\System;
         </div>
         <div class="card-body">
             <?= $form->field($model, 'id')->hiddenInput(['value' => $uuid ?? $model->id])->label(false) ?>
-            <?= $form->field($model, 'bridge_type')->hiddenInput(['value' => $model->bridge_type ?? 'other'])->label(false) ?>
 
             <div class="row g-3">
 
