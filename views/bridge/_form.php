@@ -64,9 +64,18 @@ use app\models\System;
                         'id' => 'bridge-bridge_table_target'
                     ])->label('Table Warehouse') ?>
                 </div>
-<!-- 
+
                 <div class="col-md-4">
-                </div> -->
+                    <?= $form->field($model, 'bridge_type')->dropDownList([
+                        'independent' => 'Independent',
+                        'dependent' => 'Dependent',
+                    ], [
+                        'prompt' => 'Select type',
+                        'class' => 'form-control',
+                        'data-choices' => 'true',
+                        'id' => 'bridge-bridge_type'
+                    ])->label('Table Warehouse') ?>
+                </div>
 
             </div>
         </div>
