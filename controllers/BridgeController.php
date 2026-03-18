@@ -182,6 +182,20 @@ class BridgeController extends Controller
                 throw new Exception("Invalid source table name.");
             }
 
+            // Get primary key column from source table
+            $pkColumn = $this->getPrimaryKeyColumn(
+                $database->hostname,
+                $database->username,
+                $database->password,
+                $database->database_name,
+                $database->port,
+                $model->bridge_table_source
+            );
+
+            if (!$pkColumn) {
+                throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
+            }
+
             $columnList = BridgeColumn::find()
                 ->select('source_column_name')
                 ->where(['bridge_id' => $id])
@@ -191,9 +205,9 @@ class BridgeController extends Controller
                 throw new Exception("No source columns defined.");
             }
 
-            // if (!in_array('id', $columnList)) {
-            //     throw new Exception("Source column 'id' is required for entity mapping.");
-            // }
+            if (!in_array($pkColumn, $columnList)) {
+                throw new Exception("Source column '{$pkColumn}' (primary key) is required for entity mapping.");
+            }
 
             $mysqli = new mysqli(
                 $database->hostname,
@@ -235,7 +249,7 @@ class BridgeController extends Controller
 
             // FILTER EXISTING ENTITY
 
-            $sourceIds = array_column($RAW_DATA, 'id');
+            $sourceIds = array_column($RAW_DATA, $pkColumn);
 
             $existingReferences = EntitySystem::find()
                 ->select('entity_reference')
@@ -254,14 +268,14 @@ class BridgeController extends Controller
 
             foreach ($RAW_DATA as $data) {
 
-                if (isset($existingMap[$data['id']])) {
+                if (isset($existingMap[$data[$pkColumn]])) {
                     continue;
                 }
 
                 $execute_list[] = $data;
 
                 $entityId = MyHelper::genEntityId();
-                $sourceIdToEntityId[$data['id']] = $entityId;
+                $sourceIdToEntityId[$data[$pkColumn]] = $entityId;
                 $uuid = MyHelper::genuuid();
                 $now = date('Y-m-d H:i:s');
 
@@ -277,7 +291,7 @@ class BridgeController extends Controller
                     MyHelper::genuuid(),
                     $entityId,
                     $model->system_code,
-                    $data['id'],
+                    $data[$pkColumn],
                     $now,
                     $now
                 ];
@@ -285,7 +299,7 @@ class BridgeController extends Controller
                 $entityAffiliationRows[] = [
                     MyHelper::genuuid(),
                     $entityId,
-                    $data['id'],
+                    $data[$pkColumn],
                     'IJN'
                 ];
             }
@@ -351,7 +365,7 @@ class BridgeController extends Controller
                         // Accept variations like 'patient_id', 'patient id', 'patient-id'
                         if (preg_match('/patient[_\s-]?id/i', $type)) {
                             // For patient id columns, store the generated entity_id
-                            $mapped[$targetCol] = $sourceIdToEntityId[$row['id']] ?? null;
+                            $mapped[$targetCol] = $sourceIdToEntityId[$row[$pkColumn]] ?? null;
                         } else {
                             $mapped[$targetCol] = array_key_exists($sourceCol, $row)
                                 ? $row[$sourceCol]
@@ -882,6 +896,48 @@ class BridgeController extends Controller
         $model->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Get primary key column name for a MySQL table
+     * @param string $hostname
+     * @param string $username
+     * @param string $password
+     * @param string $database_name
+     * @param int $port
+     * @param string $table_name
+     * @return string|null Primary key column name or null if not found
+     */
+    protected function getPrimaryKeyColumn($hostname, $username, $password, $database_name, $port, $table_name)
+    {
+        try {
+            $mysqli = new mysqli($hostname, $username, $password, $database_name, $port);
+            if ($mysqli->connect_error) {
+                Yii::error('MySQL connection failed: ' . $mysqli->connect_error, __METHOD__);
+                return null;
+            }
+
+            // Query to get primary key column
+            $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = '" . $mysqli->real_escape_string($table_name) . "' 
+                    AND COLUMN_KEY = 'PRI'";
+
+            $result = $mysqli->query($sql);
+            if (!$result) {
+                Yii::error('Query error: ' . $mysqli->error, __METHOD__);
+                $mysqli->close();
+                return null;
+            }
+
+            $row = $result->fetch_assoc();
+            $mysqli->close();
+
+            return $row ? $row['COLUMN_NAME'] : null;
+        } catch (\Exception $e) {
+            Yii::error('Error getting primary key: ' . $e->getMessage(), __METHOD__);
+            return null;
+        }
     }
 
     /**
