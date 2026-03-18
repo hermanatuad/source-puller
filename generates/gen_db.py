@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import argparse
 import sqlite3
@@ -22,7 +24,7 @@ DB_CONFIG = {
 DATABASES_MYSQL = {
     "hospital_information_system": """
         CREATE TABLE patients (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id VARCHAR(36) PRIMARY KEY,
             national_id VARCHAR(50) UNIQUE,
             medical_record_number VARCHAR(50) UNIQUE NOT NULL,
             full_name VARCHAR(100) NOT NULL,
@@ -39,19 +41,19 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE visits (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            patient_id INT NOT NULL,
+            visit_id VARCHAR(36) PRIMARY KEY,
+            patient_id VARCHAR(36) NOT NULL,
             visit_date TIMESTAMP,
             exit_date TIMESTAMP,
             visit_type VARCHAR(30),
             attending_doctor VARCHAR(100),
             status VARCHAR(30),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (patient_id) REFERENCES patients(id)
+            FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
         );
 
         CREATE TABLE services (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            service_id VARCHAR(36) PRIMARY KEY,
             service_code VARCHAR(30) UNIQUE NOT NULL,
             service_name VARCHAR(100) NOT NULL,
             service_type VARCHAR(30),
@@ -60,20 +62,20 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE billing (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            visit_id INT NOT NULL,
-            service_id INT NOT NULL,
+            billing_id VARCHAR(36) PRIMARY KEY,
+            visit_id VARCHAR(36) NOT NULL,
+            service_id VARCHAR(36) NOT NULL,
             quantity INT,
             total_amount DECIMAL(12,2),
             billing_date TIMESTAMP,
-            FOREIGN KEY (visit_id) REFERENCES visits(id),
-            FOREIGN KEY (service_id) REFERENCES services(id)
+            FOREIGN KEY (visit_id) REFERENCES visits(visit_id),
+            FOREIGN KEY (service_id) REFERENCES services(service_id)
         );
     """,
 
     "his02": """
         CREATE TABLE patients (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id VARCHAR(36) PRIMARY KEY,
             national_id VARCHAR(50) UNIQUE,
             medical_record_number VARCHAR(50) UNIQUE NOT NULL,
             full_name VARCHAR(100) NOT NULL,
@@ -90,19 +92,19 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE visits (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            patient_id INT NOT NULL,
+            visit_id VARCHAR(36) PRIMARY KEY,
+            patient_id VARCHAR(36) NOT NULL,
             visit_date TIMESTAMP,
             exit_date TIMESTAMP,
             visit_type VARCHAR(30),
             attending_doctor VARCHAR(100),
             status VARCHAR(30),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (patient_id) REFERENCES patients(id)
+            FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
         );
 
         CREATE TABLE services (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            service_id VARCHAR(36) PRIMARY KEY,
             service_code VARCHAR(30) UNIQUE NOT NULL,
             service_name VARCHAR(100) NOT NULL,
             service_type VARCHAR(30),
@@ -111,20 +113,20 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE billing (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            visit_id INT NOT NULL,
-            service_id INT NOT NULL,
+            billing_id VARCHAR(36) PRIMARY KEY,
+            visit_id VARCHAR(36) NOT NULL,
+            service_id VARCHAR(36) NOT NULL,
             quantity INT,
             total_amount DECIMAL(12,2),
             billing_date TIMESTAMP,
-            FOREIGN KEY (visit_id) REFERENCES visits(id),
-            FOREIGN KEY (service_id) REFERENCES services(id)
+            FOREIGN KEY (visit_id) REFERENCES visits(visit_id),
+            FOREIGN KEY (service_id) REFERENCES services(service_id)
         );
     """,
 
     "laboratory_information_system": """
         CREATE TABLE patients (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id VARCHAR(36) PRIMARY KEY,
             medical_record_number VARCHAR(50) UNIQUE NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             date_of_birth DATE,
@@ -133,17 +135,17 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE lab_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            patient_id INT NOT NULL,
+            lab_order_id VARCHAR(36) PRIMARY KEY,
+            patient_id VARCHAR(36) NOT NULL,
             order_date TIMESTAMP,
             ordering_doctor VARCHAR(100),
             status VARCHAR(30),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (patient_id) REFERENCES patients(id)
+            FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
         );
 
         CREATE TABLE lab_tests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            lab_test_id VARCHAR(36) PRIMARY KEY,
             test_code VARCHAR(30) UNIQUE NOT NULL,
             test_name VARCHAR(100) NOT NULL,
             unit VARCHAR(20),
@@ -152,20 +154,20 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE lab_results (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            lab_order_id INT NOT NULL,
-            lab_test_id INT NOT NULL,
+            lab_result_id VARCHAR(36) PRIMARY KEY,
+            lab_order_id VARCHAR(36) NOT NULL,
+            lab_test_id VARCHAR(36) NOT NULL,
             result_value VARCHAR(50),
             result_flag VARCHAR(20),
             result_date TIMESTAMP,
-            FOREIGN KEY (lab_order_id) REFERENCES lab_orders(id),
-            FOREIGN KEY (lab_test_id) REFERENCES lab_tests(id)
+            FOREIGN KEY (lab_order_id) REFERENCES lab_orders(lab_order_id),
+            FOREIGN KEY (lab_test_id) REFERENCES lab_tests(lab_test_id)
         );
     """,
 
     "radiology_information_system": """
         CREATE TABLE patients (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id VARCHAR(36) PRIMARY KEY,
             medical_record_number VARCHAR(50) UNIQUE NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             date_of_birth DATE,
@@ -174,40 +176,40 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE radiology_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            patient_id INT NOT NULL,
+            radiology_order_id VARCHAR(36) PRIMARY KEY,
+            patient_id VARCHAR(36) NOT NULL,
             order_date TIMESTAMP,
             ordering_doctor VARCHAR(100),
             modality VARCHAR(20),
             status VARCHAR(30),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (patient_id) REFERENCES patients(id)
+            FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
         );
 
         CREATE TABLE imaging_studies (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            radiology_order_id INT NOT NULL,
+            imaging_study_id VARCHAR(36) PRIMARY KEY,
+            radiology_order_id VARCHAR(36) NOT NULL,
             study_date TIMESTAMP,
             body_part VARCHAR(50),
             image_location TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (radiology_order_id) REFERENCES radiology_orders(id)
+            FOREIGN KEY (radiology_order_id) REFERENCES radiology_orders(radiology_order_id)
         );
 
         CREATE TABLE radiology_reports (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            imaging_study_id INT NOT NULL,
+            radiology_report_id VARCHAR(36) PRIMARY KEY,
+            imaging_study_id VARCHAR(36) NOT NULL,
             radiologist_name VARCHAR(100),
             findings TEXT,
             impression TEXT,
             report_date TIMESTAMP,
-            FOREIGN KEY (imaging_study_id) REFERENCES imaging_studies(id)
+            FOREIGN KEY (imaging_study_id) REFERENCES imaging_studies(imaging_study_id)
         );
     """,
 
     "datawarehouse": """
         CREATE TABLE patients (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            patient_id VARCHAR(36) PRIMARY KEY,
             medical_record_number VARCHAR(50) UNIQUE NOT NULL,
             full_name VARCHAR(100) NOT NULL,
             date_of_birth DATE,
@@ -216,34 +218,34 @@ DATABASES_MYSQL = {
         );
 
         CREATE TABLE radiology_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            patient_id INT NOT NULL,
+            radiology_order_id VARCHAR(36) PRIMARY KEY,
+            patient_id VARCHAR(36) NOT NULL,
             order_date TIMESTAMP,
             ordering_doctor VARCHAR(100),
             modality VARCHAR(20),
             status VARCHAR(30),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (patient_id) REFERENCES patients(id)
+            FOREIGN KEY (patient_id) REFERENCES patients(patient_id)
         );
 
         CREATE TABLE imaging_studies (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            radiology_order_id INT NOT NULL,
+            imaging_study_id VARCHAR(36) PRIMARY KEY,
+            radiology_order_id VARCHAR(36) NOT NULL,
             study_date TIMESTAMP,
             body_part VARCHAR(50),
             image_location TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (radiology_order_id) REFERENCES radiology_orders(id)
+            FOREIGN KEY (radiology_order_id) REFERENCES radiology_orders(radiology_order_id)
         );
 
         CREATE TABLE radiology_reports (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            imaging_study_id INT NOT NULL,
+            radiology_report_id VARCHAR(36) PRIMARY KEY,
+            imaging_study_id VARCHAR(36) NOT NULL,
             radiologist_name VARCHAR(100),
             findings TEXT,
             impression TEXT,
             report_date TIMESTAMP,
-            FOREIGN KEY (imaging_study_id) REFERENCES imaging_studies(id)
+            FOREIGN KEY (imaging_study_id) REFERENCES imaging_studies(imaging_study_id)
         );
     """
 }

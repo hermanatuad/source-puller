@@ -22,10 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h4 class="card-title mb-0 flex-grow-1">
                     <i class="ri-database-2-line me-2"></i><?= Html::encode($this->title) ?>
                 </h4>
-                <div class="text-muted small">
-                    <?php if (!empty($dwInfo['cache_info']['cached_at'])): ?>
-                        Cached: <?= Html::encode($dwInfo['cache_info']['cached_at']) ?>
-                    <?php endif; ?>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="text-muted small">
+                        <?php if (!empty($dwInfo['cache_info']['cached_at'])): ?>
+                            <span>Cached: <?= Html::encode($dwInfo['cache_info']['cached_at']) ?></span>
+                            <?php if (!empty($dwInfo['cache_info']['expires_at'])): ?>
+                                <br><small>Expires: <?= Html::encode($dwInfo['cache_info']['expires_at']) ?></small>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <?= Html::a('<i class="ri-refresh-line me-1"></i>Update Cache', ['datawarehouse/refresh-cache'], ['class' => 'btn btn-sm btn-outline-secondary', 'data-method' => 'post', 'data-confirm' => 'Refresh datawarehouse cache?']) ?>
                 </div>
             </div>
 

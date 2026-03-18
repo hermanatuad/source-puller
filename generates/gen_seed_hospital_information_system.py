@@ -12,6 +12,7 @@ import argparse
 import random
 import string
 import time
+import uuid
 from datetime import datetime, timedelta
 
 try:
@@ -64,6 +65,13 @@ def get_mysql_connection(host, user, password, port, database=None):
 
 def rand_digits(n=8):
     return ''.join(random.choices(string.digits, k=n))
+
+
+def rand_patient_id(existing_ids):
+    while True:
+        candidate = ''.join(random.choices(string.digits, k=5))
+        if candidate not in existing_ids:
+            return candidate
 
 
 FIRST_NAMES = [
@@ -123,9 +131,12 @@ def seed(conn, args):
 
     patients = []
     generated_mrns = set()
+    generated_patient_ids = set()
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(f'Generating {args.patients} patients...')
     for i in range(1, args.patients + 1):
+        patient_id = rand_patient_id(generated_patient_ids)
+        generated_patient_ids.add(patient_id)
         mrn = f"MR-{rand_digits(8)}"
         while mrn in generated_mrns:
             mrn = f"MR-{rand_digits(8)}"
@@ -142,61 +153,39 @@ def seed(conn, args):
         race = 'Asian'
         address = f'{residential}, {city}'
 
-        patients.append((national_id, mrn, full_name, dob, gender, religion, marital_status, city, province, residential, race, address, now))
+        patients.append((patient_id, national_id, mrn, full_name, dob, gender, religion, marital_status, city, province, residential, race, address, now))
 
     patient_sql = (
-        "INSERT INTO patients (national_id, medical_record_number, full_name, date_of_birth, gender, religion, marital_status, city, province, residential, race, address, created_at)"
-        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        "INSERT INTO patients (patient_id, national_id, medical_record_number, full_name, date_of_birth, gender, religion, marital_status, city, province, residential, race, address, created_at)"
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     )
 
     print('Inserting patients...')
     cursor.executemany(patient_sql, patients)
 
-    # fetch patient ids
-    cursor.execute('SELECT id FROM patients ORDER BY id DESC LIMIT %s' % args.patients)
-    rows = cursor.fetchall()
-    # rows may be tuples or dicts depending on driver
-    patient_ids = []
-    for r in rows[::-1]:
-        if isinstance(r, dict):
-            patient_ids.append(r.get('id'))
-        else:
-            patient_ids.append(r[0])
-
-    if not patient_ids:
-        # try selecting sequential ids starting from 1 (best effort)
-        patient_ids = list(range(1, args.patients + 1))
+    patient_ids = [row[0] for row in patients]
 
     # SERVICES
     sample_services = [
-        ('SVC-001', 'General Consultation', 'consult', 50.00),
-        ('SVC-002', 'X-Ray Chest', 'radiology', 100.00),
-        ('SVC-003', 'Complete Blood Count', 'lab', 25.00),
-        ('SVC-004', 'MRI Brain', 'radiology', 500.00),
+        (str(uuid.uuid4()), 'SVC-001', 'General Consultation', 'consult', 50.00),
+        (str(uuid.uuid4()), 'SVC-002', 'X-Ray Chest', 'radiology', 100.00),
+        (str(uuid.uuid4()), 'SVC-003', 'Complete Blood Count', 'lab', 25.00),
+        (str(uuid.uuid4()), 'SVC-004', 'MRI Brain', 'radiology', 500.00),
     ]
     svc_rows = []
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    for code, name, stype, price in sample_services:
-        svc_rows.append((code, name, stype, price, now))
+    for service_id, code, name, stype, price in sample_services:
+        svc_rows.append((service_id, code, name, stype, price, now))
 
     print('Inserting services...')
-    svc_sql = "INSERT INTO services (service_code, service_name, service_type, unit_price, created_at) VALUES (%s,%s,%s,%s,%s)"
+    svc_sql = "INSERT INTO services (service_id, service_code, service_name, service_type, unit_price, created_at) VALUES (%s,%s,%s,%s,%s,%s)"
     cursor.executemany(svc_sql, svc_rows)
 
-    # fetch service ids
-    cursor.execute('SELECT id FROM services ORDER BY id')
-    svc_fetch = cursor.fetchall()
-    service_ids = []
-    for r in svc_fetch:
-        if isinstance(r, dict):
-            service_ids.append(r.get('id'))
-        else:
-            service_ids.append(r[0])
+    service_ids = [row[0] for row in sample_services]
 
     # VISITS and BILLING
     visit_rows = []
     billing_rows = []
-    visit_id_seq = []
 
     print('Generating visits and billing...')
     for pid in patient_ids:
@@ -209,35 +198,35 @@ def seed(conn, args):
             status = random.choice(['finished', 'ongoing'])
             created_at = visit_date.strftime('%Y-%m-%d %H:%M:%S')
 
-            visit_rows.append((pid, visit_date.strftime('%Y-%m-%d %H:%M:%S'), exit_date.strftime('%Y-%m-%d %H:%M:%S'), visit_type, attending, status, created_at))
+            visit_rows.append((
+                str(uuid.uuid4()),
+                pid,
+                visit_date.strftime('%Y-%m-%d %H:%M:%S'),
+                exit_date.strftime('%Y-%m-%d %H:%M:%S'),
+                visit_type,
+                attending,
+                status,
+                created_at
+            ))
 
-    visit_sql = ("INSERT INTO visits (patient_id, visit_date, exit_date, visit_type, attending_doctor, status, created_at) "
-                 "VALUES (%s,%s,%s,%s,%s,%s,%s)")
+    visit_sql = ("INSERT INTO visits (visit_id, patient_id, visit_date, exit_date, visit_type, attending_doctor, status, created_at) "
+                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
     cursor.executemany(visit_sql, visit_rows)
 
-    # fetch visit ids
-    cursor.execute('SELECT id FROM visits ORDER BY id')
-    vrows = cursor.fetchall()
-    visit_ids = []
-    for r in vrows:
-        if isinstance(r, dict):
-            visit_ids.append(r.get('id'))
-        else:
-            visit_ids.append(r[0])
+    visit_ids = [row[0] for row in visit_rows]
 
     # Billing: for each visit pick 1-3 services
     for vid in visit_ids:
         qty_count = random.randint(1, 3)
         for _ in range(qty_count):
-            svc = random.choice(sample_services)
-            svc_index = sample_services.index(svc)
-            sid = service_ids[svc_index]
+            sid = random.choice(service_ids)
             qty = random.randint(1, 5)
-            total = round(svc[3] * qty, 2)
+            service_price = next(s[4] for s in sample_services if s[0] == sid)
+            total = round(service_price * qty, 2)
             bill_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            billing_rows.append((vid, sid, qty, total, bill_date))
+            billing_rows.append((str(uuid.uuid4()), vid, sid, qty, total, bill_date))
 
-    billing_sql = "INSERT INTO billing (visit_id, service_id, quantity, total_amount, billing_date) VALUES (%s,%s,%s,%s,%s)"
+    billing_sql = "INSERT INTO billing (billing_id, visit_id, service_id, quantity, total_amount, billing_date) VALUES (%s,%s,%s,%s,%s,%s)"
     if billing_rows:
         cursor.executemany(billing_sql, billing_rows)
 

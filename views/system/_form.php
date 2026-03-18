@@ -62,6 +62,7 @@ use yii\widgets\ActiveForm;
                         'options' => [
                             'oracle' => ['disabled' => true],
                             'sql-server' => ['disabled' => true],
+                            'postgres' => ['disabled' => true],
                         ],
                     ])->label('System Type') ?>
                 </div>

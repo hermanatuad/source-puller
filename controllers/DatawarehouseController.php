@@ -36,4 +36,20 @@ class DatawarehouseController extends Controller
             'dwInfo' => $DWInfo,
         ]);
     }
+
+    /**
+     * Refreshes datawarehouse cache
+     */
+    public function actionRefreshCache()
+    {
+        $result = DWHelper::testConDW();
+        
+        if (($result['status'] ?? '') === 'success') {
+            Yii::$app->session->setFlash('success', 'Datawarehouse cache refreshed successfully');
+        } else {
+            Yii::$app->session->setFlash('error', 'Failed to refresh cache: ' . ($result['message'] ?? 'Unknown error'));
+        }
+        
+        return $this->redirect(['index']);
+    }
 }
