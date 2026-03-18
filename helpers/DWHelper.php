@@ -131,7 +131,12 @@ class DWHelper
         ];
     }
 
-    public static function testConDW()
+    /**
+     * Test connection to PostgreSQL datawarehouse and retrieve schema info
+     * @param bool $forceRefresh Force fresh fetch, bypass cache
+     * @return array Status and database info
+     */
+    public static function testConDW($forceRefresh = false)
     {
 
         $cfg = self::$dwConfig;
@@ -160,7 +165,8 @@ class DWHelper
 
         $cacheKey = 'pgsql_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
 
-        if ($useCache) {
+        // If not forcing refresh, check cache first
+        if ($useCache && !$forceRefresh) {
             $cachedData = self::getFromCache($cacheKey);
             if ($cachedData && time() - $cachedData['cached_at'] < $cacheTTL) {
                 return [

@@ -38,14 +38,14 @@ class DatawarehouseController extends Controller
     }
 
     /**
-     * Refreshes datawarehouse cache
+     * Refreshes datawarehouse cache by forcing fresh fetch from PostgreSQL
      */
     public function actionRefreshCache()
     {
-        $result = DWHelper::testConDW();
+        $result = DWHelper::testConDW(true);
         
         if (($result['status'] ?? '') === 'success') {
-            Yii::$app->session->setFlash('success', 'Datawarehouse cache refreshed successfully');
+            Yii::$app->session->setFlash('success', 'Datawarehouse cache updated successfully with latest structure');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to refresh cache: ' . ($result['message'] ?? 'Unknown error'));
         }
