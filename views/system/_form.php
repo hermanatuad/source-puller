@@ -56,7 +56,14 @@ use yii\widgets\ActiveForm;
                         'sql-server' => 'SQL Server',
                         'mysql' => 'MySQL',
                         'postgres' => 'PostgreSQL'
-                    ], ['prompt' => 'Select Type', 'class' => 'form-select'])->label('System Type') ?>
+                    ], [
+                        'prompt' => 'Select Type',
+                        'class' => 'form-select',
+                        'options' => [
+                            'oracle' => ['disabled' => true],
+                            'sql-server' => ['disabled' => true],
+                        ],
+                    ])->label('System Type') ?>
                 </div>
 
                 <div class="col-md-4">
