@@ -191,9 +191,9 @@ class BridgeController extends Controller
                 throw new Exception("No source columns defined.");
             }
 
-            if (!in_array('id', $columnList)) {
-                throw new Exception("Source column 'id' is required for entity mapping.");
-            }
+            // if (!in_array('id', $columnList)) {
+            //     throw new Exception("Source column 'id' is required for entity mapping.");
+            // }
 
             $mysqli = new mysqli(
                 $database->hostname,
