@@ -819,7 +819,7 @@ class BridgeController extends Controller
             }
         }
 
-        $successMessage = "Bridge execution completed. {$extractedCount} data berhasil diekstrak.";
+        $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
 
         if ($isAjax) {
             return [

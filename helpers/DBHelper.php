@@ -183,15 +183,15 @@ class DBHelper
             ];
         }
 
-        // Buat cache key unik berdasarkan parameter koneksi
+        // Create unique cache key based on connection parameters
         $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
 
-        // Cek cache jika diaktifkan
+        // Check cache if enabled
         if ($useCache) {
             $cachedData = self::getFromCache($cacheKey);
             // echo '<pre>';print_r();exit;
             if ($cachedData !== null) {
-                // Cek apakah cache masih valid (belum expired)
+                // Check if cache is still valid (not expired)
                 if (time() - $cachedData['cached_at'] < $cacheTTL) {
                     return [
                         'status' => 'success',
@@ -208,24 +208,24 @@ class DBHelper
         }
 
         try {
-            // Buat koneksi
+            // Create connection
             $mysqli = new mysqli($hostname, $username, $password, $database, $port);
 
-            // Cek error koneksi
+            // Check for connection errors
             if ($mysqli->connect_error) {
                 throw new Exception("Connection failed: " . $mysqli->connect_error);
             }
 
-            // Ambil informasi database
+            // Fetch database information
             $dbInfo = self::getDatabaseInfo($mysqli, $database);
 
-            // Ambil informasi tabel dan kolom
+            // Fetch table and column information
             $tablesInfo = self::getTablesInfo($mysqli, $database);
 
-            // Ambil informasi tambahan
+            // Fetch additional information
             $additionalInfo = self::getAdditionalInfo($mysqli);
 
-            // Koneksi berhasil
+            // Connection successful
             $result = [
                 'status' => 'success',
                 'message' => 'Successfully connected to MySQL',
@@ -283,7 +283,7 @@ class DBHelper
             'collation' => null
         ];
 
-        // Ambil ukuran database
+        // Fetch database size
         $sizeQuery = "
         SELECT 
             ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS size_mb,
@@ -297,7 +297,7 @@ class DBHelper
             $info['table_count'] = $row['table_count'] ?? 0;
         }
 
-        // Ambil default charset dan collation
+        // Fetch default charset and collation
         $charsetQuery = "
         SELECT 
             DEFAULT_CHARACTER_SET_NAME as charset,
@@ -318,7 +318,7 @@ class DBHelper
     {
         $tables = [];
 
-        // Ambil daftar tabel
+        // Fetch list of tables
         $tablesResult = $mysqli->query("
         SELECT 
             TABLE_NAME,
@@ -340,16 +340,16 @@ class DBHelper
             while ($table = $tablesResult->fetch_assoc()) {
                 $tableName = $table['TABLE_NAME'];
 
-                // Ambil kolom untuk tabel ini
+                // Fetch columns for this table
                 $columns = self::getColumnsInfo($mysqli, $database, $tableName);
 
-                // Ambil index untuk tabel ini
+                // Fetch indexes for this table
                 $indexes = self::getIndexesInfo($mysqli, $database, $tableName);
 
-                // Ambil foreign keys
+                // Fetch foreign keys
                 $foreignKeys = self::getForeignKeysInfo($mysqli, $database, $tableName);
 
-                // Ambil seluruh row data tabel untuk disimpan ke cache
+                // Fetch all row data for table to cache
                 $tableDataRows = self::getTableRowsData($mysqli, $tableName);
 
                 $tables[$tableName] = [
@@ -526,7 +526,7 @@ class DBHelper
             'variables' => []
         ];
 
-        // Ambil status
+        // Fetch status
         $statusResult = $mysqli->query("SHOW GLOBAL STATUS LIKE 'Uptime'");
         if ($statusResult && $row = $statusResult->fetch_assoc()) {
             $info['uptime'] = $row['Value'] . ' seconds';
@@ -542,7 +542,7 @@ class DBHelper
             $info['queries'] = $row['Value'];
         }
 
-        // Ambil beberapa variable penting
+        // Fetch some important variables
         $variables = [
             'max_connections',
             'max_allowed_packet',

@@ -118,21 +118,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="runConfirmModalLabel">Konfirmasi Run Pipeline</h5>
+                                    <h5 class="modal-title" id="runConfirmModalLabel">Confirm Run Pipeline</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <form id="runConfirmForm" method="post">
                                     <div class="modal-body">
                                         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->csrfToken ?>">
-                                        <p class="mb-2">Anda yakin ingin menjalankan pipeline berikut?</p>
+                                        <p class="mb-2">Are you sure you want to run the following pipeline?</p>
                                         <div class="fw-semibold" id="runPipelineName">-</div>
                                         <div id="runExecutionResult" class="alert mt-3 mb-0 d-none" role="alert"></div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                                         <button type="submit" class="btn btn-primary" id="runConfirmSubmitBtn">
                                             <span class="spinner-border spinner-border-sm me-2 d-none" id="runLoadingSpinner" role="status" aria-hidden="true"></span>
-                                            <span id="runSubmitText">Ya, Jalankan</span>
+                                            <span id="runSubmitText">Yes, Run</span>
                                         </button>
                                     </div>
                                 </form>
@@ -193,7 +193,7 @@ $this->registerJs(<<<JS
             submitButton.disabled = false;
             submitButton.dataset.mode = 'run';
             spinner.classList.add('d-none');
-            submitText.textContent = 'Ya, Jalankan';
+            submitText.textContent = 'Yes, Run';
             resultAlert.classList.add('d-none');
             resultAlert.classList.remove('alert-success', 'alert-danger', 'alert-warning', 'alert-info');
             resultAlert.textContent = '';
@@ -232,19 +232,19 @@ $this->registerJs(<<<JS
 
                 if (isSuccess) {
                     resultAlert.textContent = data.message || 'Bridge execution completed.';
-                    submitText.textContent = 'Selesai';
+                    submitText.textContent = 'Done';
                     submitButton.dataset.mode = 'done';
                 } else {
-                    resultAlert.textContent = (data && data.message) ? data.message : 'Terjadi kesalahan saat menjalankan pipeline.';
-                    submitText.textContent = 'Coba Lagi';
+                    resultAlert.textContent = (data && data.message) ? data.message : 'An error occurred while running the pipeline.';
+                    submitText.textContent = 'Try Again';
                     submitButton.dataset.mode = 'run';
                 }
             })
             .catch(function () {
                 resultAlert.classList.remove('d-none', 'alert-success', 'alert-warning', 'alert-info');
                 resultAlert.classList.add('alert-danger');
-                resultAlert.textContent = 'Terjadi kesalahan jaringan saat menjalankan pipeline.';
-                submitText.textContent = 'Coba Lagi';
+                resultAlert.textContent = 'A network error occurred while running the pipeline.';
+                submitText.textContent = 'Try Again';
                 submitButton.dataset.mode = 'run';
             })
             .finally(function () {
