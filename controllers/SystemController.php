@@ -198,6 +198,10 @@ class SystemController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
             try {
+                if (!extension_loaded('pdo_oci')) {
+                    throw new \RuntimeException('Oracle PDO driver (pdo_oci) is not installed. Please enable/install pdo_oci and restart PHP-FPM.');
+                }
+
                 $oraclePort = !empty($model->port) ? $model->port : 1521;
                 $dsn = "oci:dbname=//{$model->hostname}:{$oraclePort}/{$model->database_name};charset=AL32UTF8";
                 $pdo = new \PDO($dsn, $model->username, $model->password, [
