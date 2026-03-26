@@ -1,9 +1,5 @@
 FROM php:8.3-fpm-alpine
 
-ARG ENABLE_ORACLE=false
-ARG ORACLE_BASIC_ZIP_URL=""
-ARG ORACLE_SDK_ZIP_URL=""
-
 # Install system dependencies
 RUN apk add --no-cache \
     git \
@@ -18,8 +14,6 @@ RUN apk add --no-cache \
     libwebp-dev \
     mysql-client \
     postgresql-dev \
-    libaio \
-    libnsl \
     bash \
     ca-certificates \
     openssh-client
@@ -31,34 +25,11 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     pdo_mysql \
     mysqli \
     pdo_pgsql \
+    pdo_oci \
     zip \
     gd \
     intl \
     opcache
-
-# Optional Oracle support (pdo_oci + oci8) using Oracle Instant Client ZIP URLs
-RUN if [ "$ENABLE_ORACLE" = "true" ]; then \
-            if [ -z "$ORACLE_BASIC_ZIP_URL" ] || [ -z "$ORACLE_SDK_ZIP_URL" ]; then \
-                echo "ENABLE_ORACLE=true requires ORACLE_BASIC_ZIP_URL and ORACLE_SDK_ZIP_URL"; \
-                exit 1; \
-            fi; \
-            mkdir -p /opt/oracle && cd /opt/oracle; \
-            curl -fsSL "$ORACLE_BASIC_ZIP_URL" -o instantclient-basic.zip; \
-            curl -fsSL "$ORACLE_SDK_ZIP_URL" -o instantclient-sdk.zip; \
-            unzip -q instantclient-basic.zip; \
-            unzip -q instantclient-sdk.zip; \
-            IC_DIR="$(find /opt/oracle -maxdepth 1 -type d -name 'instantclient_*' | head -n 1)"; \
-            if [ -z "$IC_DIR" ]; then echo "Instant Client directory not found"; exit 1; fi; \
-            ln -sf "$IC_DIR" /opt/oracle/instantclient; \
-            export LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH; \
-            echo "instantclient,/opt/oracle/instantclient" | pecl install oci8; \
-            docker-php-ext-enable oci8; \
-            docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient,21.1; \
-            docker-php-ext-install -j$(nproc) pdo_oci; \
-            rm -f /opt/oracle/instantclient-basic.zip /opt/oracle/instantclient-sdk.zip; \
-        fi
-
-ENV LD_LIBRARY_PATH=/opt/oracle/instantclient:$LD_LIBRARY_PATH
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
