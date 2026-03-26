@@ -25,6 +25,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     pdo_mysql \
     mysqli \
     pdo_pgsql \
+    # pdo_oci \
     zip \
     gd \
     intl \
