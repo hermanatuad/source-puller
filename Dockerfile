@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.3-fpm
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -18,18 +18,25 @@ RUN apk add --no-cache \
     ca-certificates \
     openssh-client
 
+RUN apt-get update && apt-get install -y \
+    libaio1 \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-configure pdo_oci \
+        --with-pdo-oci=instantclient,/usr/local/instantclient \
     && docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    pdo_pgsql \
-    pdo_oci \
-    zip \
-    gd \
-    intl \
-    opcache
+        pdo \
+        pdo_mysql \
+        mysqli \
+        pdo_pgsql \
+        pdo_oci \
+        zip \
+        gd \
+        intl \
+        opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
