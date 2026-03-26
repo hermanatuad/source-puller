@@ -197,6 +197,7 @@ class SystemController extends Controller
 
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
+            
             try {
                 if (!extension_loaded('pdo_oci')) {
                     throw new \RuntimeException('Oracle PDO driver (pdo_oci) is not installed. Please enable/install pdo_oci and restart PHP-FPM.');
