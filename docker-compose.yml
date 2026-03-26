@@ -6,10 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        ENABLE_ORACLE: ${ENABLE_ORACLE:-false}
-        ORACLE_BASIC_ZIP_URL: ${ORACLE_BASIC_ZIP_URL:-}
-        ORACLE_SDK_ZIP_URL: ${ORACLE_SDK_ZIP_URL:-}
     container_name: yii2_php_source_puller
     restart: unless-stopped
     working_dir: /var/www/html
