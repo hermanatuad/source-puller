@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
     openssh-client \
-    libaio1 \
     && rm -rf /var/lib/apt/lists/*
     
 # Install PHP extensions
@@ -43,6 +42,15 @@ RUN if [ "$ENABLE_ORACLE" = "true" ]; then \
                 echo "ENABLE_ORACLE=true requires ORACLE_BASIC_ZIP_URL and ORACLE_SDK_ZIP_URL"; \
                 exit 1; \
             fi; \
+            apt-get update; \
+            if apt-cache show libaio1 >/dev/null 2>&1; then \
+                apt-get install -y --no-install-recommends libaio1; \
+            elif apt-cache show libaio1t64 >/dev/null 2>&1; then \
+                apt-get install -y --no-install-recommends libaio1t64; \
+            else \
+                apt-get install -y --no-install-recommends libaio-dev; \
+            fi; \
+            rm -rf /var/lib/apt/lists/*; \
             mkdir -p /opt/oracle && cd /opt/oracle; \
             curl -fsSL "$ORACLE_BASIC_ZIP_URL" -o instantclient-basic.zip; \
             curl -fsSL "$ORACLE_SDK_ZIP_URL" -o instantclient-sdk.zip; \
