@@ -14,22 +14,37 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     default-mysql-client \
     libpq-dev \
+    libaio1 \
     bash \
     ca-certificates \
     openssh-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-configure pdo_oci \
+        --with-pdo-oci=instantclient,/usr/local/instantclient \
     && docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    pdo_pgsql \
-    zip \
-    gd \
-    intl \
-    opcache
+        pdo \
+        pdo_mysql \
+        mysqli \
+        pdo_pgsql \
+        pdo_oci \
+        zip \
+        gd \
+        intl \
+        opcache
+
+# Copy Oracle Instant Client
+COPY instantclient-basic-linux.x64-21.10.0.0.0.zip /tmp/
+COPY instantclient-sdk-linux.x64-21.10.0.0.0.zip /tmp/
+
+RUN unzip /tmp/instantclient-basic-linux.x64-*.zip -d /usr/local/ \
+    && unzip /tmp/instantclient-sdk-linux.x64-*.zip -d /usr/local/ \
+    && ln -s /usr/local/instantclient_* /usr/local/instantclient \
+    && rm -rf /tmp/*.zip
+
+ENV LD_LIBRARY_PATH=/usr/local/instantclient
+ENV ORACLE_HOME=/usr/local/instantclient
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
