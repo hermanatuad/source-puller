@@ -196,14 +196,58 @@ class SystemController extends Controller
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            if (Yii::$app->request->isAjax) {
-                return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for connection test.']);
+        } elseif ($model->system_type == 'oracle') {
+            try {
+                $oraclePort = !empty($model->port) ? $model->port : 1521;
+                $dsn = "oci:dbname=//{$model->hostname}:{$oraclePort}/{$model->database_name};charset=AL32UTF8";
+                $pdo = new \PDO($dsn, $model->username, $model->password, [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                ]);
+
+                $stmt = $pdo->query('SELECT 1 FROM DUAL');
+                $stmt->fetchColumn();
+
+                $connectionResult = [
+                    'status' => 'success',
+                    'message' => 'Successfully connected to Oracle',
+                    'data' => [
+                        'hostname' => $model->hostname,
+                        'port' => $oraclePort,
+                        'database' => $model->database_name,
+                        'username' => $model->username,
+                    ],
+                ];
+            } catch (\Throwable $e) {
+                $connectionResult = [
+                    'status' => 'error',
+                    'message' => 'Oracle connection failed: ' . $e->getMessage(),
+                    'data' => null,
+                ];
             }
 
-            Yii::$app->session->setFlash('error', 'Unsupported system type for connection test.');
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson([
+                    'status' => $connectionResult['status'],
+                    'message' => $connectionResult['message'],
+                    'data' => $connectionResult['data'],
+                ]);
+            }
+
+            if ($connectionResult['status'] === 'success') {
+                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
+
+        if (Yii::$app->request->isAjax) {
+            return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for connection test.']);
+        }
+
+        Yii::$app->session->setFlash('error', 'Unsupported system type for connection test.');
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     public function actionClearCache($id)
