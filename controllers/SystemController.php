@@ -199,7 +199,23 @@ class SystemController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
 
-            echo '<pre>';print_r('tes');exit;
+            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode('"tes"');
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            $response = curl_exec($ch);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            echo '<pre>';
+            if (!empty($curlError)) {
+                print_r(['status' => 'error', 'message' => $curlError]);
+            } else {
+                print_r($response);
+            }
+            exit;
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
