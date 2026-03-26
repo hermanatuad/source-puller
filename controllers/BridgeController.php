@@ -184,6 +184,7 @@ class BridgeController extends Controller
 
             // Get primary key column from source table
             $pkColumn = $this->getPrimaryKeyColumn(
+                $database->system_type,
                 $database->hostname,
                 $database->username,
                 $database->password,
@@ -205,42 +206,19 @@ class BridgeController extends Controller
                 throw new Exception("No source columns defined.");
             }
 
-            if (!in_array($pkColumn, $columnList)) {
+            $pkSourceColumn = null;
+            foreach ($columnList as $sourceCol) {
+                if (strtolower((string)$sourceCol) === strtolower((string)$pkColumn)) {
+                    $pkSourceColumn = $sourceCol;
+                    break;
+                }
+            }
+
+            if ($pkSourceColumn === null) {
                 throw new Exception("Source column '{$pkColumn}' (primary key) is required for entity mapping.");
             }
 
-            $mysqli = new mysqli(
-                $database->hostname,
-                $database->username,
-                $database->password,
-                $database->database_name,
-                $database->port
-            );
-
-            if ($mysqli->connect_error) {
-                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
-            }
-
-            $escapedColumns = array_map(function ($col) {
-                return "`" . $col . "`";
-            }, $columnList);
-
-            $sql = "SELECT " . implode(',', $escapedColumns) . "
-                FROM `{$model->bridge_table_source}`
-                LIMIT 100";
-
-            $result = $mysqli->query($sql);
-
-            if (!$result) {
-                throw new Exception("MySQL query error: " . $mysqli->error);
-            }
-
-            while ($row = $result->fetch_assoc()) {
-                $RAW_DATA[] = $row;
-            }
-
-            $result->free();
-            $mysqli->close();
+            $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $columnList, 100);
 
             if (empty($RAW_DATA)) {
                 Yii::$app->session->setFlash('info', 'No data found.');
@@ -249,7 +227,7 @@ class BridgeController extends Controller
 
             // FILTER EXISTING ENTITY
 
-            $sourceIds = array_column($RAW_DATA, $pkColumn);
+            $sourceIds = array_column($RAW_DATA, $pkSourceColumn);
 
             $existingReferences = EntitySystem::find()
                 ->select('entity_reference')
@@ -268,14 +246,14 @@ class BridgeController extends Controller
 
             foreach ($RAW_DATA as $data) {
 
-                if (isset($existingMap[$data[$pkColumn]])) {
+                if (isset($existingMap[$data[$pkSourceColumn]])) {
                     continue;
                 }
 
                 $execute_list[] = $data;
 
                 $entityId = MyHelper::genEntityId();
-                $sourceIdToEntityId[$data[$pkColumn]] = $entityId;
+                $sourceIdToEntityId[$data[$pkSourceColumn]] = $entityId;
                 $uuid = MyHelper::genuuid();
                 $now = date('Y-m-d H:i:s');
 
@@ -291,7 +269,7 @@ class BridgeController extends Controller
                     MyHelper::genuuid(),
                     $entityId,
                     $model->system_code,
-                    $data[$pkColumn],
+                    $data[$pkSourceColumn],
                     $now,
                     $now
                 ];
@@ -299,7 +277,7 @@ class BridgeController extends Controller
                 $entityAffiliationRows[] = [
                     MyHelper::genuuid(),
                     $entityId,
-                    $data[$pkColumn],
+                    $data[$pkSourceColumn],
                     'IJN'
                 ];
             }
@@ -365,7 +343,7 @@ class BridgeController extends Controller
                         // Accept variations like 'patient_id', 'patient id', 'patient-id'
                         if (preg_match('/patient[_\s-]?id/i', $type)) {
                             // For patient id columns, store the generated entity_id
-                            $mapped[$targetCol] = $sourceIdToEntityId[$row[$pkColumn]] ?? null;
+                            $mapped[$targetCol] = $sourceIdToEntityId[$row[$pkSourceColumn]] ?? null;
                         } else {
                             $mapped[$targetCol] = array_key_exists($sourceCol, $row)
                                 ? $row[$sourceCol]
@@ -482,36 +460,7 @@ class BridgeController extends Controller
                 throw new Exception("No source columns defined.");
             }
 
-            $mysqli = new mysqli(
-                $database->hostname,
-                $database->username,
-                $database->password,
-                $database->database_name,
-                $database->port
-            );
-
-            if ($mysqli->connect_error) {
-                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
-            }
-
-            $escapedColumns = array_map(function ($col) {
-                return "`" . $col . "`";
-            }, $sourceCols);
-
-            $sql = "SELECT " . implode(',', $escapedColumns) . "\n                FROM `{$model->bridge_table_source}`\n                LIMIT 100";
-
-            $result = $mysqli->query($sql);
-
-            if (!$result) {
-                throw new Exception("MySQL query error: " . $mysqli->error);
-            }
-
-            while ($row = $result->fetch_assoc()) {
-                $RAW_DATA[] = $row;
-            }
-
-            $result->free();
-            $mysqli->close();
+            $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
 
             if (empty($RAW_DATA)) {
                 Yii::$app->session->setFlash('info', 'No data found.');
@@ -698,36 +647,7 @@ class BridgeController extends Controller
                 }
             }
 
-            $mysqli = new mysqli(
-                $database->hostname,
-                $database->username,
-                $database->password,
-                $database->database_name,
-                $database->port
-            );
-
-            if ($mysqli->connect_error) {
-                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
-            }
-
-            $escapedColumns = array_map(function ($col) {
-                return "`" . $col . "`";
-            }, $sourceCols);
-
-            $sql = "SELECT " . implode(',', $escapedColumns) . "\n                FROM `{$model->bridge_table_source}`\n                LIMIT 100";
-
-            $result = $mysqli->query($sql);
-
-            if (!$result) {
-                throw new Exception("MySQL query error: " . $mysqli->error);
-            }
-
-            while ($row = $result->fetch_assoc()) {
-                $RAW_DATA[] = $row;
-            }
-
-            $result->free();
-            $mysqli->close();
+            $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
 
             if (empty($RAW_DATA)) {
                 Yii::$app->session->setFlash('info', 'No data found.');
@@ -899,7 +819,8 @@ class BridgeController extends Controller
     }
 
     /**
-     * Get primary key column name for a MySQL table
+     * Get primary key column name for supported source systems
+     * @param string $systemType
      * @param string $hostname
      * @param string $username
      * @param string $password
@@ -908,36 +829,152 @@ class BridgeController extends Controller
      * @param string $table_name
      * @return string|null Primary key column name or null if not found
      */
-    protected function getPrimaryKeyColumn($hostname, $username, $password, $database_name, $port, $table_name)
+    protected function getPrimaryKeyColumn($systemType, $hostname, $username, $password, $database_name, $port, $table_name)
     {
+        $type = strtolower((string)$systemType);
+
         try {
-            $mysqli = new mysqli($hostname, $username, $password, $database_name, $port);
-            if ($mysqli->connect_error) {
-                Yii::error('MySQL connection failed: ' . $mysqli->connect_error, __METHOD__);
-                return null;
-            }
+            if ($type === 'mysql') {
+                $mysqli = new mysqli($hostname, $username, $password, $database_name, $port);
+                if ($mysqli->connect_error) {
+                    Yii::error('MySQL connection failed: ' . $mysqli->connect_error, __METHOD__);
+                    return null;
+                }
 
-            // Query to get primary key column
-            $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
-                    WHERE TABLE_SCHEMA = DATABASE() 
-                    AND TABLE_NAME = '" . $mysqli->real_escape_string($table_name) . "' 
-                    AND COLUMN_KEY = 'PRI'";
+                $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = '" . $mysqli->real_escape_string($table_name) . "' 
+                        AND COLUMN_KEY = 'PRI'";
 
-            $result = $mysqli->query($sql);
-            if (!$result) {
-                Yii::error('Query error: ' . $mysqli->error, __METHOD__);
+                $result = $mysqli->query($sql);
+                if (!$result) {
+                    Yii::error('MySQL PK query error: ' . $mysqli->error, __METHOD__);
+                    $mysqli->close();
+                    return null;
+                }
+
+                $row = $result->fetch_assoc();
                 $mysqli->close();
-                return null;
+
+                return $row ? $row['COLUMN_NAME'] : null;
             }
 
-            $row = $result->fetch_assoc();
-            $mysqli->close();
+            if ($type === 'oracle') {
+                $oraclePort = !empty($port) ? $port : 1521;
+                $dsn = "oci:dbname=//{$hostname}:{$oraclePort}/{$database_name};charset=AL32UTF8";
+                $pdo = new \PDO($dsn, $username, $password, [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                ]);
 
-            return $row ? $row['COLUMN_NAME'] : null;
+                $stmt = $pdo->prepare(
+                    "SELECT ucc.column_name
+                     FROM user_constraints uc
+                     JOIN user_cons_columns ucc ON uc.constraint_name = ucc.constraint_name
+                     WHERE uc.constraint_type = 'P'
+                       AND uc.table_name = :table_name
+                     ORDER BY ucc.position"
+                );
+                $stmt->execute([':table_name' => strtoupper($table_name)]);
+                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+                return $row['COLUMN_NAME'] ?? null;
+            }
+
+            Yii::error('Unsupported system type for PK lookup: ' . $systemType, __METHOD__);
+            return null;
         } catch (\Exception $e) {
             Yii::error('Error getting primary key: ' . $e->getMessage(), __METHOD__);
             return null;
         }
+    }
+
+    /**
+     * Fetch source rows from MySQL or Oracle using selected columns.
+     * Returned row keys follow the same case as requested $sourceCols.
+     * @param System $database
+     * @param string $tableName
+     * @param array $sourceCols
+     * @param int $limit
+     * @return array
+     * @throws Exception
+     */
+    protected function fetchSourceRows(System $database, $tableName, array $sourceCols, $limit = 100)
+    {
+        $systemType = strtolower((string)($database->system_type ?? ''));
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
+            throw new Exception("Invalid source table name.");
+        }
+
+        foreach ($sourceCols as $col) {
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', (string)$col)) {
+                throw new Exception("Invalid source column name: {$col}");
+            }
+        }
+
+        if ($systemType === 'mysql') {
+            $mysqli = new mysqli(
+                $database->hostname,
+                $database->username,
+                $database->password,
+                $database->database_name,
+                $database->port
+            );
+
+            if ($mysqli->connect_error) {
+                throw new Exception("MySQL connection failed: " . $mysqli->connect_error);
+            }
+
+            $escapedColumns = array_map(function ($col) {
+                return "`" . $col . "`";
+            }, $sourceCols);
+
+            $sql = "SELECT " . implode(',', $escapedColumns) . " FROM `{$tableName}` LIMIT " . (int)$limit;
+            $result = $mysqli->query($sql);
+
+            if (!$result) {
+                throw new Exception("MySQL query error: " . $mysqli->error);
+            }
+
+            $rows = [];
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+
+            $result->free();
+            $mysqli->close();
+            return $rows;
+        }
+
+        if ($systemType === 'oracle') {
+            $oraclePort = !empty($database->port) ? $database->port : 1521;
+            $dsn = "oci:dbname=//{$database->hostname}:{$oraclePort}/{$database->database_name};charset=AL32UTF8";
+            $pdo = new \PDO($dsn, $database->username, $database->password, [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_CASE => \PDO::CASE_NATURAL,
+            ]);
+
+            $selectCols = implode(',', $sourceCols);
+            $sql = "SELECT {$selectCols} FROM {$tableName} WHERE ROWNUM <= :row_limit";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':row_limit', (int)$limit, \PDO::PARAM_INT);
+            $stmt->execute();
+            $rawRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            $normalizedRows = [];
+            foreach ($rawRows as $row) {
+                $lowerCaseMap = array_change_key_case($row, CASE_LOWER);
+                $normalized = [];
+                foreach ($sourceCols as $col) {
+                    $normalized[$col] = $lowerCaseMap[strtolower($col)] ?? null;
+                }
+                $normalizedRows[] = $normalized;
+            }
+
+            return $normalizedRows;
+        }
+
+        throw new Exception("Unsupported source system type for run: {$database->system_type}");
     }
 
     /**

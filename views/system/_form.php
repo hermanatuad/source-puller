@@ -60,7 +60,6 @@ use yii\widgets\ActiveForm;
                         'prompt' => 'Select Type',
                         'class' => 'form-select',
                         'options' => [
-                            'oracle' => ['disabled' => true],
                             'sql-server' => ['disabled' => true],
                             'postgres' => ['disabled' => true],
                         ],
