@@ -40,8 +40,12 @@ return [
 ];
 PHP
 
+fi
+
+# Always normalize permissions for db config (covers pre-existing file from host volume)
+if [ -f "$CONFIG_FILE" ]; then
   chown www-data:www-data "$CONFIG_FILE" || true
-  chmod 640 "$CONFIG_FILE" || true
+  chmod 644 "$CONFIG_FILE" || true
 fi
 
 # Ensure runtime and web/assets directories exist and are writable
