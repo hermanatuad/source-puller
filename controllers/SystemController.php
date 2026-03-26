@@ -179,6 +179,7 @@ class SystemController extends Controller
 
         if ($model->system_type == 'mysql') {
             $connectionResult = DBHelper::testConMysql($params);
+            echo '<pre>';print_r($connectionResult);exit;
 
             if (Yii::$app->request->isAjax) {
                 // Return JSON payload for AJAX requests
@@ -197,52 +198,8 @@ class SystemController extends Controller
 
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
-            
-            try {
-                if (!extension_loaded('pdo_oci')) {
-                    throw new \RuntimeException('Oracle PDO driver (pdo_oci) is not installed. Please enable/install pdo_oci and restart PHP-FPM.');
-                }
 
-                $oraclePort = !empty($model->port) ? $model->port : 1521;
-                $dsn = "oci:dbname=//{$model->hostname}:{$oraclePort}/{$model->database_name};charset=AL32UTF8";
-                $pdo = new \PDO($dsn, $model->username, $model->password, [
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                ]);
-
-                $stmt = $pdo->query('SELECT 1 FROM DUAL');
-                $stmt->fetchColumn();
-
-                $connectionResult = [
-                    'status' => 'success',
-                    'message' => 'Successfully connected to Oracle',
-                    'data' => [
-                        'hostname' => $model->hostname,
-                        'port' => $oraclePort,
-                        'database' => $model->database_name,
-                        'username' => $model->username,
-                    ],
-                ];
-            } catch (\Throwable $e) {
-                $connectionResult = [
-                    'status' => 'error',
-                    'message' => 'Oracle connection failed: ' . $e->getMessage(),
-                    'data' => null,
-                ];
-            }
-
-            if (Yii::$app->request->isAjax) {
-                return $this->asJson([
-                    'status' => $connectionResult['status'],
-                    'message' => $connectionResult['message'],
-                    'data' => $connectionResult['data'],
-                ]);
-            }
-
-            if ($connectionResult['status'] === 'success') {
-                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
-            } else {
-                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
-            }
+            echo '<pre>';print_r('tes');exit;
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
