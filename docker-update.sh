@@ -15,4 +15,5 @@ if [ "$LOCAL_HEAD" = "$NEW_HEAD" ]; then
 fi
 
 echo "Updates detected — restarting containers."
+docker compose down
 docker compose up -d --build
