@@ -741,13 +741,29 @@ class DBHelper
         $hostname = $params['hostname'] ?? '';
         $port = $params['port'] ?? '';
         $username = $params['username'] ?? '';
-        $database = $params['database'] ?? '';
+        $database = $params['database'] ?? $params['database_name'] ?? '';
+        $systemType = strtolower((string) ($params['system_type'] ?? ''));
+        $cacheDir = Yii::getAlias('@runtime') . '/db_cache/';
 
-        $cacheKey = 'mysql_schema_' . md5("$hostname:$port:$username:$database");
-        $cacheFile = Yii::getAlias('@runtime') . '/db_cache/' . $cacheKey . '.cache';
+        $hash = md5("$hostname:$port:$username:$database");
+        $prefixes = ['mysql_schema_', 'oracle_schema_'];
 
-        if (file_exists($cacheFile)) {
-            @unlink($cacheFile);
+        if ($systemType === 'mysql') {
+            $prefixes = ['mysql_schema_'];
+        } elseif ($systemType === 'oracle') {
+            $prefixes = ['oracle_schema_'];
+        }
+
+        $deleted = 0;
+        foreach ($prefixes as $prefix) {
+            $cacheFile = $cacheDir . $prefix . $hash . '.cache';
+            if (file_exists($cacheFile)) {
+                @unlink($cacheFile);
+                $deleted++;
+            }
+        }
+
+        if ($deleted > 0) {
             return ['status' => 'success', 'message' => 'Cache cleared'];
         }
 
