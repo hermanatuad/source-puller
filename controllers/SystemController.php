@@ -13,6 +13,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\httpclient\Client;
 
 /**
  * SystemController implements the CRUD actions for System model.
@@ -202,23 +203,33 @@ class SystemController extends Controller
         } elseif ($model->system_type == 'oracle') {
 
             $oraclePort = !empty($model->port) ? $model->port : 1521;
-            $dsn = "oci:dbname=//{$model->hostname}:{$oraclePort}/{$model->database_name};charset=AL32UTF8";
 
-            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode($dsn);
+            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode(json_encode([
+                'system_code' => $model->system_code,
+                'hostname' => $model->hostname,
+                'port' => $oraclePort,
+                'username' => $model->username,
+                'password' => $model->password,
+                'database' => $model->database_name
+            ]));
 
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-            $response = curl_exec($ch);
-            $curlError = curl_error($ch);
-            curl_close($ch);
+            $client = new Client();
+            $response = $client->createRequest()
+                ->setMethod('GET')
+                ->setUrl($url)
+                ->send();
 
             echo '<pre>';
-            if (!empty($curlError)) {
-                print_r(['status' => 'error', 'message' => $curlError]);
+            if (!$response->isOk) {
+                print_r([
+                    'status' => 'error',
+                    'message' => 'Request failed',
+                    'http_status' => $response->statusCode,
+                    'body' => $response->content,
+                ]);
             } else {
-                print_r($response);
+                print_r($response->data ?: $response->content);
             }
             exit;
 
