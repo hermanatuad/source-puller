@@ -13,7 +13,6 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\httpclient\Client;
 
 /**
  * SystemController implements the CRUD actions for System model.
@@ -203,7 +202,7 @@ class SystemController extends Controller
         } elseif ($model->system_type == 'oracle') {
 
             $oraclePort = !empty($model->port) ? $model->port : 1521;
-
+            
             $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
@@ -213,23 +212,19 @@ class SystemController extends Controller
                 'database' => $model->database_name
             ]));
 
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-            $client = new Client();
-            $response = $client->createRequest()
-                ->setMethod('GET')
-                ->setUrl($url)
-                ->send();
+            $response = curl_exec($ch);
+            $curlError = curl_error($ch);
+            curl_close($ch);
 
             echo '<pre>';
-            if (!$response->isOk) {
-                print_r([
-                    'status' => 'error',
-                    'message' => 'Request failed',
-                    'http_status' => $response->statusCode,
-                    'body' => $response->content,
-                ]);
+            if (!empty($curlError)) {
+                print_r(['status' => 'error', 'message' => $curlError]);
             } else {
-                print_r($response->data ?: $response->content);
+                print_r($response);
             }
             exit;
 
