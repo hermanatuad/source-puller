@@ -301,6 +301,40 @@ class SystemController extends Controller
         ]);
     }
 
+    public function actionRawCache($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model) {
+            return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
+        }
+
+        if (!in_array($model->system_type, ['mysql', 'oracle'], true)) {
+            return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for raw cache data.']);
+        }
+
+        $cacheInfo = DBHelper::getRawCache([
+            'hostname' => $model->hostname,
+            'username' => $model->username,
+            'port' => $model->port,
+            'database_name' => $model->database_name,
+            'system_type' => $model->system_type,
+        ]);
+
+        if (($cacheInfo['status'] ?? '') !== 'success') {
+            return $this->asJson([
+                'status' => 'error',
+                'message' => $cacheInfo['message'] ?? 'Failed to retrieve raw cache data',
+                'details' => $cacheInfo,
+            ]);
+        }
+
+        return $this->asJson([
+            'status' => 'success',
+            'message' => 'Raw cache data loaded',
+            'raw_data' => $cacheInfo['data'] ?? [],
+        ]);
+    }
+
     /**
      * Return sample rows for a table from the system's database.
      * @param string $id System id

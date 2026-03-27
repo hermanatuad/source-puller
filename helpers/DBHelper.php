@@ -769,4 +769,53 @@ class DBHelper
 
         return ['status' => 'error', 'message' => 'Cache not found'];
     }
+
+
+    public static function getRawCache($params)
+    {
+        $hostname = $params['hostname'] ?? '';
+        $port = $params['port'] ?? '';
+        $username = $params['username'] ?? '';
+        $database = $params['database'] ?? $params['database_name'] ?? '';
+        $systemType = strtolower((string) ($params['system_type'] ?? ''));
+        $cacheDir = Yii::getAlias('@runtime') . '/db_cache/';
+
+        $hash = md5("$hostname:$port:$username:$database");
+        $prefixes = ['mysql_schema_', 'oracle_schema_'];
+
+        if ($systemType === 'mysql') {
+            $prefixes = ['mysql_schema_'];
+        } elseif ($systemType === 'oracle') {
+            $prefixes = ['oracle_schema_'];
+        }
+
+        $found = [];
+        foreach ($prefixes as $prefix) {
+            $cacheFile = $cacheDir . $prefix . $hash . '.cache';
+            if (file_exists($cacheFile)) {
+                $rawContents = @file_get_contents($cacheFile);
+                if ($rawContents === false) {
+                    continue;
+                }
+
+                $found[] = [
+                    'prefix' => $prefix,
+                    'file' => basename($cacheFile),
+                    'raw' => $rawContents,
+                    'decoded' => @unserialize($rawContents),
+                ];
+            }
+        }
+
+        if (!empty($found)) {
+            return [
+                'status' => 'success',
+                'message' => 'Raw cache loaded',
+                'data' => $found,
+            ];
+        }
+
+        return ['status' => 'error', 'message' => 'Cache not found'];
+    }
+
 }
