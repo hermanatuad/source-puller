@@ -179,9 +179,6 @@ class SystemController extends Controller
 
         if ($model->system_type == 'mysql') {
             $connectionResult = DBHelper::testConMysql($params);
-            echo '<pre>';
-            print_r($connectionResult);
-            exit;
 
             if (Yii::$app->request->isAjax) {
                 // Return JSON payload for AJAX requests
@@ -201,26 +198,22 @@ class SystemController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
 
-            $oraclePort = !empty($model->port) ? $model->port : 1521;
-            
-            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode(json_encode([
-                'system_code' => $model->system_code,
-                'hostname' => $model->hostname,
-                'port' => $oraclePort,
-                'username' => $model->username,
-                'password' => $model->password,
-                'database' => $model->database_name
-            ]));
+            $connectionResult = DBHelper::testConOracle($model);
 
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            if (Yii::$app->request->isAjax) {
+                // Return JSON payload for AJAX requests
+                return $this->asJson([
+                    'status' => $connectionResult['status'] ?? 'error',
+                    'message' => $connectionResult['message'] ?? ($connectionResult['status'] === 'success' ? 'Connection successful' : 'Connection failed'),
+                    'data' => $connectionResult['data'] ?? null,
+                ]);
+            }
 
-            $response = curl_exec($ch);
-            $curlError = curl_error($ch);
-            curl_close($ch);
-
-            echo '<pre>';print_r(json_decode($response, true));exit;
+            if ($connectionResult['status'] === 'success') {
+                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
+            }
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

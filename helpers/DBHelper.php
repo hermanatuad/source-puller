@@ -140,17 +140,172 @@ class DBHelper
         ];
     }
 
+    public static function testConOracle($model, $useCache = true, $cacheTTL = 3600)
+    {
+        // Extract parameters from model
+        $systemCode = $model->system_code ?? '';
+        $hostname = $model->hostname ?? '';
+        $username = $model->username ?? '';
+        $port = !empty($model->port) ? $model->port : 1521; // Oracle default port
+        $password = $model->password ?? '';
+        $database = $model->database_name ?? '';
+        $useCache = $useCache ?? true;
+        $cacheTTL = $cacheTTL ?? 3600; // Cache Time To Live in seconds (default 1 hour)
+
+        // Validate required parameters
+        $missing = [];
+        if (empty($systemCode)) {
+            $missing[] = 'system_code';
+        }
+        if (empty($hostname)) {
+            $missing[] = 'hostname';
+        }
+        if (empty($username)) {
+            $missing[] = 'username';
+        }
+        if (empty($database)) {
+            $missing[] = 'database_name';
+        }
+
+        if (!empty($missing)) {
+            return [
+                'status' => 'error',
+                'message' => 'Missing required parameter(s): ' . implode(', ', $missing),
+                'data' => [
+                    'system_code' => $systemCode,
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database
+                ]
+            ];
+        }
+
+        // Create unique cache key based on connection parameters
+        $cacheKey = 'oracle_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
+
+        // Check cache if enabled
+        if ($useCache) {
+            $cachedData = self::getFromCache($cacheKey);
+            if ($cachedData !== null) {
+                // Check if cache is still valid (not expired)
+                if (time() - $cachedData['cached_at'] < $cacheTTL) {
+                    return [
+                        'status' => 'success',
+                        'message' => 'Successfully retrieved from cache',
+                        'data' => $cachedData['data'],
+                        'cache_info' => [
+                            'used_cache' => true,
+                            'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                            'expires_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+                        ]
+                    ];
+                }
+            }
+        }
+
+        try {
+            // Build API request URL
+            $apiUrl = 'https://api.foxecho.my.id/check-connection';
+            $connectionParams = [
+                'system_code' => $systemCode,
+                'hostname' => $hostname,
+                'port' => $port,
+                'username' => $username,
+                'password' => $password,
+                'database' => $database
+            ];
+
+            // Make API request via cURL
+            $ch = curl_init($apiUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($connectionParams));
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            // Handle cURL errors
+            if ($curlError) {
+                return [
+                    'status' => 'error',
+                    'message' => 'API request failed: ' . $curlError,
+                    'data' => [
+                        'hostname' => $hostname,
+                        'port' => $port,
+                        'username' => $username,
+                        'database' => $database
+                    ]
+                ];
+            }
+
+            // Parse API response
+            $apiResponse = json_decode($response, true);
+
+            // Handle HTTP errors
+            if ($httpCode !== 200) {
+                return [
+                    'status' => 'error',
+                    'message' => 'API returned error code: ' . $httpCode,
+                    'data' => $apiResponse ?? ['raw_response' => $response]
+                ];
+            }
+
+            // API response should match testConMysql format
+            if (!is_array($apiResponse)) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Invalid API response format',
+                    'data' => ['raw_response' => $response]
+                ];
+            }
+
+            // If API returned an error status, return it as-is
+            if (($apiResponse['status'] ?? '') === 'error') {
+                return $apiResponse;
+            }
+
+            // Success case - save to cache
+            if (($apiResponse['status'] ?? '') === 'success') {
+                if ($useCache && isset($apiResponse['data'])) {
+                    self::saveToCache($cacheKey, [
+                        'data' => $apiResponse['data'],
+                        'cached_at' => time()
+                    ]);
+                }
+            }
+
+            // Return API response (which matches testConMysql format)
+            return $apiResponse;
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Exception occurred: ' . $e->getMessage(),
+                'data' => [
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database
+                ]
+            ];
+        }
+    }
+
     public static function testConMysql($params)
     {
-        // Ekstrak parameter dengan default values
+        // Extract parameters with default values
         $systemCode = $params['system_code'] ?? '';
         $hostname = $params['hostname'] ?? '';
         $username = $params['username'] ?? '';
         $port = $params['port'] ?? '';
         $password = $params['password'] ?? '';
-        $database = $params['database'] ?? '';
-        $useCache = $params['use_cache'] ?? true; // Parameter untuk mengontrol cache
-        $cacheTTL = $params['cache_ttl'] ?? 3600; // Cache Time To Live dalam detik (default 1 jam)
+        $database = $params['database_name'] ?? $params['database'] ?? ''; // Support both parameter names
+        $useCache = $params['use_cache'] ?? true; // Parameter to control cache
+        $cacheTTL = $params['cache_ttl'] ?? 3600; // Cache Time To Live in seconds (default 1 hour)
 
         // Validasi parameter wajib
         $missing = [];
