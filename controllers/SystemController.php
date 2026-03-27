@@ -179,7 +179,9 @@ class SystemController extends Controller
 
         if ($model->system_type == 'mysql') {
             $connectionResult = DBHelper::testConMysql($params);
-            echo '<pre>';print_r($connectionResult);exit;
+            echo '<pre>';
+            print_r($connectionResult);
+            exit;
 
             if (Yii::$app->request->isAjax) {
                 // Return JSON payload for AJAX requests
@@ -199,7 +201,10 @@ class SystemController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         } elseif ($model->system_type == 'oracle') {
 
-            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode('"tes"');
+            $oraclePort = !empty($model->port) ? $model->port : 1521;
+            $dsn = "oci:dbname=//{$model->hostname}:{$oraclePort}/{$model->database_name};charset=AL32UTF8";
+
+            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode($dsn);
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
