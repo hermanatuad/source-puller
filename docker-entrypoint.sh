@@ -49,5 +49,12 @@ mkdir -p /var/www/html/runtime/cache /var/www/html/web/assets
 chown -R www-data:www-data /var/www/html/runtime /var/www/html/web/assets || true
 chmod -R 0777 /var/www/html/runtime /var/www/html/web/assets || true
 
+# Ensure vendor dependencies are present (handles stale docker volume vendor)
+if [ ! -f /var/www/html/vendor/autoload.php ] || [ ! -f /var/www/html/vendor/yiisoft/yii2-httpclient/Client.php ]; then
+  echo "Installing composer dependencies in container startup..."
+  cd /var/www/html
+  composer install --no-interaction --prefer-dist --optimize-autoloader
+fi
+
 # Execute the main process (php-fpm)
 exec "$@"
