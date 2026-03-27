@@ -798,11 +798,23 @@ class DBHelper
                     continue;
                 }
 
+                $decoded = @unserialize($rawContents);
+                $decodeType = 'unserialize';
+                if ($decoded === false && $rawContents !== 'b:0;') {
+                    $decoded = json_decode($rawContents, true);
+                    $decodeType = 'json';
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        $decoded = null;
+                        $decodeType = 'none';
+                    }
+                }
+
                 $found[] = [
                     'prefix' => $prefix,
                     'file' => basename($cacheFile),
                     'raw' => $rawContents,
-                    'decoded' => @unserialize($rawContents),
+                    'decoded' => $decoded,
+                    'decode_type' => $decodeType,
                 ];
             }
         }

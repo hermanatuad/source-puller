@@ -455,10 +455,22 @@ $(document).on('click', '.btn-show-cache', function () {
         dataType: 'json'
     }).done(function (res) {
         if (res.status === 'success') {
+            var decodedRaw = [];
+            if (Array.isArray(res.raw_data)) {
+                decodedRaw = res.raw_data.map(function (item) {
+                    return {
+                        prefix: item.prefix || null,
+                        file: item.file || null,
+                        decode_type: item.decode_type || null,
+                        decoded: (typeof item.decoded === 'undefined' ? null : item.decoded)
+                    };
+                });
+            }
+
             var payload = {
                 cache_info: res.cache_info || {},
                 data: res.data || {},
-                raw_data: res.raw_data || []
+                raw_cache_decoded: decodedRaw
             };
 
             if (Array.isArray(res.raw_data)) {
