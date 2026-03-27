@@ -205,30 +205,23 @@ class DBHelper
         }
 
         try {
-            // Build API request URL
-            $oraclePort = !empty($model->port) ? $model->port : 1521;
-
-            $apiUrl = 'https://api.foxecho.my.id/check-connection';
-            $connectionParams = [
+            // Build API request URL (GET with params)
+            $url = 'https://api.foxecho.my.id/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
-                'port' => $oraclePort,
+                'port' => $port,
                 'username' => $model->username,
                 'password' => $model->password,
                 'database' => $model->database_name
-
-            ];
+            ]));
 
             // Make API request via cURL
-            $ch = curl_init($apiUrl);
+            $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($connectionParams));
 
             $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            echo '<pre>';print_r($response);exit;
             $curlError = curl_error($ch);
             curl_close($ch);
 
@@ -248,15 +241,6 @@ class DBHelper
 
             // Parse API response
             $apiResponse = json_decode($response, true);
-
-            // Handle HTTP errors
-            if ($httpCode !== 200) {
-                return [
-                    'status' => 'error',
-                    'message' => 'API returned error code: ' . $httpCode,
-                    'data' => $apiResponse ?? ['raw_response' => $response]
-                ];
-            }
 
             // API response should match testConMysql format
             if (!is_array($apiResponse)) {
