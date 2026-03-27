@@ -206,14 +206,17 @@ class DBHelper
 
         try {
             // Build API request URL
+            $oraclePort = !empty($model->port) ? $model->port : 1521;
+
             $apiUrl = 'https://api.foxecho.my.id/check-connection';
             $connectionParams = [
-                'system_code' => $systemCode,
-                'hostname' => $hostname,
-                'port' => $port,
-                'username' => $username,
-                'password' => $password,
-                'database' => $database
+                'system_code' => $model->system_code,
+                'hostname' => $model->hostname,
+                'port' => $oraclePort,
+                'username' => $model->username,
+                'password' => $model->password,
+                'database' => $model->database_name
+
             ];
 
             // Make API request via cURL
