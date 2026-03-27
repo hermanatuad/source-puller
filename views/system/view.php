@@ -457,9 +457,15 @@ $(document).on('click', '.btn-show-cache', function () {
         if (res.status === 'success') {
             var payload = {
                 cache_info: res.cache_info || {},
-                data: res.data || {}
+                data: res.data || {},
+                raw_data: res.raw_data || []
             };
-            $('#modal-cache-message').text('Cache loaded successfully.');
+
+            if (Array.isArray(res.raw_data)) {
+                $('#modal-cache-message').text('Raw cache loaded successfully.');
+            } else {
+                $('#modal-cache-message').text('Cache loaded successfully.');
+            }
             $('#modal-cache-json').text(JSON.stringify(payload, null, 2));
         } else {
             $('#modal-cache-message').text(res.message || 'Failed to load cache data').removeClass('text-muted').addClass('text-danger');
