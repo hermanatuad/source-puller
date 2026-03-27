@@ -221,7 +221,6 @@ class DBHelper
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
             $response = curl_exec($ch);
-            echo '<pre>';print_r($response);exit;
             $curlError = curl_error($ch);
             curl_close($ch);
 
