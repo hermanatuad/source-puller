@@ -224,7 +224,20 @@ class SystemController extends Controller
             if (!empty($curlError)) {
                 print_r(['status' => 'error', 'message' => $curlError]);
             } else {
-                print_r($response);
+                $decoded = json_decode($response, true);
+                if (is_array($decoded)) {
+                    if (($decoded['message'] ?? '') === 'Object of type LOB is not JSON serializable') {
+                        print_r([
+                            'status' => 'error',
+                            'message' => 'Oracle API returned non-serializable LOB object. Please update API serializer to cast LOB to string.',
+                            'raw_response' => $decoded,
+                        ]);
+                    } else {
+                        print_r($decoded);
+                    }
+                } else {
+                    print_r($response);
+                }
             }
             exit;
 
