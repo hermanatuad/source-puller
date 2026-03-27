@@ -65,6 +65,8 @@ class DBHelper
 
         $cachedData = self::getFromCache($cacheKey);
 
+        echo '<pre>';print_r($cachedData);exit;
+
         $needRefresh = false;
         if ($cachedData === null) {
             $needRefresh = true;
