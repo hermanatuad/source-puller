@@ -254,17 +254,17 @@ KonvaAsset::register($this);
                         </thead>
                         <tbody>
                             <?php
-                            $params = [
-                                'system_code' => $model->system_code,
-                                'hostname' => $model->hostname,
-                                'username' => $model->username,
-                                'password' => $model->password,
-                                'port' => $model->port,
-                                'database_name' => $model->database_name,
-                                'refresh_on_miss' => false,
-                            ];
+                            // $params = [
+                            //     'system_code' => $model->system_code,
+                            //     'hostname' => $model->hostname,
+                            //     'username' => $model->username,
+                            //     'password' => $model->password,
+                            //     'port' => $model->port,
+                            //     'database_name' => $model->database_name,
+                            //     'refresh_on_miss' => false,
+                            // ];
 
-                            $dataInfo = DBHelper::getDatabaseInfoFromCache($params);
+                            $dataInfo = DBHelper::getDatabaseInfoFromCache($model);
                             $tables = $dataInfo['result']['tables'] ?? [];
                             $status = $dataInfo['status'] ?? null;
                             $message = $dataInfo['message'] ?? ($dataInfo['result']['message'] ?? null);

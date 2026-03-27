@@ -20,30 +20,29 @@ class DBHelper
      * @return string Formatted currency string
      */
 
-    public static function getDatabaseInfoFromCache($params, $cacheTTL = 3600)
+    public static function getDatabaseInfoFromCache($model, $cacheTTL = 3600)
     {
-        $systemCode = $params['system_code'] ?? '';
-        $hostname = $params['hostname'] ?? '';
-        $username = $params['username'] ?? '';
-        $port = $params['port'] ?? '';
-        $database = $params['database_name'] ?? '';
-        $systemType = strtolower((string) ($params['system_type'] ?? 'mysql'));
+        $systemCode = $model->system_code ?? '';
+        $hostname = $model->hostname ?? '';
+        $username = $model->username ?? '';
+        $port = $model->port ?? '';
+        $database = $model->database_name ?? '';
         $refreshOnMiss = $params['refresh_on_miss'] ?? true;
 
-        // Validate required parameters for cache lookup
-        $missing = [];
-        if (empty($hostname)) {
-            $missing[] = 'hostname';
-        }
-        if (empty($username)) {
-            $missing[] = 'username';
-        }
-        if (empty($database)) {
-            $missing[] = 'database';
-        }
-        if (empty($port) && $port !== 0) {
-            $missing[] = 'port';
-        }
+        // // Validate required parameters for cache lookup
+        // $missing = [];
+        // if (empty($hostname)) {
+        //     $missing[] = 'hostname';
+        // }
+        // if (empty($username)) {
+        //     $missing[] = 'username';
+        // }
+        // if (empty($database)) {
+        //     $missing[] = 'database';
+        // }
+        // if (empty($port) && $port !== 0) {
+        //     $missing[] = 'port';
+        // }
 
         if (!empty($missing)) {
             return [
@@ -59,13 +58,24 @@ class DBHelper
             ];
         }
 
-        // Determine cache prefix based on system type
-        $cachePrefix = ($systemType === 'oracle') ? 'oracle_schema_' : 'mysql_schema_';
-        $cacheKey = $cachePrefix . md5("{$hostname}:{$port}:{$username}:{$database}");
+        $prefix = null;
+        if ($model->system_type === 'oracle') {
+            $prefix = 'oracle_schema_';
+        } elseif ($model->system_type === 'mysql') {
+            $prefix = 'mysql_schema_';
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Unsupported system type for cache lookup: ' . $model->system_type,
+                'data' => [
+                    'system_type' => $model->system_type
+                ]
+            ];
+        }
+        
+        $cacheKey = $prefix . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         $cachedData = self::getFromCache($cacheKey);
-
-        echo '<pre>';print_r($cachedData);exit;
 
         $needRefresh = false;
         if ($cachedData === null) {
@@ -108,21 +118,7 @@ class DBHelper
                 'cache_ttl' => $cacheTTL,
             ];
 
-            // Call appropriate method based on system type
-            if ($systemType === 'oracle') {
-                // For Oracle, create a model-like object from params
-                $oracleModel = (object) [
-                    'system_code' => $systemCode,
-                    'hostname' => $hostname,
-                    'username' => $username,
-                    'password' => $params['password'] ?? '',
-                    'port' => $port ?: 1521,
-                    'database_name' => $database,
-                ];
-                $fresh = self::testConOracle($oracleModel, false, $cacheTTL);
-            } else {
-                $fresh = self::testConMysql($callParams);
-            }
+            $fresh = self::testConMysql($callParams);
 
             if (!is_array($fresh) || ($fresh['status'] ?? '') !== 'success') {
                 if ($cachedData === null) {
@@ -848,5 +844,4 @@ class DBHelper
 
         return ['status' => 'error', 'message' => 'Cache not found'];
     }
-
 }

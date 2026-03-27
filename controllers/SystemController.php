@@ -275,15 +275,7 @@ class SystemController extends Controller
             return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for cache data.']);
         }
 
-        $cacheInfo = DBHelper::getDatabaseInfoFromCache([
-            'system_code' => $model->system_code,
-            'hostname' => $model->hostname,
-            'username' => $model->username,
-            'password' => $model->password,
-            'port' => $model->port,
-            'database_name' => $model->database_name,
-            'refresh_on_miss' => false,
-        ]);
+        $cacheInfo = DBHelper::getDatabaseInfoFromCache($model);
 
         if (($cacheInfo['status'] ?? '') !== 'success') {
             return $this->asJson([
@@ -363,14 +355,7 @@ class SystemController extends Controller
         $database = $model->database_name;
         $port = $model->port;
 
-        $cacheLookup = DBHelper::getDatabaseInfoFromCache([
-            'system_code' => $model->system_code,
-            'hostname' => $hostname,
-            'username' => $username,
-            'password' => $password,
-            'port' => $port,
-            'database_name' => $database,
-        ]);
+        $cacheLookup = DBHelper::getDatabaseInfoFromCache($model);
 
         if (($cacheLookup['status'] ?? '') === 'success') {
             $cachedTables = $cacheLookup['result']['tables'] ?? [];
