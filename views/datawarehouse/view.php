@@ -21,7 +21,7 @@ $sampleError = null;
 // Validate simple table name (prevent injection) then attempt to fetch sample rows
 if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
     try {
-        $dsn = "pgsql:host=34.71.143.136;port=5432;dbname=datawarehouse";
+        $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
         $stmt = $pdo->prepare('SELECT * FROM "' . $tableName . '" LIMIT 50');
         $stmt->execute();
