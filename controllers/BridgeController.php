@@ -1166,7 +1166,8 @@ class BridgeController extends Controller
                     'port' => $port,
                     'username' => $username,
                     'password' => $password,
-                    'database' => $database_name
+                    'database' => $database_name,
+                    'table_name' => $table_name,
                 ]));
                 $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
