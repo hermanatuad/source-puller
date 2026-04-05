@@ -1064,8 +1064,6 @@ class BridgeController extends Controller
                         throw new Exception("No bridge columns defined.");
                     }
 
-                    echo '<pre>';print_r($bridgeCols);die;
-
                     // collect unique source columns to select
                     $sourceCols = array_values(array_unique(array_filter(array_map(function ($bc) {
                         return $bc->source_column_name;
@@ -1077,6 +1075,7 @@ class BridgeController extends Controller
 
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
 
+                    echo '<pre>';print_r($RAW_DATA);die;
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
