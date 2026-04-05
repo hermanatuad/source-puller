@@ -164,6 +164,7 @@ class BridgeController extends Controller
         }
         $model = $this->findModel($id);
         $database = System::findOne(['system_code' => $model->system_code]);
+        $systemType = strtolower(trim((string)($database->system_type ?? '')));
 
         try {
             $extractedCount = 0;
@@ -172,7 +173,7 @@ class BridgeController extends Controller
                 throw new Exception("System configuration not found.");
             }
 
-            if ($database->system_type == 'mysql') {
+            if ($systemType === 'mysql') {
 
                 if ($model->bridge_type == 'independent') {
 
@@ -467,9 +468,6 @@ class BridgeController extends Controller
                     }
 
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
-                    echo '<pre>';
-                    print_r($RAW_DATA);
-                    die;
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
@@ -758,7 +756,7 @@ class BridgeController extends Controller
                         'extractedCount' => $extractedCount,
                     ];
                 }
-            } elseif ($database->system_type == 'oracle') {
+            } elseif ($systemType === 'oracle') {
 
                 if ($model->bridge_type == 'independent') {
 
