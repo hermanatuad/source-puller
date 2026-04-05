@@ -747,7 +747,7 @@ class BridgeController extends Controller
                     }
                 }
 
-                $successMessage = "Oracle bridge execution completed. {$extractedCount} records successfully inserted into the warehouse.";
+                $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
 
                 if ($isAjax) {
                     return [
@@ -1249,7 +1249,15 @@ class BridgeController extends Controller
                     }
                 }
 
-                $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
+                $successMessage = "Oracle bridge execution completed. {$extractedCount} records successfully inserted into the warehouse.";
+
+                if ($isAjax) {
+                    return [
+                        'status' => 'success',
+                        'message' => $successMessage,
+                        'extractedCount' => $extractedCount,
+                    ];
+                }
             }
 
             Yii::$app->session->setFlash('success', $successMessage);
