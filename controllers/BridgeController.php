@@ -233,7 +233,6 @@ class BridgeController extends Controller
 
                     $sourceIds = array_column($RAW_DATA, $pkSourceColumn);
 
-                    echo '<pre>';print_r($RAW_DATA);die;
                     $existingReferences = EntitySystem::find()
                         ->select('entity_reference')
                         ->where([
@@ -810,7 +809,7 @@ class BridgeController extends Controller
 
                     $dataDataColumns = json_decode($responseDataColumns, true);
 
-                    echo '<pre>';print_r($dataDataColumns);die;
+                    echo '<pre>';print_r($dataDataColumns['data']['rows']);die;
 
                     $columnList = BridgeColumn::find()
                         ->select('source_column_name')
