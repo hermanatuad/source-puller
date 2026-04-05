@@ -164,7 +164,7 @@ class BridgeController extends Controller
         }
         $model = $this->findModel($id);
         $database = System::findOne(['system_code' => $model->system_code]);
-        
+
         try {
             $extractedCount = 0;
 
@@ -767,10 +767,7 @@ class BridgeController extends Controller
                         'extractedCount' => $extractedCount,
                     ];
                 }
-            }elseif ($database->system_type == 'oracle') {
-            
-
-            
+            } elseif ($database->system_type == 'oracle') {
             }
 
             Yii::$app->session->setFlash('success', $successMessage);
@@ -1041,6 +1038,13 @@ class BridgeController extends Controller
         try {
             if (strpos($systemType, 'mysql') !== false) {
 
+                $res = DBHelper::getDatabaseInfoFromCache($system);
+                if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
+                    return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
+                }
+
+                $tables = array_keys($res['result']['tables'] ?? []);
+            } elseif (strpos($systemType, 'oracle') !== false) {
                 $res = DBHelper::getDatabaseInfoFromCache($system);
                 if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
                     return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
