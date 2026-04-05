@@ -1179,8 +1179,8 @@ class BridgeController extends Controller
                 curl_close($ch);
 
                 $data = json_decode($response, true);
-                echo '<pre>';print_r($data);die;
-                return $data['primary_key'] ?? null;
+                // echo '<pre>';print_r($data);die;
+                return $data['data']['primary_key'] ?? null;
             }
 
             Yii::error('Unsupported system type for PK lookup: ' . $systemType, __METHOD__);
