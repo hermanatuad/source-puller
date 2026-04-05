@@ -809,8 +809,6 @@ class BridgeController extends Controller
 
                     $dataDataColumns = json_decode($responseDataColumns, true);
 
-                    echo '<pre>';print_r($dataDataColumns['data']['rows']);die;
-
                     $columnList = BridgeColumn::find()
                         ->select('source_column_name')
                         ->where(['bridge_id' => $id])
@@ -832,19 +830,7 @@ class BridgeController extends Controller
                         throw new Exception("Source column '{$pkColumn}' (primary key) is required for entity mapping.");
                     }
 
-                    $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $columnList, 100);
-
-
-                    // ============================
-
-                    // fetch to /get-data
-
-                    // expect -> data raw dari oracle 
-
-
-                    // ============================
-
-
+                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
 
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
