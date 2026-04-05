@@ -467,7 +467,7 @@ class BridgeController extends Controller
                     }
 
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
-
+echo '<pre>';print_r($RAW_DATA);die;
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
