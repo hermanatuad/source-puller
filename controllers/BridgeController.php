@@ -467,7 +467,9 @@ class BridgeController extends Controller
                     }
 
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
-echo '<pre>';print_r($RAW_DATA);die;
+                    echo '<pre>';
+                    print_r($RAW_DATA);
+                    die;
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
@@ -1072,10 +1074,39 @@ echo '<pre>';print_r($RAW_DATA);die;
                     if (empty($sourceCols)) {
                         throw new Exception("No source columns defined.");
                     }
-echo '<pre>';print_r($database);die;
-                    $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
+                    
+                    
+                    $sourceColumns = BridgeColumn::find()
+                        ->select('source_column_name')
+                        ->where(['bridge_id' => $id])
+                        ->column();
 
-                    echo '<pre>';print_r($RAW_DATA);die;
+                    $urlDataColumns = 'http://34.60.27.246:2002/get-data-columns?params=' . urlencode(json_encode([
+                        'hostname' => $database->hostname,
+                        'port' => $database->port,
+                        'columns' => $sourceColumns,
+                        'username' => $database->username,
+                        'password' => $database->password,
+                        'database' => $database->database_name,
+                        'table_name' => $model->bridge_table_source,
+                    ]));
+
+
+                    $chDataColumns = curl_init($urlDataColumns);
+                    curl_setopt($chDataColumns, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($chDataColumns, CURLOPT_TIMEOUT, 30);
+
+                    $responseDataColumns = curl_exec($chDataColumns);
+                    $curlError = curl_error($chDataColumns);
+                    curl_close($chDataColumns);
+
+                    $dataDataColumns = json_decode($responseDataColumns, true);
+
+                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
+
+                    echo '<pre>';
+                    print_r($RAW_DATA);
+                    die;
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
