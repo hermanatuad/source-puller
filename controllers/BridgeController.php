@@ -793,11 +793,16 @@ class BridgeController extends Controller
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
                     }
-    echo '<pre>';print_r($model->getBridgeColumns());die;
+                    // Extract source_column_name from BridgeColumn records
+                    $sourceColumns = BridgeColumn::find()
+                        ->select('source_column_name')
+                        ->where(['bridge_id' => $id])
+                        ->column();
+
                     $urlDataColumns = 'http://34.60.27.246:2002/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
-                        'columns' => $model->bridge_table_source,
+                        'columns' => $sourceColumns,
                         'username' => $database->username,
                         'password' => $database->password,
                         'database' => $database->database_name,
