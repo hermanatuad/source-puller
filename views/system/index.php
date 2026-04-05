@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?= $no++ ?></td>
                                         <td><?= Html::encode($model->system_code) ?></td>
-                                        <td><?= Html::a($model->system_name, ['view', 'id' => $model->id]) ?></td>
+                                        <td><?= Html::a($model->system_name, ['check-connection', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode($model->database_name) ?></td>
                                         <td><?= Html::encode(ucfirst($model->system_type)) ?></td>
                                         <td class="text-center">
