@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <?= Html::a('<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View', ['view', 'id' => $model->id], [
+                                                        <?= Html::a('<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View', ['check-connection', 'id' => $model->id], [
                                                             'class' => 'dropdown-item'
                                                         ]) ?>
                                                     </li>
