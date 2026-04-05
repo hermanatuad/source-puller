@@ -789,6 +789,7 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
+                    echo '<pre>';print_r($pkColumn);die;
 
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
@@ -1178,7 +1179,6 @@ class BridgeController extends Controller
                 $stmt->execute([':table_name' => strtoupper($table_name)]);
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-                echo '<pre>';print_r($row);die;
                 return $row['COLUMN_NAME'] ?? null;
             }
 
