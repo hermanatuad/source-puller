@@ -1163,7 +1163,6 @@ class BridgeController extends Controller
             if ($type === 'oracle') {
                 $oraclePort = !empty($port) ? $port : 1521;
                 $dsn = "oci:dbname=//{$hostname}:{$oraclePort}/{$database_name};charset=AL32UTF8";
-                echo '<pre>';print_r($dsn);die;
                 $pdo = new \PDO($dsn, $username, $password, [
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 ]);
@@ -1179,6 +1178,7 @@ class BridgeController extends Controller
                 $stmt->execute([':table_name' => strtoupper($table_name)]);
                 $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
+                echo '<pre>';print_r($row);die;
                 return $row['COLUMN_NAME'] ?? null;
             }
 
