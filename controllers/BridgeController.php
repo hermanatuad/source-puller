@@ -1072,7 +1072,7 @@ class BridgeController extends Controller
                     if (empty($sourceCols)) {
                         throw new Exception("No source columns defined.");
                     }
-
+echo '<pre>';print_r($database);die;
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $sourceCols, 100);
 
                     echo '<pre>';print_r($RAW_DATA);die;
