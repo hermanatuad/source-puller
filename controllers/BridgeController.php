@@ -789,6 +789,7 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
+                    echo '<pre>';print_r($pkColumn);die;
 
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
@@ -1174,11 +1175,11 @@ class BridgeController extends Controller
                 curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
                 $response = curl_exec($ch);
-                echo '<pre>';print_r($response);die;
                 $curlError = curl_error($ch);
                 curl_close($ch);
 
-                return $row['COLUMN_NAME'] ?? null;
+                $data = json_decode($response, true);
+                return $data['primary_key'] ?? null;
             }
 
             Yii::error('Unsupported system type for PK lookup: ' . $systemType, __METHOD__);
