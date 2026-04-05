@@ -1051,6 +1051,8 @@ class BridgeController extends Controller
                         }
                     }
                 }
+
+                $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
             }
 
             Yii::$app->session->setFlash('success', $successMessage);
