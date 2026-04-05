@@ -61,6 +61,7 @@ class SystemController extends Controller
      */
     public function actionView($id)
     {
+        echo '<pre>';print_r($id);die;
         $model = $this->findModel($id);
 
         return $this->render('view', [

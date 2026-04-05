@@ -11,7 +11,7 @@ except Exception:
 
 # Default Oracle server config (can be overridden via CLI)
 DB_CONFIG = {
-    "host": "34.45.175.24",
+    "host": "34.60.27.246",
     "port": 3333,
     "user": "app_user",
     "password": "app_pass",
