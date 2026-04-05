@@ -196,7 +196,6 @@ class BridgeController extends Controller
                         $model->bridge_table_source
                     );
 
-                    echo '<pre>';print_r($pkColumn);die;
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
                     }
@@ -1162,22 +1161,21 @@ class BridgeController extends Controller
             }
 
             if ($type === 'oracle') {
-                $oraclePort = !empty($port) ? $port : 1521;
-                $dsn = "oci:dbname=//{$hostname}:{$oraclePort}/{$database_name};charset=AL32UTF8";
-                $pdo = new \PDO($dsn, $username, $password, [
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                ]);
+                $url = 'http://34.60.27.246:2002/get-primary-keys?params=' . urlencode(json_encode([
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'password' => $password,
+                    'database' => $database_name
+                ]));
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-                $stmt = $pdo->prepare(
-                    "SELECT ucc.column_name
-                     FROM user_constraints uc
-                     JOIN user_cons_columns ucc ON uc.constraint_name = ucc.constraint_name
-                     WHERE uc.constraint_type = 'P'
-                       AND uc.table_name = :table_name
-                     ORDER BY ucc.position"
-                );
-                $stmt->execute([':table_name' => strtoupper($table_name)]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                $response = curl_exec($ch);
+                echo '<pre>';print_r($response);die;
+                $curlError = curl_error($ch);
+                curl_close($ch);
 
                 return $row['COLUMN_NAME'] ?? null;
             }
