@@ -779,7 +779,6 @@ class BridgeController extends Controller
                     if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
                         throw new Exception("Invalid source table name.");
                     }
-echo '<pre>';print_r('tes');die;
                     // Get primary key column from source table
                     $pkColumn = $this->getPrimaryKeyColumn(
                         $database->system_type,
@@ -1164,6 +1163,7 @@ echo '<pre>';print_r('tes');die;
             if ($type === 'oracle') {
                 $oraclePort = !empty($port) ? $port : 1521;
                 $dsn = "oci:dbname=//{$hostname}:{$oraclePort}/{$database_name};charset=AL32UTF8";
+                echo '<pre>';print_r($dsn);die;
                 $pdo = new \PDO($dsn, $username, $password, [
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 ]);
