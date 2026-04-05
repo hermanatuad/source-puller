@@ -229,6 +229,7 @@ class DBHelper
                 'password' => $model->password,
                 'database' => $model->database_name
             ]));
+            echo '<pre>';print_r($url);die;
 
             // Make API request via cURL
             $ch = curl_init($url);
