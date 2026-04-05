@@ -224,17 +224,6 @@ class BridgeController extends Controller
                     $RAW_DATA = $this->fetchSourceRows($database, $model->bridge_table_source, $columnList, 100);
 
 
-                    // ============================
-
-                    // fetch to /get-data
-
-                    // expect -> data raw dari oracle 
-
-
-                    // ============================
-
-
-
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
                         return $this->redirect(['view', 'id' => $id]);
@@ -244,6 +233,7 @@ class BridgeController extends Controller
 
                     $sourceIds = array_column($RAW_DATA, $pkSourceColumn);
 
+                    echo '<pre>';print_r($sourceIds);die;
                     $existingReferences = EntitySystem::find()
                         ->select('entity_reference')
                         ->where([
