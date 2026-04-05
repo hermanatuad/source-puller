@@ -779,7 +779,7 @@ class BridgeController extends Controller
                     if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
                         throw new Exception("Invalid source table name.");
                     }
-
+echo '<pre>';print_r('tes');die;
                     // Get primary key column from source table
                     $pkColumn = $this->getPrimaryKeyColumn(
                         $database->system_type,
@@ -790,7 +790,6 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
-                    echo '<pre>';print_r($pkColumn);die;
 
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
