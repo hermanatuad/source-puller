@@ -1179,6 +1179,7 @@ class BridgeController extends Controller
                 curl_close($ch);
 
                 $data = json_decode($response, true);
+                echo '<pre>';print_r($data);die;
                 return $data['primary_key'] ?? null;
             }
 
