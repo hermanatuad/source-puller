@@ -320,7 +320,7 @@ class SystemController extends Controller
             return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
         }
 
-        if (!in_array($model->system_type, ['mysql', 'oracle'], true)) {
+        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server'], true)) {
             return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for raw cache data.']);
         }
 
