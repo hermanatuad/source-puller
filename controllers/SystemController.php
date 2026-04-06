@@ -365,7 +365,7 @@ class SystemController extends Controller
             return $this->asJson(['status' => 'error', 'message' => 'Invalid table name.']);
         }
 
-        if ($model->system_type !== 'mysql') {
+        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server'], true)) {
             return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for table preview.']);
         }
 
@@ -379,10 +379,32 @@ class SystemController extends Controller
 
         if (($cacheLookup['status'] ?? '') === 'success') {
             $cachedTables = $cacheLookup['result']['tables'] ?? [];
-            $cachedTable = $cachedTables[$table] ?? null;
+
+            if (is_string($cachedTables)) {
+                $decodedTables = json_decode($cachedTables, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedTables)) {
+                    $cachedTables = $decodedTables;
+                } else {
+                    $cachedTables = [];
+                }
+            }
+
+            $cachedTable = null;
+            if (is_array($cachedTables)) {
+                if (isset($cachedTables[$table]) && is_array($cachedTables[$table])) {
+                    $cachedTable = $cachedTables[$table];
+                } else {
+                    foreach ($cachedTables as $tableItem) {
+                        if (is_array($tableItem) && (($tableItem['name'] ?? null) === $table)) {
+                            $cachedTable = $tableItem;
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (is_array($cachedTable)) {
-                $rows = $cachedTable['data_rows'] ?? [];
+                $rows = $cachedTable['data_rows'] ?? ($cachedTable['rows'] ?? []);
                 $columnsMeta = $cachedTable['columns'] ?? [];
                 $columns = [];
 
@@ -428,6 +450,13 @@ class SystemController extends Controller
                     ]
                 ]);
             }
+        }
+
+        if ($model->system_type !== 'mysql') {
+            return $this->asJson([
+                'status' => 'error',
+                'message' => 'Live table preview is only available for mysql. Please run Test Connection first to refresh cache.',
+            ]);
         }
 
         try {
