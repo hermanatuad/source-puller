@@ -27,7 +27,8 @@ class DBHelper
         $username = $model->username ?? '';
         $port = $model->port ?? '';
         $database = $model->database_name ?? '';
-        $refreshOnMiss = $params['refresh_on_miss'] ?? true;
+        $refreshOnMiss = true;
+        $missing = [];
 
         // // Validate required parameters for cache lookup
         // $missing = [];
@@ -63,6 +64,8 @@ class DBHelper
             $prefix = 'oracle_schema_';
         } elseif ($model->system_type === 'mysql') {
             $prefix = 'mysql_schema_';
+        } elseif ($model->system_type === 'sql-server') {
+            $prefix = 'sql-server_schema_';
         } else {
             return [
                 'status' => 'error',
@@ -111,14 +114,20 @@ class DBHelper
                 'system_code' => $systemCode,
                 'hostname' => $hostname,
                 'username' => $username,
-                'password' => $params['password'] ?? '',
+                'password' => $model->password ?? '',
                 'port' => $port,
                 'database' => $database,
                 'use_cache' => false,
                 'cache_ttl' => $cacheTTL,
             ];
 
-            $fresh = self::testConMysql($callParams);
+            if ($model->system_type === 'oracle') {
+                $fresh = self::testConOracle($model, false, $cacheTTL);
+            } elseif ($model->system_type === 'sql-server') {
+                $fresh = self::testConSqlServer($model, false, $cacheTTL);
+            } else {
+                $fresh = self::testConMysql($callParams);
+            }
 
             if (!is_array($fresh) || ($fresh['status'] ?? '') !== 'success') {
                 if ($cachedData === null) {

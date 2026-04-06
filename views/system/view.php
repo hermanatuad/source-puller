@@ -281,6 +281,18 @@ KonvaAsset::register($this);
                                 $tables = [];
                             }
 
+                            // SQL Server cache may return associative map: {table_name: {...meta...}}
+                            if (!empty($tables) && array_keys($tables) !== range(0, count($tables) - 1)) {
+                                $normalizedTables = [];
+                                foreach ($tables as $tableName => $tableMeta) {
+                                    if (is_array($tableMeta)) {
+                                        $tableMeta['name'] = $tableMeta['name'] ?? (string)$tableName;
+                                        $normalizedTables[] = $tableMeta;
+                                    }
+                                }
+                                $tables = $normalizedTables;
+                            }
+
                             $schemaPayload = [];
                             foreach ($tables as $t) {
                                 $cols = [];
