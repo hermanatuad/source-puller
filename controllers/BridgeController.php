@@ -1073,8 +1073,8 @@ class BridgeController extends Controller
                     if (empty($sourceCols)) {
                         throw new Exception("No source columns defined.");
                     }
-                    
-                    
+
+
                     $sourceColumns = BridgeColumn::find()
                         ->select('source_column_name')
                         ->where(['bridge_id' => $id])
@@ -1556,6 +1556,13 @@ class BridgeController extends Controller
 
                 $tables = array_keys($res['result']['tables'] ?? []);
             } elseif (strpos($systemType, 'oracle') !== false) {
+                $res = DBHelper::getDatabaseInfoFromCache($system);
+                if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
+                    return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
+                }
+
+                $tables = array_keys($res['result']['tables'] ?? []);
+            } elseif (strpos($systemType, 'sql-server') !== false) {
                 $res = DBHelper::getDatabaseInfoFromCache($system);
                 if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
                     return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
