@@ -216,9 +216,9 @@ class SystemController extends Controller
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
-        } elseif ($model->system_type == 'mssql') {
+        } elseif ($model->system_type == 'sql-server') {
 
-            $connectionResult = DBHelper::testConMssql($model);
+            $connectionResult = DBHelper::testConSqlServer($model);
 
             if (Yii::$app->request->isAjax) {
                 // Return JSON payload for AJAX requests

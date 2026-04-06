@@ -296,7 +296,7 @@ class DBHelper
         }
     }
 
-    public static function testConMssql($model, $useCache = true, $cacheTTL = 3600)
+    public static function testConSqlServer($model, $useCache = true, $cacheTTL = 3600)
     {
         // Extract parameters from model
         $systemCode = $model->system_code ?? '';
