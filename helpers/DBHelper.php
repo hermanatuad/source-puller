@@ -338,7 +338,7 @@ class DBHelper
         }
 
         // Create unique cache key based on connection parameters
-        $cacheKey = 'sqlserver_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
+        $cacheKey = 'sql-server_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         // Check cache if enabled
         if ($useCache) {
@@ -908,6 +908,8 @@ class DBHelper
             $prefixes = ['mysql_schema_'];
         } elseif ($systemType === 'oracle') {
             $prefixes = ['oracle_schema_'];
+        }elseif ($systemType === 'sql-server') {
+            $prefixes = ['sql-server_schema_'];
         }
 
         $deleted = 0;
@@ -943,6 +945,8 @@ class DBHelper
             $prefixes = ['mysql_schema_'];
         } elseif ($systemType === 'oracle') {
             $prefixes = ['oracle_schema_'];
+        } elseif ($systemType === 'sql-server') {
+            $prefixes = ['sql-server_schema_'];
         }
 
         $found = [];
