@@ -756,7 +756,7 @@ class BridgeController extends Controller
                         'extractedCount' => $extractedCount,
                     ];
                 }
-            } elseif ($systemType === 'oracle') {
+            } elseif ($systemType === 'oracle' || strpos($systemType, 'mssql') !== false || strpos($systemType, 'sqlserver') !== false) {
 
                 if ($model->bridge_type == 'independent') {
 
@@ -788,7 +788,8 @@ class BridgeController extends Controller
                         ->where(['bridge_id' => $id])
                         ->column();
 
-                    $urlDataColumns = 'http://34.60.27.246:2002/get-data-columns?params=' . urlencode(json_encode([
+                    $msPort = $this->getMicroservicePort($database->system_type);
+                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
                         'columns' => $sourceColumns,
@@ -1079,7 +1080,8 @@ class BridgeController extends Controller
                         ->where(['bridge_id' => $id])
                         ->column();
 
-                    $urlDataColumns = 'http://34.60.27.246:2002/get-data-columns?params=' . urlencode(json_encode([
+                    $msPort = $this->getMicroservicePort($database->system_type);
+                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
                         'columns' => $sourceColumns,
@@ -1330,6 +1332,24 @@ class BridgeController extends Controller
     }
 
     /**
+     * Get microservice port based on system type
+     * Oracle -> 2002, MSSQL/SQL Server -> 2003
+     * @param string $systemType
+     * @return int
+     */
+    protected function getMicroservicePort($systemType)
+    {
+        $type = strtolower((string)$systemType);
+        if (strpos($type, 'oracle') !== false) {
+            return 2002;
+        }
+        if (strpos($type, 'mssql') !== false || strpos($type, 'sqlserver') !== false) {
+            return 2003;
+        }
+        return 2002; // default to Oracle port
+    }
+
+    /**
      * Get primary key column name for supported source systems
      * @param string $systemType
      * @param string $hostname
@@ -1370,8 +1390,9 @@ class BridgeController extends Controller
                 return $row ? $row['COLUMN_NAME'] : null;
             }
 
-            if ($type === 'oracle') {
-                $url = 'http://34.60.27.246:2002/get-primary-keys?params=' . urlencode(json_encode([
+            if ($type === 'oracle' || strpos($type, 'mssql') !== false || strpos($type, 'sqlserver') !== false) {
+                $msPort = $this->getMicroservicePort($systemType);
+                $url = 'http://34.60.27.246:' . $msPort . '/get-primary-keys?params=' . urlencode(json_encode([
                     'hostname' => $hostname,
                     'port' => $port,
                     'username' => $username,

@@ -216,6 +216,26 @@ class SystemController extends Controller
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
+        } elseif ($model->system_type == 'mssql') {
+
+            $connectionResult = DBHelper::testConMssql($model);
+
+            if (Yii::$app->request->isAjax) {
+                // Return JSON payload for AJAX requests
+                return $this->asJson([
+                    'status' => $connectionResult['status'] ?? 'error',
+                    'message' => $connectionResult['message'] ?? ($connectionResult['status'] === 'success' ? 'Connection successful' : 'Connection failed'),
+                    'data' => $connectionResult['data'] ?? null,
+                ]);
+            }
+
+            if ($connectionResult['status'] === 'success') {
+                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
+            }
+
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         if (Yii::$app->request->isAjax) {
