@@ -66,6 +66,8 @@ class DBHelper
             $prefix = 'mysql_schema_';
         } elseif ($model->system_type === 'sql-server') {
             $prefix = 'sql-server_schema_';
+        } elseif ($model->system_type === 'postgres') {
+            $prefix = 'postgres_schema_';
         } else {
             return [
                 'status' => 'error',
@@ -75,7 +77,7 @@ class DBHelper
                 ]
             ];
         }
-        
+
         $cacheKey = $prefix . md5("{$hostname}:{$port}:{$username}:{$database}");
 
         $cachedData = self::getFromCache($cacheKey);
@@ -125,6 +127,10 @@ class DBHelper
                 $fresh = self::testConOracle($model, false, $cacheTTL);
             } elseif ($model->system_type === 'sql-server') {
                 $fresh = self::testConSqlServer($model, false, $cacheTTL);
+            } elseif ($model->system_type === 'sql-server') {
+                $fresh = self::testConSqlServer($model, false, $cacheTTL);
+            } elseif ($model->system_type === 'postgres') {
+                $fresh = self::testConPostgres($model, false, $cacheTTL);
             } else {
                 $fresh = self::testConMysql($callParams);
             }
@@ -372,6 +378,147 @@ class DBHelper
         try {
             // Build API request URL (GET with params)
             $url = 'http://34.60.27.246:2003/check-connection?params=' . urlencode(json_encode([
+                'system_code' => $model->system_code,
+                'hostname' => $model->hostname,
+                'port' => $port,
+                'username' => $model->username,
+                'password' => $model->password,
+                'database' => $model->database_name
+            ]));
+
+            // Make API request via cURL
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+            $response = curl_exec($ch);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+
+            // Handle cURL errors
+            if ($curlError) {
+                return [
+                    'status' => 'error',
+                    'message' => 'API request failed: ' . $curlError,
+                    'data' => [
+                        'hostname' => $hostname,
+                        'port' => $port,
+                        'username' => $username,
+                        'database' => $database
+                    ]
+                ];
+            }
+
+            // Parse API response
+            $apiResponse = json_decode($response, true);
+
+            // API response should match testConMysql format
+            if (!is_array($apiResponse)) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Invalid API response format',
+                    'data' => ['raw_response' => $response]
+                ];
+            }
+
+            // If API returned an error status, return it as-is
+            if (($apiResponse['status'] ?? '') === 'error') {
+                return $apiResponse;
+            }
+
+            // Success case - save to cache
+            if (($apiResponse['status'] ?? '') === 'success') {
+                if ($useCache && isset($apiResponse['data'])) {
+                    self::saveToCache($cacheKey, [
+                        'data' => $apiResponse['data'],
+                        'cached_at' => time()
+                    ]);
+                }
+            }
+
+            // Return API response (which matches testConMysql format)
+            return $apiResponse;
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => 'Exception occurred: ' . $e->getMessage(),
+                'data' => [
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database
+                ]
+            ];
+        }
+    }
+
+    public static function testConPostgres($model, $useCache = true, $cacheTTL = 3600)
+    {
+        // Extract parameters from model
+        $systemCode = $model->system_code ?? '';
+        $hostname = $model->hostname ?? '';
+        $username = $model->username ?? '';
+        $port = !empty($model->port) ? $model->port : 1433; // SQL Server default port
+        $password = $model->password ?? '';
+        $database = $model->database_name ?? '';
+        $useCache = $useCache ?? true;
+        $cacheTTL = $cacheTTL ?? 3600; // Cache Time To Live in seconds (default 1 hour)
+
+        // Validate required parameters
+        $missing = [];
+        if (empty($systemCode)) {
+            $missing[] = 'system_code';
+        }
+        if (empty($hostname)) {
+            $missing[] = 'hostname';
+        }
+        if (empty($username)) {
+            $missing[] = 'username';
+        }
+        if (empty($database)) {
+            $missing[] = 'database_name';
+        }
+
+        if (!empty($missing)) {
+            return [
+                'status' => 'error',
+                'message' => 'Missing required parameter(s): ' . implode(', ', $missing),
+                'data' => [
+                    'system_code' => $systemCode,
+                    'hostname' => $hostname,
+                    'port' => $port,
+                    'username' => $username,
+                    'database' => $database
+                ]
+            ];
+        }
+
+        // Create unique cache key based on connection parameters
+        $cacheKey = 'postgres_schema_' . md5("{$hostname}:{$port}:{$username}:{$database}");
+
+        // Check cache if enabled
+        if ($useCache) {
+            $cachedData = self::getFromCache($cacheKey);
+            if ($cachedData !== null) {
+                // Check if cache is still valid (not expired)
+                if (time() - $cachedData['cached_at'] < $cacheTTL) {
+                    return [
+                        'status' => 'success',
+                        'message' => 'Successfully retrieved from cache',
+                        'data' => $cachedData['data'],
+                        'cache_info' => [
+                            'used_cache' => true,
+                            'cached_at' => date('Y-m-d H:i:s', $cachedData['cached_at']),
+                            'expires_at' => date('Y-m-d H:i:s', $cachedData['cached_at'] + $cacheTTL)
+                        ]
+                    ];
+                }
+            }
+        }
+
+        try {
+            // Build API request URL (GET with params)
+            $url = 'http://34.60.27.246:2004/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
                 'port' => $port,
@@ -917,8 +1064,10 @@ class DBHelper
             $prefixes = ['mysql_schema_'];
         } elseif ($systemType === 'oracle') {
             $prefixes = ['oracle_schema_'];
-        }elseif ($systemType === 'sql-server') {
+        } elseif ($systemType === 'sql-server') {
             $prefixes = ['sql-server_schema_'];
+        }elseif ($systemType === 'postgres') {
+            $prefixes = ['postgres_schema_'];
         }
 
         $deleted = 0;
@@ -956,6 +1105,8 @@ class DBHelper
             $prefixes = ['oracle_schema_'];
         } elseif ($systemType === 'sql-server') {
             $prefixes = ['sql-server_schema_'];
+        } elseif ($systemType === 'postgres') {
+            $prefixes = ['postgres_schema_'];
         }
 
         $found = [];

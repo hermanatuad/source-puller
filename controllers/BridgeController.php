@@ -1511,6 +1511,9 @@ class BridgeController extends Controller
         if (strpos($type, 'sql-server') !== false || strpos($type, 'sqlserver') !== false) {
             return 2003;
         }
+        if (strpos($type, 'postgres') !== false || strpos($type, 'sqlserver') !== false) {
+            return 2004;
+        }
         return 2002; // default to Oracle port
     }
 
@@ -1555,7 +1558,7 @@ class BridgeController extends Controller
                 return $row ? $row['COLUMN_NAME'] : null;
             }
 
-            if ($type === 'oracle' || strpos($type, 'sql-server') !== false || strpos($type, 'sqlserver') !== false) {
+            if ($type === 'oracle' || strpos($type, 'sql-server') !== false || strpos($type, 'postgres') !== false || strpos($type, 'sqlserver') !== false) {
                 $msPort = $this->getMicroservicePort($systemType);
                 $url = 'http://34.60.27.246:' . $msPort . '/get-primary-keys?params=' . urlencode(json_encode([
                     'hostname' => $hostname,
@@ -1728,6 +1731,13 @@ class BridgeController extends Controller
 
                 $tables = array_keys($res['result']['tables'] ?? []);
             } elseif (strpos($systemType, 'sql-server') !== false) {
+                $res = DBHelper::getDatabaseInfoFromCache($system);
+                if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
+                    return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];
+                }
+
+                $tables = array_keys($res['result']['tables'] ?? []);
+            } elseif (strpos($systemType, 'postgres') !== false) {
                 $res = DBHelper::getDatabaseInfoFromCache($system);
                 if (!is_array($res) || ($res['status'] ?? '') !== 'success') {
                     return ['status' => 'error', 'message' => 'Unable to fetch tables', 'detail' => $res];

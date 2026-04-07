@@ -236,6 +236,26 @@ class SystemController extends Controller
             }
 
             return $this->redirect(['view', 'id' => $model->id]);
+        } elseif ($model->system_type == 'postgres') {
+
+            $connectionResult = DBHelper::testConPostgres($model);
+
+            if (Yii::$app->request->isAjax) {
+                // Return JSON payload for AJAX requests
+                return $this->asJson([
+                    'status' => $connectionResult['status'] ?? 'error',
+                    'message' => $connectionResult['message'] ?? ($connectionResult['status'] === 'success' ? 'Connection successful' : 'Connection failed'),
+                    'data' => $connectionResult['data'] ?? null,
+                ]);
+            }
+
+            if ($connectionResult['status'] === 'success') {
+                Yii::$app->session->setFlash('success', 'Connection successful: ' . $connectionResult['message']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Connection failed: ' . $connectionResult['message']);
+            }
+
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         if (Yii::$app->request->isAjax) {
@@ -320,7 +340,7 @@ class SystemController extends Controller
             return $this->asJson(['status' => 'error', 'message' => 'System not found.']);
         }
 
-        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server'], true)) {
+        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server', 'postgres'], true)) {
             return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for raw cache data.']);
         }
 
@@ -365,7 +385,7 @@ class SystemController extends Controller
             return $this->asJson(['status' => 'error', 'message' => 'Invalid table name.']);
         }
 
-        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server'], true)) {
+        if (!in_array($model->system_type, ['mysql', 'oracle', 'sql-server', 'postgres'], true)) {
             return $this->asJson(['status' => 'error', 'message' => 'Unsupported system type for table preview.']);
         }
 
