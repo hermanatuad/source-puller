@@ -778,7 +778,6 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
-                    echo '<pre>';print_r($pkColumn);die;
 
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
@@ -789,6 +788,7 @@ class BridgeController extends Controller
                         ->where(['bridge_id' => $id])
                         ->column();
 
+                    echo '<pre>';print_r($sourceColumns);die;
                     $msPort = $this->getMicroservicePort($database->system_type);
                     $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
