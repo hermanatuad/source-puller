@@ -756,7 +756,7 @@ class BridgeController extends Controller
                         'extractedCount' => $extractedCount,
                     ];
                 }
-            } elseif ($systemType === 'oracle' || strpos($systemType, 'mssql') !== false || strpos($systemType, 'sqlserver') !== false) {
+            } elseif ($systemType === 'oracle' || strpos($systemType, 'sql-server') !== false || strpos($systemType, 'sqlserver') !== false) {
 
                 if ($model->bridge_type == 'independent') {
 
