@@ -1249,9 +1249,175 @@ class BridgeController extends Controller
                         $pdo->rollBack();
                         throw $e;
                     }
+                } else {
+                    // Direct column mapping (bridge_type: other/default)
+                    $RAW_DATA = [];
+
+                    if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_source)) {
+                        throw new Exception("Invalid source table name.");
+                    }
+
+                    if (!preg_match('/^[a-zA-Z0-9_]+$/', $model->bridge_table_target)) {
+                        throw new Exception("Invalid target table name.");
+                    }
+
+                    // load bridge column definitions
+                    $bridgeCols = BridgeColumn::find()->where(['bridge_id' => $id])->all();
+                    if (empty($bridgeCols)) {
+                        throw new Exception("No bridge columns defined.");
+                    }
+
+                    $mapTargetToSource = [];
+                    foreach ($bridgeCols as $bc) {
+                        if (!empty($bc->target_column_name) && !empty($bc->source_column_name)) {
+                            $mapTargetToSource[$bc->target_column_name] = $bc->source_column_name;
+                        }
+                    }
+
+                    if (empty($mapTargetToSource)) {
+                        throw new Exception("No valid source-target column mapping found.");
+                    }
+
+                    $sourceCols = array_values(array_unique(array_values($mapTargetToSource)));
+
+                    foreach ($sourceCols as $col) {
+                        if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                            throw new Exception("Invalid source column name: {$col}");
+                        }
+                    }
+
+                    foreach (array_keys($mapTargetToSource) as $col) {
+                        if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                            throw new Exception("Invalid target column name: {$col}");
+                        }
+                    }
+
+                    // Fetch data from microservice for Oracle/SQL Server
+                    $sourceColumns = array_values(array_unique(array_values($mapTargetToSource)));
+                    $msPort = $this->getMicroservicePort($database->system_type);
+                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
+                        'hostname' => $database->hostname,
+                        'port' => $database->port,
+                        'columns' => $sourceColumns,
+                        'username' => $database->username,
+                        'password' => $database->password,
+                        'database' => $database->database_name,
+                        'table_name' => $model->bridge_table_source,
+                    ]));
+
+                    $chDataColumns = curl_init($urlDataColumns);
+                    curl_setopt($chDataColumns, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($chDataColumns, CURLOPT_TIMEOUT, 30);
+
+                    $responseDataColumns = curl_exec($chDataColumns);
+                    $curlError = curl_error($chDataColumns);
+                    curl_close($chDataColumns);
+
+                    $dataDataColumns = json_decode($responseDataColumns, true);
+                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
+
+                    if (empty($RAW_DATA)) {
+                        Yii::$app->session->setFlash('info', 'No data found.');
+                        return $this->redirect(['view', 'id' => $id]);
+                    }
+
+                    // Direct mapping (no special handling)
+                    $pgRows = [];
+                    foreach ($RAW_DATA as $row) {
+                        $mapped = [];
+                        foreach ($mapTargetToSource as $targetCol => $sourceCol) {
+                            $mapped[$targetCol] = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
+                        }
+                        $pgRows[] = $mapped;
+                    }
+
+                    if (empty($pgRows)) {
+                        Yii::$app->session->setFlash('info', 'No mapped data to insert.');
+                        return $this->redirect(['view', 'id' => $id]);
+                    }
+
+                    $columns = array_keys($pgRows[0]);
+
+                    foreach ($columns as $col) {
+                        if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) {
+                            throw new Exception("Invalid column name: {$col}");
+                        }
+                    }
+
+                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+
+                    $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    ]);
+
+                    // Fetch actual columns present in the target table
+                    $colStmt = $pdo->prepare("SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
+                    $colStmt->execute([':table' => $model->bridge_table_target]);
+                    $colInfoRows = $colStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $existingCols = array_map(function ($r) {
+                        return $r['column_name'];
+                    }, $colInfoRows);
+                    $colMaxLenMap = [];
+                    foreach ($colInfoRows as $ir) {
+                        $colMaxLenMap[$ir['column_name']] = isset($ir['character_maximum_length']) ? (int)$ir['character_maximum_length'] : null;
+                    }
+
+                    // filter out any target columns that do not actually exist in the target table
+                    $missing = array_diff($columns, $existingCols ?: []);
+                    if (!empty($missing)) {
+                        Yii::warning('Missing target columns: ' . implode(', ', $missing), __METHOD__);
+                        Yii::$app->session->setFlash('warning', 'Some target columns do not exist in warehouse table and will be skipped: ' . implode(', ', $missing));
+
+                        // remove missing columns from columns list and from pgRows
+                        $columns = array_values(array_intersect($columns, $existingCols ?: []));
+                        if (empty($columns)) {
+                            Yii::$app->session->setFlash('info', 'No valid target columns remain after filtering.');
+                            return $this->redirect(['view', 'id' => $id]);
+                        }
+                        foreach ($pgRows as &$r) {
+                            $r = array_intersect_key($r, array_flip($columns));
+                        }
+                        unset($r);
+                    }
+
+                    // Now build values and params based on the filtered columns
+                    $values = [];
+                    $params = [];
+                    foreach ($pgRows as $i => $row) {
+                        $placeholders = [];
+                        foreach ($columns as $col) {
+                            $param = ":{$col}_{$i}";
+                            $placeholders[] = $param;
+                            $val = $row[$col] ?? null;
+                            if (is_string($val) && !empty($colMaxLenMap[$col]) && mb_strlen($val) > $colMaxLenMap[$col]) {
+                                Yii::warning("Truncating value for column {$col} from length " . mb_strlen($val) . " to {$colMaxLenMap[$col]}", __METHOD__);
+                                $val = mb_substr($val, 0, $colMaxLenMap[$col]);
+                            }
+                            $params[$param] = $val;
+                        }
+                        $values[] = "(" . implode(',', $placeholders) . ")";
+                    }
+
+                    $quotedCols = array_map(function ($c) {
+                        return '"' . $c . '"';
+                    }, $columns);
+
+                    $sql = "INSERT INTO {$model->bridge_table_target} (" . implode(',', $quotedCols) . ") VALUES " . implode(',', $values);
+
+                    $pdo->beginTransaction();
+
+                    try {
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->execute($params);
+                        $pdo->commit();
+                        $extractedCount = count($pgRows);
+                    } catch (\Throwable $e) {
+                        $pdo->rollBack();
+                        throw $e;
+                    }
                 }
 
-                $successMessage = "Oracle bridge execution completed. {$extractedCount} records successfully inserted into the warehouse.";
+                $successMessage = "Bridge execution completed ({$database->system_type}). {$extractedCount} records successfully inserted into the warehouse.";
 
                 if ($isAjax) {
                     return [
