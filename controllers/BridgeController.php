@@ -799,7 +799,6 @@ class BridgeController extends Controller
                         'table_name' => $model->bridge_table_source,
                     ]));
 
-                    echo '<pre>';print_r($urlDataColumns);die;
                     $chDataColumns = curl_init($urlDataColumns);
                     curl_setopt($chDataColumns, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($chDataColumns, CURLOPT_TIMEOUT, 30);
