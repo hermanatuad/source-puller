@@ -808,7 +808,6 @@ class BridgeController extends Controller
                     curl_close($chDataColumns);
 
                     $dataColumns = json_decode($responseDataColumns, true);
-                    echo '<pre>';print_r($dataColumns);die;
 
                     $columnList = BridgeColumn::find()
                         ->select('source_column_name')
