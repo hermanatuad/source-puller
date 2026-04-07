@@ -808,8 +808,9 @@ class BridgeController extends Controller
                     $curlError = curl_error($chDataColumns);
                     curl_close($chDataColumns);
 
-                    $dataDataColumns = json_decode($responseDataColumns, true);
+                    $dataColumns = json_decode($responseDataColumns, true);
 
+                    echo '<pre>';print_r($dataColumns);die;
                     $columnList = BridgeColumn::find()
                         ->select('source_column_name')
                         ->where(['bridge_id' => $id])
@@ -831,7 +832,7 @@ class BridgeController extends Controller
                         throw new Exception("Source column '{$pkColumn}' (primary key) is required for entity mapping.");
                     }
 
-                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
+                    $RAW_DATA = $dataColumns['data']['rows'] ?? [];
 
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
@@ -1100,9 +1101,9 @@ class BridgeController extends Controller
                     $curlError = curl_error($chDataColumns);
                     curl_close($chDataColumns);
 
-                    $dataDataColumns = json_decode($responseDataColumns, true);
+                    $dataColumns = json_decode($responseDataColumns, true);
 
-                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
+                    $RAW_DATA = $dataColumns['data']['rows'] ?? [];
 
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
@@ -1313,8 +1314,8 @@ class BridgeController extends Controller
                     $curlError = curl_error($chDataColumns);
                     curl_close($chDataColumns);
 
-                    $dataDataColumns = json_decode($responseDataColumns, true);
-                    $RAW_DATA = $dataDataColumns['data']['rows'] ?? [];
+                    $dataColumns = json_decode($responseDataColumns, true);
+                    $RAW_DATA = $dataColumns['data']['rows'] ?? [];
 
                     if (empty($RAW_DATA)) {
                         Yii::$app->session->setFlash('info', 'No data found.');
