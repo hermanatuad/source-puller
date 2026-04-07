@@ -788,7 +788,6 @@ class BridgeController extends Controller
                         ->where(['bridge_id' => $id])
                         ->column();
 
-                    echo '<pre>';print_r($sourceColumns);die;
                     $msPort = $this->getMicroservicePort($database->system_type);
                     $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
@@ -800,6 +799,7 @@ class BridgeController extends Controller
                         'table_name' => $model->bridge_table_source,
                     ]));
 
+                    echo '<pre>';print_r($urlDataColumns);die;
 
                     $chDataColumns = curl_init($urlDataColumns);
                     curl_setopt($chDataColumns, CURLOPT_RETURNTRANSFER, true);
