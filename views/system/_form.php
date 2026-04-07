@@ -60,7 +60,7 @@ use yii\widgets\ActiveForm;
                         'prompt' => 'Select Type',
                         'class' => 'form-select',
                         'options' => [
-                            'postgres' => ['disabled' => true],
+                            // 'postgres' => ['disabled' => true],
                         ],
                     ])->label('System Type') ?>
                 </div>
