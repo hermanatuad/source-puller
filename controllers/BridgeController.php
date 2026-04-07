@@ -810,7 +810,6 @@ class BridgeController extends Controller
 
                     $dataColumns = json_decode($responseDataColumns, true);
 
-                    echo '<pre>';print_r($dataColumns);die;
                     $columnList = BridgeColumn::find()
                         ->select('source_column_name')
                         ->where(['bridge_id' => $id])
@@ -1510,7 +1509,7 @@ class BridgeController extends Controller
         if (strpos($type, 'oracle') !== false) {
             return 2002;
         }
-        if (strpos($type, 'mssql') !== false || strpos($type, 'sqlserver') !== false) {
+        if (strpos($type, 'sql-server') !== false || strpos($type, 'sqlserver') !== false) {
             return 2003;
         }
         return 2002; // default to Oracle port
@@ -1557,7 +1556,7 @@ class BridgeController extends Controller
                 return $row ? $row['COLUMN_NAME'] : null;
             }
 
-            if ($type === 'oracle' || strpos($type, 'mssql') !== false || strpos($type, 'sqlserver') !== false) {
+            if ($type === 'oracle' || strpos($type, 'sql-server') !== false || strpos($type, 'sqlserver') !== false) {
                 $msPort = $this->getMicroservicePort($systemType);
                 $url = 'http://34.60.27.246:' . $msPort . '/get-primary-keys?params=' . urlencode(json_encode([
                     'hostname' => $hostname,
