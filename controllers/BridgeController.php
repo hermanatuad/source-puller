@@ -168,7 +168,6 @@ class BridgeController extends Controller
 
         try {
             $extractedCount = 0;
-            $skippedRows = 0;
 
             if (!$database) {
                 throw new Exception("System configuration not found.");
@@ -840,7 +839,7 @@ class BridgeController extends Controller
                     }
                 }
 
-                $successMessage = "Bridge execution completed. {$extractedCount} row(s) inserted, {$skippedRows} row(s) skipped.";
+                $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
 
                 if ($isAjax) {
                     return [
@@ -1601,7 +1600,7 @@ class BridgeController extends Controller
                     }
                 }
 
-                $successMessage = "Bridge execution completed ({$database->system_type}). {$extractedCount} row(s) inserted, {$skippedRows} row(s) skipped.";
+                $successMessage = "Bridge execution completed ({$database->system_type}). {$extractedCount} records successfully inserted into the warehouse.";
 
                 if ($isAjax) {
                     return [
