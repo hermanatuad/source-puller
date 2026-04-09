@@ -168,6 +168,7 @@ class BridgeController extends Controller
 
         try {
             $extractedCount = 0;
+            $skippedRows = 0;
 
             if (!$database) {
                 throw new Exception("System configuration not found.");
@@ -552,6 +553,12 @@ class BridgeController extends Controller
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
+                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+
+                    $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    ]);
+
                     $columns = array_keys($pgRows[0]);
 
                     foreach ($columns as $col) {
@@ -559,12 +566,6 @@ class BridgeController extends Controller
                             throw new Exception("Invalid column name: {$col}");
                         }
                     }
-
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
-
-                    $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
-                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    ]);
 
                     // Fetch actual columns present in the target table
                     $colStmt = $pdo->prepare("SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
@@ -576,6 +577,29 @@ class BridgeController extends Controller
                     $colMaxLenMap = [];
                     foreach ($colInfoRows as $ir) {
                         $colMaxLenMap[$ir['column_name']] = isset($ir['character_maximum_length']) ? (int)$ir['character_maximum_length'] : null;
+                    }
+
+                    $fkStmt = $pdo->prepare(
+                        "SELECT kcu.column_name, ccu.table_name AS referenced_table_name, ccu.column_name AS referenced_column_name
+                         FROM information_schema.table_constraints tc
+                         INNER JOIN information_schema.key_column_usage kcu
+                             ON tc.constraint_name = kcu.constraint_name
+                            AND tc.table_schema = kcu.table_schema
+                         INNER JOIN information_schema.constraint_column_usage ccu
+                             ON tc.constraint_name = ccu.constraint_name
+                            AND tc.table_schema = ccu.table_schema
+                         WHERE tc.constraint_type = 'FOREIGN KEY'
+                           AND tc.table_schema = 'public'
+                           AND tc.table_name = :table"
+                    );
+                    $fkStmt->execute([':table' => $model->bridge_table_target]);
+                    $fkRows = $fkStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $fkMap = [];
+                    foreach ($fkRows as $fkRow) {
+                        $fkMap[$fkRow['column_name']] = [
+                            'referenced_table_name' => $fkRow['referenced_table_name'],
+                            'referenced_column_name' => $fkRow['referenced_column_name'],
+                        ];
                     }
 
                     // filter out any target columns that do not actually exist in the target table
@@ -596,6 +620,57 @@ class BridgeController extends Controller
                         unset($r);
                     }
 
+
+                    $fkValidationStmts = [];
+                    $validatedRows = [];
+                    $fkSkippedRows = 0;
+                    foreach ($pgRows as $row) {
+                        $skipRow = false;
+                        foreach ($fkMap as $fkColumn => $fkInfo) {
+                            if (!array_key_exists($fkColumn, $row)) {
+                                continue;
+                            }
+
+                            $fkValue = $row[$fkColumn];
+                            if ($fkValue === null || $fkValue === '') {
+                                $skipRow = true;
+                                break;
+                            }
+
+                            $cacheKey = $fkInfo['referenced_table_name'] . '|' . $fkInfo['referenced_column_name'];
+                            if (!isset($fkValidationStmts[$cacheKey])) {
+                                $refTable = str_replace('"', '""', $fkInfo['referenced_table_name']);
+                                $refColumn = str_replace('"', '""', $fkInfo['referenced_column_name']);
+                                $fkValidationStmts[$cacheKey] = $pdo->prepare("SELECT 1 FROM \"{$refTable}\" WHERE \"{$refColumn}\" = :value LIMIT 1");
+                            }
+
+                            $checkStmt = $fkValidationStmts[$cacheKey];
+                            $checkStmt->execute([':value' => $fkValue]);
+                            if ($checkStmt->fetchColumn() === false) {
+                                $skipRow = true;
+                                break;
+                            }
+                        }
+
+                        if ($skipRow) {
+                            $fkSkippedRows++;
+                            continue;
+                        }
+
+                        $validatedRows[] = $row;
+                    }
+
+                    if (!empty($fkSkippedRows)) {
+                        $skippedRows += $fkSkippedRows;
+                        Yii::$app->session->setFlash('warning', "{$skippedRows} row(s) skipped because required reference data was missing or invalid.");
+                    }
+
+                    $pgRows = $validatedRows;
+
+                    if (empty($pgRows)) {
+                        Yii::$app->session->setFlash('info', 'No mapped data to insert because required dependent data was missing or invalid.');
+                        return $this->redirect(['view', 'id' => $id]);
+                    }
                     // Now build values and params based on the filtered columns
                     $values = [];
                     $params = [];
@@ -765,7 +840,7 @@ class BridgeController extends Controller
                     }
                 }
 
-                $successMessage = "Bridge execution completed. {$extractedCount} records successfully extracted.";
+                $successMessage = "Bridge execution completed. {$extractedCount} row(s) inserted, {$skippedRows} row(s) skipped.";
 
                 if ($isAjax) {
                     return [
@@ -1205,6 +1280,12 @@ class BridgeController extends Controller
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
+                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+
+                    $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
+                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    ]);
+
                     $columns = array_keys($pgRows[0]);
 
                     foreach ($columns as $col) {
@@ -1212,12 +1293,6 @@ class BridgeController extends Controller
                             throw new Exception("Invalid column name: {$col}");
                         }
                     }
-
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
-
-                    $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
-                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                    ]);
 
                     // Fetch actual columns present in the target table
                     $colStmt = $pdo->prepare("SELECT column_name, character_maximum_length FROM information_schema.columns WHERE table_name = :table AND table_schema = 'public'");
@@ -1229,6 +1304,29 @@ class BridgeController extends Controller
                     $colMaxLenMap = [];
                     foreach ($colInfoRows as $ir) {
                         $colMaxLenMap[$ir['column_name']] = isset($ir['character_maximum_length']) ? (int)$ir['character_maximum_length'] : null;
+                    }
+
+                    $fkStmt = $pdo->prepare(
+                        "SELECT kcu.column_name, ccu.table_name AS referenced_table_name, ccu.column_name AS referenced_column_name
+                         FROM information_schema.table_constraints tc
+                         INNER JOIN information_schema.key_column_usage kcu
+                             ON tc.constraint_name = kcu.constraint_name
+                            AND tc.table_schema = kcu.table_schema
+                         INNER JOIN information_schema.constraint_column_usage ccu
+                             ON tc.constraint_name = ccu.constraint_name
+                            AND tc.table_schema = ccu.table_schema
+                         WHERE tc.constraint_type = 'FOREIGN KEY'
+                           AND tc.table_schema = 'public'
+                           AND tc.table_name = :table"
+                    );
+                    $fkStmt->execute([':table' => $model->bridge_table_target]);
+                    $fkRows = $fkStmt->fetchAll(\PDO::FETCH_ASSOC);
+                    $fkMap = [];
+                    foreach ($fkRows as $fkRow) {
+                        $fkMap[$fkRow['column_name']] = [
+                            'referenced_table_name' => $fkRow['referenced_table_name'],
+                            'referenced_column_name' => $fkRow['referenced_column_name'],
+                        ];
                     }
 
                     // filter out any target columns that do not actually exist in the target table
@@ -1249,6 +1347,57 @@ class BridgeController extends Controller
                         unset($r);
                     }
 
+
+                    $fkValidationStmts = [];
+                    $validatedRows = [];
+                    $fkSkippedRows = 0;
+                    foreach ($pgRows as $row) {
+                        $skipRow = false;
+                        foreach ($fkMap as $fkColumn => $fkInfo) {
+                            if (!array_key_exists($fkColumn, $row)) {
+                                continue;
+                            }
+
+                            $fkValue = $row[$fkColumn];
+                            if ($fkValue === null || $fkValue === '') {
+                                $skipRow = true;
+                                break;
+                            }
+
+                            $cacheKey = $fkInfo['referenced_table_name'] . '|' . $fkInfo['referenced_column_name'];
+                            if (!isset($fkValidationStmts[$cacheKey])) {
+                                $refTable = str_replace('"', '""', $fkInfo['referenced_table_name']);
+                                $refColumn = str_replace('"', '""', $fkInfo['referenced_column_name']);
+                                $fkValidationStmts[$cacheKey] = $pdo->prepare("SELECT 1 FROM \"{$refTable}\" WHERE \"{$refColumn}\" = :value LIMIT 1");
+                            }
+
+                            $checkStmt = $fkValidationStmts[$cacheKey];
+                            $checkStmt->execute([':value' => $fkValue]);
+                            if ($checkStmt->fetchColumn() === false) {
+                                $skipRow = true;
+                                break;
+                            }
+                        }
+
+                        if ($skipRow) {
+                            $fkSkippedRows++;
+                            continue;
+                        }
+
+                        $validatedRows[] = $row;
+                    }
+
+                    if (!empty($fkSkippedRows)) {
+                        $skippedRows += $fkSkippedRows;
+                        Yii::$app->session->setFlash('warning', "{$skippedRows} row(s) skipped because required reference data was missing or invalid.");
+                    }
+
+                    $pgRows = $validatedRows;
+
+                    if (empty($pgRows)) {
+                        Yii::$app->session->setFlash('info', 'No mapped data to insert because required dependent data was missing or invalid.');
+                        return $this->redirect(['view', 'id' => $id]);
+                    }
                     // Now build values and params based on the filtered columns
                     $values = [];
                     $params = [];
@@ -1444,15 +1593,15 @@ class BridgeController extends Controller
                     try {
                         $stmt = $pdo->prepare($sql);
                         $stmt->execute($params);
-                        $pdo->commit();
-                        $extractedCount = count($pgRows);
+                            $pdo->commit();
+                            $extractedCount = count($pgRows);
                     } catch (\Throwable $e) {
                         $pdo->rollBack();
                         throw $e;
                     }
                 }
 
-                $successMessage = "Bridge execution completed ({$database->system_type}). {$extractedCount} records successfully inserted into the warehouse.";
+                $successMessage = "Bridge execution completed ({$database->system_type}). {$extractedCount} row(s) inserted, {$skippedRows} row(s) skipped.";
 
                 if ($isAjax) {
                     return [
