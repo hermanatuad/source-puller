@@ -514,23 +514,41 @@ class BridgeController extends Controller
                     }
 
                     // build pgRows using mapped entity ids for patient-id columns
+                    // skip rows when a required patient reference cannot be resolved
                     $pgRows = [];
+                    $skippedRows = 0;
                     foreach ($RAW_DATA as $row) {
                         $mapped = [];
+                        $skipRow = false;
                         foreach ($mapTargetToSource as $targetCol => $sourceCol) {
                             $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
                             if (preg_match('/patient[_\s-]?id/i', $type)) {
                                 $srcVal = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
-                                $mapped[$targetCol] = $sourceToEntity[$srcVal] ?? null;
+                                $mappedValue = $sourceToEntity[$srcVal] ?? null;
+                                if ($mappedValue === null || $mappedValue === '') {
+                                    $skipRow = true;
+                                    break;
+                                }
+                                $mapped[$targetCol] = $mappedValue;
                             } else {
                                 $mapped[$targetCol] = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
                             }
                         }
+
+                        if ($skipRow) {
+                            $skippedRows++;
+                            continue;
+                        }
+
                         $pgRows[] = $mapped;
                     }
 
+                    if (!empty($skippedRows)) {
+                        Yii::$app->session->setFlash('warning', "{$skippedRows} row(s) skipped because required patient reference data was missing.");
+                    }
+
                     if (empty($pgRows)) {
-                        Yii::$app->session->setFlash('info', 'No mapped data to insert.');
+                        Yii::$app->session->setFlash('info', 'No mapped data to insert because required dependent data was missing.');
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
@@ -1149,23 +1167,41 @@ class BridgeController extends Controller
                     }
 
                     // build pgRows using mapped entity ids for patient-id columns
+                    // skip rows when a required patient reference cannot be resolved
                     $pgRows = [];
+                    $skippedRows = 0;
                     foreach ($RAW_DATA as $row) {
                         $mapped = [];
+                        $skipRow = false;
                         foreach ($mapTargetToSource as $targetCol => $sourceCol) {
                             $type = strtolower(trim($targetTypeMap[$targetCol] ?? ''));
                             if (preg_match('/patient[_\s-]?id/i', $type)) {
                                 $srcVal = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
-                                $mapped[$targetCol] = $sourceToEntity[$srcVal] ?? null;
+                                $mappedValue = $sourceToEntity[$srcVal] ?? null;
+                                if ($mappedValue === null || $mappedValue === '') {
+                                    $skipRow = true;
+                                    break;
+                                }
+                                $mapped[$targetCol] = $mappedValue;
                             } else {
                                 $mapped[$targetCol] = array_key_exists($sourceCol, $row) ? $row[$sourceCol] : null;
                             }
                         }
+
+                        if ($skipRow) {
+                            $skippedRows++;
+                            continue;
+                        }
+
                         $pgRows[] = $mapped;
                     }
 
+                    if (!empty($skippedRows)) {
+                        Yii::$app->session->setFlash('warning', "{$skippedRows} row(s) skipped because required patient reference data was missing.");
+                    }
+
                     if (empty($pgRows)) {
-                        Yii::$app->session->setFlash('info', 'No mapped data to insert.');
+                        Yii::$app->session->setFlash('info', 'No mapped data to insert because required dependent data was missing.');
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
