@@ -237,6 +237,31 @@ class SiteController extends Controller
 
     }
 
+    public function actionXsdNew()
+    {
+        $xsdPath = Yii::getAlias('@webroot') . '/patient-new.xsd';
+        if (!file_exists($xsdPath)) {
+            throw new NotFoundHttpException('patient-new.xsd not found');
+        }
+
+        $this->view->title = 'Patient New XSD Viewer';
+        $this->view->params['pagetitle'] = 'Data Sources';
+        $this->view->params['title'] = 'Patient New XSD Viewer';
+        $this->view->params['breadcrumbs'] = [
+            ['label' => 'Data Sources', 'url' => ['system/index']],
+            'Patient New XSD Viewer',
+        ];
+
+        $xsdContent = file_get_contents($xsdPath);
+        clearstatcache(true, $xsdPath);
+
+        return $this->render('xsd-new', [
+            'xsdPath' => $xsdPath,
+            'xsdContent' => $xsdContent,
+            'lastModifiedAt' => filemtime($xsdPath) ?: null,
+        ]);
+    }
+
     /**
      * Displays and updates patient.xml from a single page editor.
      *
