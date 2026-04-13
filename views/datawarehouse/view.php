@@ -34,12 +34,16 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
         $countStmt->execute();
         $totalRows = (int)($countStmt->fetchColumn() ?: 0);
 
+        $pagerParams = Yii::$app->request->getQueryParams();
+        $pagerParams['table'] = $tableName;
+        unset($pagerParams['tableName']);
+
         $pagination = new Pagination([
             'totalCount' => $totalRows,
             'defaultPageSize' => $pageSize,
             'pageSize' => $pageSize,
             'route' => 'datawarehouse/view',
-            'params' => ['table' => $tableName],
+            'params' => $pagerParams,
             'pageParam' => 'page',
             'pageSizeParam' => false,
             'forcePageParam' => true,
