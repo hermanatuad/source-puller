@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+
+  <xs:element name="patients" type="PatientsType"/>
+
+  <xs:complexType name="PatientsType">
+    <xs:sequence>
+      <xs:element name="date_of_birth" type="xs:string"/>
+      <xs:element name="medical_record_number" type="xs:string"/>
+      <xs:element name="age_at_admission" type="xs:integer"/>
+      <xs:element name="gender" type="xs:string"/>
+      <xs:element name="ethnicity" type="xs:string"/>
+      <xs:element name="primary_language" type="xs:string"/>
+      <xs:element name="insurance_type" type="xs:string"/>
+      <xs:element name="episodes" type="EpisodesType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EpisodesType">
+    <xs:sequence>
+      <xs:element name="episode" type="EpisodeType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EpisodeType">
+    <xs:sequence>
+      <xs:element name="episode_id" type="xs:string"/>
+      <xs:element name="admission_info" type="AdmissionInfoType"/>
+      <xs:element name="historical_risk_factors" type="HistoricalRiskFactorsType"/>
+      <xs:element name="historical_medications" type="HistoricalMedicationsType"/>
+      <xs:element name="episode_summary" type="EpisodeSummaryType"/>
+      <xs:element name="stages" type="StagesType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AdmissionInfoType">
+    <xs:sequence>
+      <xs:element name="admission_date" type="xs:string"/>
+      <xs:element name="admission_source" type="xs:string"/>
+      <xs:element name="presenting_complaint" type="xs:string"/>
+      <xs:element name="admission_weight_kg" type="xs:decimal"/>
+      <xs:element name="admission_height_cm" type="xs:decimal"/>
+      <xs:element name="bmi" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HistoricalRiskFactorsType">
+    <xs:sequence>
+      <xs:element name="risk_factor" type="HistoricalRiskFactorType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HistoricalRiskFactorType">
+    <xs:sequence>
+      <xs:element name="condition" type="xs:string"/>
+      <xs:element name="diagnosis_date" type="xs:string"/>
+      <xs:element name="status" type="xs:string"/>
+      <xs:element name="notes" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HistoricalMedicationsType">
+    <xs:sequence>
+      <xs:element name="medication" type="HistoricalMedicationType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HistoricalMedicationType">
+    <xs:sequence>
+      <xs:element name="medication_name" type="xs:string"/>
+      <xs:element name="dose" type="xs:string"/>
+      <xs:element name="frequency" type="xs:string"/>
+      <xs:element name="route" type="xs:string"/>
+      <xs:element name="start_date" type="xs:string"/>
+      <xs:element name="end_date" type="xs:string" nillable="true" minOccurs="0"/>
+      <xs:element name="status" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EpisodeSummaryType">
+    <xs:sequence>
+      <xs:element name="total_length_of_stay_days" type="xs:decimal"/>
+      <xs:element name="discharge_date" type="xs:string"/>
+      <xs:element name="discharge_disposition" type="xs:string"/>
+      <xs:element name="discharge_ambulatory_status" type="xs:string"/>
+      <xs:element name="in_hospital_mortality" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StagesType">
+    <xs:sequence>
+      <xs:element name="stage" type="StageType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StageType">
+    <xs:sequence>
+      <xs:element name="stage_type" type="xs:string"/>
+      <xs:element name="stage_id" type="xs:string"/>
+      <xs:element name="operation_sequence" type="xs:integer" minOccurs="0"/>
+      <xs:element name="stage_sequence" type="xs:integer" minOccurs="0"/>
+      <xs:element name="start_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="end_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="location" type="xs:string" minOccurs="0"/>
+      <xs:element name="room_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="icu_acuity_level" type="xs:string" minOccurs="0"/>
+      <xs:element name="icu_admission_source" type="xs:string" minOccurs="0"/>
+      <xs:element name="clinical_assessments" type="ClinicalAssessmentsType" minOccurs="0"/>
+      <xs:element name="diagnoses" type="DiagnosesType" minOccurs="0"/>
+      <xs:element name="labs" type="LabsType" minOccurs="0"/>
+      <xs:element name="ecg_findings" type="EcgFindingsType" minOccurs="0"/>
+      <xs:element name="medications_administered" type="MedicationsAdministeredType" minOccurs="0"/>
+      <xs:element name="risk_scores" type="RiskScoresType" minOccurs="0"/>
+      <xs:element name="procedure_details" type="ProcedureDetailsType" minOccurs="0"/>
+      <xs:element name="pre_operative_assessment" type="PreOperativeAssessmentType" minOccurs="0"/>
+      <xs:element name="intra_operative" type="IntraOperativeType" minOccurs="0"/>
+      <xs:element name="post_operative_handoff" type="PostOperativeHandoffType" minOccurs="0"/>
+      <xs:element name="operative_note" type="OperativeNoteType" minOccurs="0"/>
+      <xs:element name="quality_metrics" type="QualityMetricsType" minOccurs="0"/>
+      <xs:element name="post_operative_diagnoses" type="PostOperativeDiagnosesType" minOccurs="0"/>
+      <xs:element name="ventilator_management" type="VentilatorManagementType" minOccurs="0"/>
+      <xs:element name="chest_tube_management" type="ChestTubeManagementType" minOccurs="0"/>
+      <xs:element name="post_operative_complications" type="PostOperativeComplicationsType" minOccurs="0"/>
+      <xs:element name="daily_goals" type="DailyGoalsType" minOccurs="0"/>
+      <xs:element name="cardiac_rehabilitation" type="CardiacRehabilitationType" minOccurs="0"/>
+      <xs:element name="patient_education" type="PatientEducationType" minOccurs="0"/>
+      <xs:element name="discharge_planning" type="DischargePlanningType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="ClinicalAssessmentsType">
+    <xs:sequence>
+      <xs:element name="assessment" type="AssessmentType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AssessmentType">
+    <xs:sequence>
+      <xs:element name="timestamp" type="xs:string"/>
+      <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="blood_pressure_systolic" type="xs:string" minOccurs="0"/>
+      <xs:element name="blood_pressure_diastolic" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
+      <xs:element name="respiratory_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="temperature_celsius" type="xs:string" minOccurs="0"/>
+      <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="pulmonary_artery_pressure_systolic" type="xs:string" minOccurs="0"/>
+      <xs:element name="pulmonary_artery_pressure_diastolic" type="xs:string" minOccurs="0"/>
+      <xs:element name="cardiac_output" type="xs:string" minOccurs="0"/>
+      <xs:element name="pain_score" type="xs:string" minOccurs="0"/>
+      <xs:element name="sedation_score" type="xs:string" minOccurs="0"/>
+      <xs:element name="ambulation_distance_meters" type="xs:string" minOccurs="0"/>
+      <xs:element name="dyspnea_on_exertion" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DiagnosesType">
+    <xs:sequence>
+      <xs:element name="diagnosis" type="DiagnosisType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DiagnosisType">
+    <xs:sequence>
+      <xs:element name="diagnosis_code" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="diagnosis_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="diagnosis_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="diagnosing_physician" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LabsType">
+    <xs:sequence>
+      <xs:element name="lab" type="LabType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LabType">
+    <xs:sequence>
+      <xs:element name="lab_type" type="xs:string"/>
+      <xs:element name="lab_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="lab_value" type="xs:string" minOccurs="0"/>
+      <xs:element name="lab_unit" type="xs:string" minOccurs="0"/>
+      <xs:element name="reference_range" type="xs:string" minOccurs="0"/>
+      <xs:element name="is_abnormal" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="hemoglobin" type="xs:string" minOccurs="0"/>
+      <xs:element name="hematocrit" type="xs:string" minOccurs="0"/>
+      <xs:element name="platelets" type="xs:string" minOccurs="0"/>
+      <xs:element name="inr" type="xs:string" minOccurs="0"/>
+      <xs:element name="ptt" type="xs:string" minOccurs="0"/>
+      <xs:element name="creatinine" type="xs:string" minOccurs="0"/>
+      <xs:element name="potassium" type="xs:string" minOccurs="0"/>
+      <xs:element name="sodium" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EcgFindingsType">
+    <xs:sequence>
+      <xs:element name="ecg_datetime" type="xs:string"/>
+      <xs:element name="rhythm" type="xs:string"/>
+      <xs:element name="findings" type="xs:string"/>
+      <xs:element name="interpretation" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MedicationsAdministeredType">
+    <xs:sequence>
+      <xs:element name="medication" type="MedicationType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MedicationType">
+    <xs:sequence>
+      <xs:element name="medication_name" type="xs:string" minOccurs="0"/>
+      <xs:element name="medication_class" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="total_dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="frequency" type="xs:string" minOccurs="0"/>
+      <xs:element name="route" type="xs:string" minOccurs="0"/>
+      <xs:element name="administration_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="start_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="end_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="start_date" type="xs:string" minOccurs="0"/>
+      <xs:element name="end_date" type="xs:string" nillable="true" minOccurs="0"/>
+      <xs:element name="ordered_by" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="indication" type="xs:string" minOccurs="0"/>
+      <xs:element name="weaning_notes" type="xs:string" minOccurs="0"/>
+      <xs:element name="previous_dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="titration_reason" type="xs:string" minOccurs="0"/>
+      <xs:element name="details" type="MedicationDetailsType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="bridging_therapy" type="xs:string" minOccurs="0"/>
+      <xs:element name="held_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="reason" type="xs:string" minOccurs="0"/>
+      <xs:element name="act_target" type="xs:string" minOccurs="0"/>
+      <xs:element name="act_achieved" type="xs:string" minOccurs="0"/>
+      <xs:element name="post_act" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedure_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedure_code" type="xs:string" minOccurs="0"/>
+      <xs:element name="access_site" type="xs:string" minOccurs="0"/>
+      <xs:element name="sedation" type="xs:string" minOccurs="0"/>
+      <xs:element name="performing_physician" type="xs:string" minOccurs="0"/>
+      <xs:element name="lesion_treated" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_size" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_count" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedural_success" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="complications" type="xs:string" minOccurs="0"/>
+      <xs:element name="drug" type="xs:string" minOccurs="0"/>
+      <xs:element name="ventilator_mode" type="xs:string" minOccurs="0"/>
+      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="peep" type="xs:string" minOccurs="0"/>
+      <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="blood_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
+      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="tidal_volume" type="xs:string" minOccurs="0"/>
+      <xs:element name="removal_datetime" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MedicationDetailsType">
+    <xs:sequence>
+      <xs:element name="drug" type="xs:string"/>
+      <xs:element name="dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="frequency" type="xs:string" minOccurs="0"/>
+      <xs:element name="route" type="xs:string" minOccurs="0"/>
+      <xs:element name="start_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="RiskScoresType">
+    <xs:sequence>
+      <xs:element name="risk_score" type="RiskScoreType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="RiskScoreType">
+    <xs:sequence>
+      <xs:element name="score_type" type="xs:string"/>
+      <xs:element name="score_value" type="xs:string"/>
+      <xs:element name="risk_category" type="xs:string"/>
+      <xs:element name="calculated_datetime" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ProcedureDetailsType">
+    <xs:sequence>
+      <xs:element name="procedure_type" type="xs:string"/>
+      <xs:element name="procedure_code" type="xs:string"/>
+      <xs:element name="access_site" type="xs:string" minOccurs="0"/>
+      <xs:element name="sedation" type="xs:string" minOccurs="0"/>
+      <xs:element name="performing_physician" type="xs:string" minOccurs="0"/>
+      <xs:element name="angiography_findings" type="AngiographyFindingsType" minOccurs="0"/>
+      <xs:element name="intervention" type="InterventionType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AngiographyFindingsType">
+    <xs:sequence>
+      <xs:element name="coronary_dominance" type="xs:string" minOccurs="0"/>
+      <xs:element name="left_main" type="xs:string" minOccurs="0"/>
+      <xs:element name="left_anterior_descending" type="LeftAnteriorDescendingType" minOccurs="0"/>
+      <xs:element name="ejection_fraction_visual" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LeftAnteriorDescendingType">
+    <xs:sequence>
+      <xs:element name="stenosis_percentage" type="xs:string" minOccurs="0"/>
+      <xs:element name="location" type="xs:string" minOccurs="0"/>
+      <xs:element name="lesion_characteristics" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InterventionType">
+    <xs:sequence>
+      <xs:element name="lesion_treated" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_size" type="xs:string" minOccurs="0"/>
+      <xs:element name="stent_count" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedural_success" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="complications" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreOperativeAssessmentType">
+    <xs:sequence>
+      <xs:element name="assessment_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="assessing_physician" type="xs:string" minOccurs="0"/>
+      <xs:element name="preoperative_diagnoses" type="PreoperativeDiagnosesType" minOccurs="0"/>
+      <xs:element name="planned_procedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="surgical_urgency" type="xs:string" minOccurs="0"/>
+      <xs:element name="anesthesia_plan" type="xs:string" minOccurs="0"/>
+      <xs:element name="preoperative_risk_assessment" type="PreoperativeRiskAssessmentType" minOccurs="0"/>
+      <xs:element name="preoperative_labs" type="PreoperativeLabsType" minOccurs="0"/>
+      <xs:element name="preoperative_imaging" type="PreoperativeImagingType" minOccurs="0"/>
+      <xs:element name="medications_held" type="MedicationsHeldType" minOccurs="0"/>
+      <xs:element name="preoperative_instructions" type="PreoperativeInstructionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeDiagnosesType">
+    <xs:sequence>
+      <xs:element name="diagnosis" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeRiskAssessmentType">
+    <xs:sequence>
+      <xs:element name="euroscore_ii" type="xs:string" minOccurs="0"/>
+      <xs:element name="sts_mortality_risk" type="xs:string" minOccurs="0"/>
+      <xs:element name="sts_morbidity_risk" type="xs:string" minOccurs="0"/>
+      <xs:element name="asa_class" type="xs:string" minOccurs="0"/>
+      <xs:element name="nyha_class" type="xs:string" minOccurs="0"/>
+      <xs:element name="ccs_class" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeLabsType">
+    <xs:sequence>
+      <xs:element name="lab" type="PreoperativeLabType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeLabType">
+    <xs:sequence>
+      <xs:element name="lab_type" type="xs:string"/>
+      <xs:element name="lab_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="hemoglobin" type="xs:string" minOccurs="0"/>
+      <xs:element name="hematocrit" type="xs:string" minOccurs="0"/>
+      <xs:element name="platelets" type="xs:string" minOccurs="0"/>
+      <xs:element name="inr" type="xs:string" minOccurs="0"/>
+      <xs:element name="ptt" type="xs:string" minOccurs="0"/>
+      <xs:element name="creatinine" type="xs:string" minOccurs="0"/>
+      <xs:element name="potassium" type="xs:string" minOccurs="0"/>
+      <xs:element name="sodium" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeImagingType">
+    <xs:sequence>
+      <xs:element name="echocardiogram" type="EchocardiogramType" minOccurs="0"/>
+      <xs:element name="cardiac_ct" type="CardiacCtType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EchocardiogramType">
+    <xs:sequence>
+      <xs:element name="study_date" type="xs:string" minOccurs="0"/>
+      <xs:element name="lvef_percentage" type="xs:string" minOccurs="0"/>
+      <xs:element name="wall_motion_abnormalities" type="xs:string" minOccurs="0"/>
+      <xs:element name="valvular_findings" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CardiacCtType">
+    <xs:sequence>
+      <xs:element name="study_date" type="xs:string" minOccurs="0"/>
+      <xs:element name="calcium_score" type="xs:string" minOccurs="0"/>
+      <xs:element name="anatomical_notes" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MedicationsHeldType">
+    <xs:sequence>
+      <xs:element name="medication" type="MedicationHeldType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MedicationHeldType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="held_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="reason" type="xs:string" minOccurs="0"/>
+      <xs:element name="bridging_therapy" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreoperativeInstructionsType">
+    <xs:sequence>
+      <xs:element name="nil_per_os_start" type="xs:string" minOccurs="0"/>
+      <xs:element name="preoperative_antibiotic" type="xs:string" minOccurs="0"/>
+      <xs:element name="skin_preparation" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntraOperativeType">
+    <xs:sequence>
+      <xs:element name="anesthesia" type="AnesthesiaType" minOccurs="0"/>
+      <xs:element name="surgical_procedure" type="SurgicalProcedureType" minOccurs="0"/>
+      <xs:element name="intraoperative_events" type="IntraoperativeEventsType" minOccurs="0"/>
+      <xs:element name="fluid_management" type="FluidManagementType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AnesthesiaType">
+    <xs:sequence>
+      <xs:element name="anesthesiologist" type="xs:string" minOccurs="0"/>
+      <xs:element name="anesthesia_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="induction_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="intubation_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="extubation_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="monitoring_lines" type="MonitoringLinesType" minOccurs="0"/>
+      <xs:element name="hemodynamic_parameters" type="HemodynamicParametersType" minOccurs="0"/>
+      <xs:element name="intraoperative_medications" type="IntraoperativeMedicationsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MonitoringLinesType">
+    <xs:sequence>
+      <xs:element name="line" type="MonitoringLineType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MonitoringLineType">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="site" type="xs:string" minOccurs="0"/>
+      <xs:element name="placement_time" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HemodynamicParametersType">
+    <xs:sequence>
+      <xs:element name="parameter" type="HemodynamicParameterType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HemodynamicParameterType">
+    <xs:sequence>
+      <xs:element name="time" type="xs:string" minOccurs="0"/>
+      <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="blood_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="pulmonary_artery_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="cardiac_output" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntraoperativeMedicationsType">
+    <xs:sequence>
+      <xs:element name="medication" type="MedicationType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SurgicalProcedureType">
+    <xs:sequence>
+      <xs:element name="surgeon" type="xs:string" minOccurs="0"/>
+      <xs:element name="assistant_surgeon" type="xs:string" minOccurs="0"/>
+      <xs:element name="first_assistant" type="xs:string" minOccurs="0"/>
+      <xs:element name="perfusionist" type="xs:string" minOccurs="0"/>
+      <xs:element name="scrub_nurse" type="xs:string" minOccurs="0"/>
+      <xs:element name="circulating_nurse" type="xs:string" minOccurs="0"/>
+      <xs:element name="incision" type="IncisionType" minOccurs="0"/>
+      <xs:element name="cardiopulmonary_bypass" type="CardiopulmonaryBypassType" minOccurs="0"/>
+      <xs:element name="grafts" type="GraftsType" minOccurs="0"/>
+      <xs:element name="intraoperative_assessment" type="IntraoperativeAssessmentType" minOccurs="0"/>
+      <xs:element name="closure" type="ClosureType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IncisionType">
+    <xs:sequence>
+      <xs:element name="incision_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="incision_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="approach" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CardiopulmonaryBypassType">
+    <xs:sequence>
+      <xs:element name="bypass_initiation_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="bypass_termination_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="total_bypass_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="aortic_cross_clamp_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="myocardial_protection" type="MyocardialProtectionType" minOccurs="0"/>
+      <xs:element name="lowest_temperature" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MyocardialProtectionType">
+    <xs:sequence>
+      <xs:element name="cardioplegia_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="cardioplegia_volume" type="xs:string" minOccurs="0"/>
+      <xs:element name="dosing_frequency" type="xs:string" minOccurs="0"/>
+      <xs:element name="myocardial_temperature" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GraftsType">
+    <xs:sequence>
+      <xs:element name="graft" type="GraftType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GraftType">
+    <xs:sequence>
+      <xs:element name="graft_number" type="xs:string" minOccurs="0"/>
+      <xs:element name="graft_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="vein_source" type="xs:string" minOccurs="0"/>
+      <xs:element name="proximal_anastomosis" type="xs:string" minOccurs="0"/>
+      <xs:element name="distal_anastomosis" type="xs:string" minOccurs="0"/>
+      <xs:element name="distal_anastomosis_location" type="xs:string" minOccurs="0"/>
+      <xs:element name="graft_quality" type="xs:string" minOccurs="0"/>
+      <xs:element name="doppler_flow" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntraoperativeAssessmentType">
+    <xs:sequence>
+      <xs:element name="transesophageal_echocardiogram" type="TransesophagealEchocardiogramType" minOccurs="0"/>
+      <xs:element name="graft_flow_measurements" type="GraftFlowMeasurementsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TransesophagealEchocardiogramType">
+    <xs:sequence>
+      <xs:element name="pre_bypass_lvef" type="xs:string" minOccurs="0"/>
+      <xs:element name="post_bypass_lvef" type="xs:string" minOccurs="0"/>
+      <xs:element name="wall_motion_improvement" type="xs:string" minOccurs="0"/>
+      <xs:element name="valvular_function" type="xs:string" minOccurs="0"/>
+      <xs:element name="graft_flow_assessment" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GraftFlowMeasurementsType">
+    <xs:sequence>
+      <xs:element name="measurement" type="GraftFlowMeasurementType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GraftFlowMeasurementType">
+    <xs:sequence>
+      <xs:element name="graft" type="xs:string" minOccurs="0"/>
+      <xs:element name="flow_ml_min" type="xs:string" minOccurs="0"/>
+      <xs:element name="pulsatility_index" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ClosureType">
+    <xs:sequence>
+      <xs:element name="chest_tubes_placed" type="xs:string" minOccurs="0"/>
+      <xs:element name="chest_tube_size" type="xs:string" minOccurs="0"/>
+      <xs:element name="sternal_closure" type="xs:string" minOccurs="0"/>
+      <xs:element name="closure_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="skin_closure" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntraoperativeEventsType">
+    <xs:sequence>
+      <xs:element name="event" type="IntraoperativeEventType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntraoperativeEventType">
+    <xs:sequence>
+      <xs:element name="event_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="event_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="intervention" type="xs:string" minOccurs="0"/>
+      <xs:element name="resolution" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FluidManagementType">
+    <xs:sequence>
+      <xs:element name="intravenous_fluids" type="IntravenousFluidsType" minOccurs="0"/>
+      <xs:element name="blood_products" type="BloodProductsType" minOccurs="0"/>
+      <xs:element name="urine_output_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="estimated_blood_loss_ml" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="IntravenousFluidsType">
+    <xs:sequence>
+      <xs:element name="fluid" type="FluidType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FluidType">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="volume_ml" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BloodProductsType">
+    <xs:sequence>
+      <xs:element name="product" type="BloodProductType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="BloodProductType">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="units" type="xs:string" minOccurs="0"/>
+      <xs:element name="indication" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PostOperativeHandoffType">
+    <xs:sequence>
+      <xs:element name="handoff_time" type="xs:string" minOccurs="0"/>
+      <xs:element name="receiving_unit" type="xs:string" minOccurs="0"/>
+      <xs:element name="receiving_physician" type="xs:string" minOccurs="0"/>
+      <xs:element name="receiving_nurse" type="xs:string" minOccurs="0"/>
+      <xs:element name="handoff_summary" type="HandoffSummaryType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="HandoffSummaryType">
+    <xs:sequence>
+      <xs:element name="procedure_performed" type="xs:string" minOccurs="0"/>
+      <xs:element name="intraoperative_course" type="xs:string" minOccurs="0"/>
+      <xs:element name="current_status" type="CurrentStatusType" minOccurs="0"/>
+      <xs:element name="infusions" type="InfusionsType" minOccurs="0"/>
+      <xs:element name="drains" type="DrainsType" minOccurs="0"/>
+      <xs:element name="special_instructions" type="SpecialInstructionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CurrentStatusType">
+    <xs:sequence>
+      <xs:element name="ventilator_mode" type="xs:string" minOccurs="0"/>
+      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="peep" type="xs:string" minOccurs="0"/>
+      <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="blood_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InfusionsType">
+    <xs:sequence>
+      <xs:element name="infusion" type="InfusionType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InfusionType">
+    <xs:sequence>
+      <xs:element name="medication" type="xs:string" minOccurs="0"/>
+      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DrainsType">
+    <xs:sequence>
+      <xs:element name="chest_tube_output_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="characteristics" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SpecialInstructionsType">
+    <xs:sequence>
+      <xs:element name="instruction" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OperativeNoteType">
+    <xs:sequence>
+      <xs:element name="dictation_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="surgeon_signature" type="xs:string" minOccurs="0"/>
+      <xs:element name="summary" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="QualityMetricsType">
+    <xs:sequence>
+      <xs:element name="operative_time_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="skin_to_skin_time_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="cardiopulmonary_bypass_time_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="cross_clamp_time_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="complete_revascularization_achieved" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="graft_patency_assessed" type="xs:string" minOccurs="0"/>
+      <xs:element name="sternal_wound_class" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PostOperativeDiagnosesType">
+    <xs:sequence>
+      <xs:element name="diagnosis" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="VentilatorManagementType">
+    <xs:sequence>
+      <xs:element name="ventilator_mode" type="xs:string" minOccurs="0"/>
+      <xs:element name="extubation_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="pre_extubation_settings" type="PreExtubationSettingsType" minOccurs="0"/>
+      <xs:element name="post_extubation_oxygen" type="xs:string" minOccurs="0"/>
+      <xs:element name="extubation_successful" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PreExtubationSettingsType">
+    <xs:sequence>
+      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="peep" type="xs:string" minOccurs="0"/>
+      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="tidal_volume" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ChestTubeManagementType">
+    <xs:sequence>
+      <xs:element name="chest_tube" type="ChestTubeType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ChestTubeType">
+    <xs:sequence>
+      <xs:element name="location" type="xs:string" minOccurs="0"/>
+      <xs:element name="size" type="xs:string" minOccurs="0"/>
+      <xs:element name="output" type="ChestTubeOutputType" minOccurs="0"/>
+      <xs:element name="removal_datetime" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ChestTubeOutputType">
+    <xs:sequence>
+      <xs:element name="day1_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="day2_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="day3_ml" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PostOperativeComplicationsType">
+    <xs:sequence>
+      <xs:element name="complication" type="ComplicationType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ComplicationType">
+    <xs:sequence>
+      <xs:element name="complication_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="onset_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="severity" type="xs:string" minOccurs="0"/>
+      <xs:element name="management" type="xs:string" minOccurs="0"/>
+      <xs:element name="resolution_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="follow_up" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DailyGoalsType">
+    <xs:sequence>
+      <xs:element name="goal" type="GoalType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GoalType">
+    <xs:sequence>
+      <xs:element name="post_operative_day" type="xs:string" minOccurs="0"/>
+      <xs:element name="goals" type="xs:string" minOccurs="0"/>
+      <xs:element name="achieved" type="xs:boolean" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CardiacRehabilitationType">
+    <xs:sequence>
+      <xs:element name="phase" type="xs:string" minOccurs="0"/>
+      <xs:element name="sessions" type="SessionsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SessionsType">
+    <xs:sequence>
+      <xs:element name="session" type="SessionType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SessionType">
+    <xs:sequence>
+      <xs:element name="session_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="activity_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="duration_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="distance_meters" type="xs:string" minOccurs="0"/>
+      <xs:element name="pre_activity_heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="post_activity_heart_rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="perceived_exertion" type="xs:string" minOccurs="0"/>
+      <xs:element name="resistance_exercises" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PatientEducationType">
+    <xs:sequence>
+      <xs:element name="topic" type="xs:string" minOccurs="0"/>
+      <xs:element name="delivery_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="provided_by" type="xs:string" minOccurs="0"/>
+      <xs:element name="understanding_assessed" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DischargePlanningType">
+    <xs:sequence>
+      <xs:element name="consult_datetime" type="xs:string" minOccurs="0"/>
+      <xs:element name="home_health_services" type="xs:string" minOccurs="0"/>
+      <xs:element name="outpatient_cardiac_rehab_referral" type="xs:string" minOccurs="0"/>
+      <xs:element name="follow_up_appointments" type="FollowUpAppointmentsType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FollowUpAppointmentsType">
+    <xs:sequence>
+      <xs:element name="appointment" type="AppointmentType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AppointmentType">
+    <xs:sequence>
+      <xs:element name="specialty" type="xs:string" minOccurs="0"/>
+      <xs:element name="provider" type="xs:string" minOccurs="0"/>
+      <xs:element name="appointment_date" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
