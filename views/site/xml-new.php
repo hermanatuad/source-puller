@@ -34,6 +34,21 @@ $this->registerCss(<<<CSS
     box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
+.xml-node-plain {
+    border: 1px solid var(--xml-border);
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 8px;
+}
+
+.xml-node-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
 .xml-node details[open] {
     background: var(--xml-bg);
 }
@@ -295,6 +310,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 
     $directText = $extractDirectText($element);
     $hasChildren = !empty($children);
+    $isComplexNode = $hasChildren && (count($children) > 2 || $depth > 2);
 
     $searchText = trim($element->tagName . ' ' . $directText);
     foreach ($attributes as $attributeHtml) {
@@ -303,40 +319,65 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 
     $html = '<div class="xml-node-item" data-xml-search="' . Html::encode($searchText) . '">';
     $html .= '<div class="xml-node">';
-    $html .= '<details' . ((!$hasChildren || $depth <= 2) ? ' open' : '') . '>';
-    $html .= '<summary>';
-    $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
+    if ($isComplexNode) {
+        $html .= '<details' . ($depth <= 2 ? ' open' : '') . '>';
+        $html .= '<summary>';
+        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
 
-    if (!empty($attributes)) {
-        $html .= implode(' ', $attributes);
-    }
+        if (!empty($attributes)) {
+            $html .= implode(' ', $attributes);
+        }
 
-    if ($hasChildren) {
         $html .= Html::tag('span', count($children) . ' child', ['class' => 'xml-meta']);
-    }
-    $html .= '</summary>';
+        $html .= '</summary>';
 
-    if ($directText !== '') {
-        $html .= Html::tag(
-            'div',
-            Html::encode($directText),
-            ['class' => 'xml-leaf-value mt-2']
-        );
-    }
+        if ($directText !== '') {
+            $html .= Html::tag(
+                'div',
+                Html::encode($directText),
+                ['class' => 'xml-leaf-value mt-2']
+            );
+        }
 
-    if (!$hasChildren && $directText === '') {
-        $html .= Html::tag('div', '(empty)', ['class' => 'xml-meta mt-2']);
-    }
-
-    if ($hasChildren) {
         $html .= '<div class="xml-children-grid">';
         foreach ($children as $child) {
             $html .= $renderElement($child, $depth + 1);
         }
         $html .= '</div>';
+        $html .= '</details>';
+    } else {
+        $html .= '<div class="xml-node-plain">';
+        $html .= '<div class="xml-node-head">';
+        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
+
+        if (!empty($attributes)) {
+            $html .= implode(' ', $attributes);
+        }
+
+        if ($hasChildren) {
+            $html .= Html::tag('span', count($children) . ' child', ['class' => 'xml-meta']);
+        }
+        $html .= '</div>';
+
+        if ($directText !== '') {
+            $html .= Html::tag('div', Html::encode($directText), ['class' => 'xml-leaf-value']);
+        }
+
+        if (!$hasChildren && $directText === '') {
+            $html .= Html::tag('div', '(empty)', ['class' => 'xml-meta']);
+        }
+
+        if ($hasChildren) {
+            $html .= '<div class="xml-children-grid mt-2">';
+            foreach ($children as $child) {
+                $html .= $renderElement($child, $depth + 1);
+            }
+            $html .= '</div>';
+        }
+
+        $html .= '</div>';
     }
 
-    $html .= '</details>';
     $html .= '</div>';
     $html .= '</div>';
 
