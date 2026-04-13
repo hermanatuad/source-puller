@@ -73,6 +73,30 @@ $this->registerCss(<<<CSS
     margin-top: 8px;
 }
 
+.xml-stage-lane {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(320px, 380px);
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-top: 8px;
+}
+
+.xml-stage-lane > .xml-node-item {
+    min-width: 0;
+}
+
+.xml-stage-detail-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 320px);
+    gap: 8px;
+    overflow-x: auto;
+    margin-top: 8px;
+    padding-bottom: 4px;
+}
+
 .xml-dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -310,7 +334,15 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 
     $directText = $extractDirectText($element);
     $hasChildren = !empty($children);
-    $isComplexNode = $hasChildren && (count($children) > 2 || $depth > 2);
+    $isStageNode = $element->tagName === 'stage';
+    $isComplexNode = $hasChildren && (count($children) > 2 || $depth > 2 || $isStageNode);
+    $childrenClass = 'xml-children-grid';
+
+    if ($element->tagName === 'stages') {
+        $childrenClass = 'xml-stage-lane';
+    } elseif ($isStageNode) {
+        $childrenClass = 'xml-stage-detail-row';
+    }
 
     $searchText = trim($element->tagName . ' ' . $directText);
     foreach ($attributes as $attributeHtml) {
@@ -339,7 +371,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
             );
         }
 
-        $html .= '<div class="xml-children-grid">';
+        $html .= '<div class="' . $childrenClass . '">';
         foreach ($children as $child) {
             $html .= $renderElement($child, $depth + 1);
         }
@@ -368,7 +400,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
         }
 
         if ($hasChildren) {
-            $html .= '<div class="xml-children-grid mt-2">';
+            $html .= '<div class="' . $childrenClass . ' mt-2">';
             foreach ($children as $child) {
                 $html .= $renderElement($child, $depth + 1);
             }
