@@ -363,8 +363,57 @@ $this->registerJs(<<<JS
 
     const expandBtn = shell.querySelector('[data-xml-expand]');
     const collapseBtn = shell.querySelector('[data-xml-collapse]');
+    const resetBtn = shell.querySelector('[data-xml-reset]');
     if (expandBtn) expandBtn.addEventListener('click', () => toggleNodes(true));
     if (collapseBtn) collapseBtn.addEventListener('click', () => toggleNodes(false));
+
+    const filterInput = shell.querySelector('[data-xml-filter]');
+    const filterMode = shell.querySelector('[data-xml-filter-mode]');
+    const onlyLeaf = shell.querySelector('[data-xml-only-leaf]');
+    const hideEmpty = shell.querySelector('[data-xml-hide-empty]');
+    const maxDepth = shell.querySelector('[data-xml-max-depth]');
+    const depthLabel = shell.querySelector('[data-xml-max-depth-label]');
+
+    const applyFilters = () => {
+        const needle = ((filterInput && filterInput.value) || '').trim().toLowerCase();
+        const mode = (filterMode && filterMode.value) || 'all';
+        const leafOnly = !!(onlyLeaf && onlyLeaf.checked);
+        const hiddenEmpty = !!(hideEmpty && hideEmpty.checked);
+        const depthLimit = parseInt((maxDepth && maxDepth.value) || '99', 10);
+
+        shell.querySelectorAll('.xml-node-item').forEach((item) => {
+            const search = (item.getAttribute('data-xml-search') || '').toLowerCase();
+            const tag = (item.getAttribute('data-xml-tag') || '').toLowerCase();
+            const value = (item.getAttribute('data-xml-value') || '').toLowerCase();
+            const path = (item.getAttribute('data-xml-path') || '').toLowerCase();
+            const isLeaf = item.getAttribute('data-xml-leaf') === '1';
+            const isEmpty = item.getAttribute('data-xml-empty') === '1';
+            const depth = parseInt(item.getAttribute('data-xml-depth') || '0', 10);
+
+            let match = true;
+            if (needle !== '') {
+                if (mode === 'tag') {
+                    match = tag.includes(needle);
+                } else if (mode === 'value') {
+                    match = value.includes(needle);
+                } else if (mode === 'path') {
+                    match = path.includes(needle);
+                } else {
+                    match = search.includes(needle);
+                }
+            }
+
+            if (leafOnly && !isLeaf) match = false;
+            if (hiddenEmpty && isEmpty) match = false;
+            if (!Number.isNaN(depthLimit) && depth > depthLimit) match = false;
+
+            item.style.display = match ? '' : 'none';
+        });
+
+        if (depthLabel && maxDepth) {
+            depthLabel.textContent = maxDepth.value;
+        }
+    };
 
     shell.querySelectorAll('[data-xml-tab]').forEach((tab) => {
         tab.addEventListener('click', () => {
@@ -377,16 +426,24 @@ $this->registerJs(<<<JS
         });
     });
 
-    const filterInput = shell.querySelector('[data-xml-filter]');
-    if (filterInput) {
-        filterInput.addEventListener('input', () => {
-            const needle = filterInput.value.trim().toLowerCase();
-            shell.querySelectorAll('.xml-node-item').forEach((item) => {
-                const haystack = (item.getAttribute('data-xml-search') || '').toLowerCase();
-                item.style.display = needle === '' || haystack.includes(needle) ? '' : 'none';
-            });
+    if (filterInput) filterInput.addEventListener('input', applyFilters);
+    if (filterMode) filterMode.addEventListener('change', applyFilters);
+    if (onlyLeaf) onlyLeaf.addEventListener('change', applyFilters);
+    if (hideEmpty) hideEmpty.addEventListener('change', applyFilters);
+    if (maxDepth) maxDepth.addEventListener('input', applyFilters);
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            if (filterInput) filterInput.value = '';
+            if (filterMode) filterMode.value = 'all';
+            if (onlyLeaf) onlyLeaf.checked = false;
+            if (hideEmpty) hideEmpty.checked = false;
+            if (maxDepth) maxDepth.value = String(maxDepth.max || 12);
+            applyFilters();
         });
     }
+
+    applyFilters();
 })();
 JS);
 
@@ -399,6 +456,7 @@ $stats = [
 $topLevelChildren = [];
 $rootAttributes = [];
 $sectionStats = [];
+$depthLimitMax = 12;
 
 if ($dom !== null && $dom->documentElement !== null) {
     foreach ($dom->documentElement->childNodes as $childNode) {
@@ -438,6 +496,7 @@ if ($dom !== null && $dom->documentElement !== null) {
     };
 
     $collectStats($dom->documentElement);
+    $depthLimitMax = max(1, min(30, $stats['maxDepth']));
 
     $collectMetrics = null;
     $collectMetrics = static function (\DOMElement $element, int $depth = 1) use (&$collectMetrics): array {
@@ -615,6 +674,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1, string $
                 <div class="xml-toolbar d-flex flex-wrap gap-2">
                     <button type="button" class="btn btn-sm btn-soft-primary" data-xml-expand>Expand all</button>
                     <button type="button" class="btn btn-sm btn-soft-secondary" data-xml-collapse>Collapse all</button>
+                    <button type="button" class="btn btn-sm btn-soft-dark" data-xml-reset>Reset</button>
                 </div>
             </div>
         </div>
@@ -631,6 +691,41 @@ $renderElement = static function (\DOMElement $element, int $depth = 1, string $
                 <div class="xml-info-card">
                     <span class="xml-info-label">Filter</span>
                     <input type="text" class="form-control" placeholder="Cari tag atau value" data-xml-filter>
+                </div>
+            </div>
+
+            <div class="xml-explorer-controls">
+                <div class="xml-control-card">
+                    <span class="xml-control-label">Filter Mode</span>
+                    <select class="form-select form-select-sm" data-xml-filter-mode>
+                        <option value="all">All Fields</option>
+                        <option value="tag">Tag Name</option>
+                        <option value="value">Value</option>
+                        <option value="path">Path</option>
+                    </select>
+                </div>
+                <div class="xml-control-card">
+                    <span class="xml-control-label">Depth Limit</span>
+                    <input type="range" class="form-range" min="1" max="<?= Html::encode((string) $depthLimitMax) ?>" value="<?= Html::encode((string) $depthLimitMax) ?>" data-xml-max-depth>
+                    <div class="xml-mini-meta">Level: <strong data-xml-max-depth-label><?= Html::encode((string) $depthLimitMax) ?></strong></div>
+                </div>
+                <div class="xml-control-card">
+                    <span class="xml-control-label">Node Type</span>
+                    <label class="xml-inline-check">
+                        <input type="checkbox" data-xml-only-leaf>
+                        Leaf only
+                    </label>
+                </div>
+                <div class="xml-control-card">
+                    <span class="xml-control-label">Visibility</span>
+                    <label class="xml-inline-check">
+                        <input type="checkbox" data-xml-hide-empty>
+                        Hide empty nodes
+                    </label>
+                </div>
+                <div class="xml-control-card">
+                    <span class="xml-control-label">Quick Insight</span>
+                    <div class="xml-mini-meta">Use tabs + mode filter to audit XML cepat.</div>
                 </div>
             </div>
 
@@ -660,17 +755,30 @@ $renderElement = static function (\DOMElement $element, int $depth = 1, string $
 
                         <div class="xml-section-panel active" data-xml-panel="root">
                             <div class="xml-children-grid">
-                                <?= $renderElement($dom->documentElement) ?>
+                                <?= $renderElement($dom->documentElement, 1, 'root') ?>
                             </div>
                         </div>
 
                         <?php foreach ($topLevelChildren as $index => $section): ?>
                             <div class="xml-section-panel" data-xml-panel="section-<?= $index ?>">
                                 <div class="xml-children-grid">
-                                    <?= $renderElement($section) ?>
+                                    <?= $renderElement($section, 1, 'root') ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
+
+                        <?php if (!empty($sectionStats)): ?>
+                            <div class="xml-mini-stats">
+                                <?php foreach ($sectionStats as $sectionStat): ?>
+                                    <article class="xml-mini-card">
+                                        <div class="xml-mini-title"><?= Html::encode($sectionStat['name']) ?></div>
+                                        <div class="xml-mini-meta">Elements: <?= Html::encode((string) $sectionStat['metrics']['elements']) ?></div>
+                                        <div class="xml-mini-meta">Leaves: <?= Html::encode((string) $sectionStat['metrics']['leaves']) ?></div>
+                                        <div class="xml-mini-meta">Max Depth: <?= Html::encode((string) $sectionStat['metrics']['maxDepth']) ?></div>
+                                    </article>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="d-flex flex-column gap-2">
