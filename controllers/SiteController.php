@@ -182,6 +182,61 @@ class SiteController extends Controller
         return file_get_contents($xmlPath);
     }
 
+    public function actionXmlNew()
+    {
+        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
+        if (!file_exists($xmlPath)) {
+            throw new NotFoundHttpException('patient-new.xml not found');
+        }
+
+        $this->view->title = 'Patient New XML Viewer';
+        $this->view->params['pagetitle'] = 'Data Sources';
+        $this->view->params['title'] = 'Patient New XML Viewer';
+        $this->view->params['breadcrumbs'] = [
+            ['label' => 'Data Sources', 'url' => ['system/index']],
+            'Patient New XML Viewer',
+        ];
+
+        $xmlContent = file_get_contents($xmlPath);
+        $dom = null;
+        $parseErrors = [];
+
+        $previousUseInternalErrors = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = true;
+
+        if ($dom->loadXML($xmlContent, LIBXML_NOBLANKS)) {
+            $xmlContent = $dom->saveXML();
+        } else {
+            $parseErrors = array_map(static function (\LibXMLError $error) {
+                return sprintf(
+                    'Line %d, column %d: %s',
+                    $error->line,
+                    $error->column,
+                    trim($error->message)
+                );
+            }, libxml_get_errors());
+            $dom = null;
+        }
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseInternalErrors);
+
+        clearstatcache(true, $xmlPath);
+
+        return $this->render('xml-new', [
+            'xmlPath' => $xmlPath,
+            'xmlContent' => $xmlContent,
+            'dom' => $dom,
+            'parseErrors' => $parseErrors,
+            'lastModifiedAt' => filemtime($xmlPath) ?: null,
+        ]);
+
+    }
+
     /**
      * Displays and updates patient.xml from a single page editor.
      *
