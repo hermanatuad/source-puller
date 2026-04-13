@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Html;
+use yii\data\Pagination;
+use yii\widgets\LinkPager;
 
 /** @var yii\web\View $this */
 /** @var string $tableName */
@@ -17,13 +19,37 @@ $totalSize = $tableData['total_size_mb'] ?? '';
 
 $sampleRows = [];
 $sampleError = null;
+$pagination = null;
 
 // Validate simple table name (prevent injection) then attempt to fetch sample rows
 if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
     try {
+        $currentPage = max(1, (int)Yii::$app->request->get('page', 1));
+        $pageSize = 50;
+        $offset = ($currentPage - 1) * $pageSize;
+
         $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
-        $stmt = $pdo->prepare('SELECT * FROM "' . $tableName . '" LIMIT 50');
+
+        $countStmt = $pdo->prepare('SELECT COUNT(*) AS total_rows FROM "' . $tableName . '"');
+        $countStmt->execute();
+        $totalRows = (int)($countStmt->fetchColumn() ?: 0);
+
+        $pagination = new Pagination([
+            'totalCount' => $totalRows,
+            'defaultPageSize' => $pageSize,
+            'pageSize' => $pageSize,
+            'route' => 'datawarehouse/view',
+            'params' => ['tableName' => $tableName],
+            'pageParam' => 'page',
+            'pageSizeParam' => false,
+            'forcePageParam' => true,
+            'validatePage' => false,
+        ]);
+
+        $stmt = $pdo->prepare('SELECT * FROM "' . $tableName . '" LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':limit', $pageSize, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         $sampleRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     } catch (\Throwable $e) {
@@ -53,7 +79,7 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
                     <div class="text-muted small">Columns: <?= Html::encode($columnsCount) ?> • Size: <?= Html::encode($totalSize) ?> MB</div>
                 </div>
 
-                <h6>Sample Rows (up to 50)</h6>
+                <h6>Sample Rows (50 per page)</h6>
                 <?php if ($sampleError): ?>
                     <div class="alert alert-warning"><?= Html::encode($sampleError) ?></div>
                 <?php elseif (empty($sampleRows)): ?>
@@ -79,6 +105,20 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
                             </tbody>
                         </table>
                     </div>
+
+                    <?php if ($pagination !== null && $pagination->totalCount > $pagination->pageSize): ?>
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                            <div class="text-muted small">
+                                Showing <?= Html::encode((string)($offset + 1)) ?>-
+                                <?= Html::encode((string)min($offset + count($sampleRows), $pagination->totalCount)) ?>
+                                of <?= Html::encode((string)$pagination->totalCount) ?> rows
+                            </div>
+                            <?= LinkPager::widget([
+                                'pagination' => $pagination,
+                                'options' => ['class' => 'pagination pagination-sm mb-0'],
+                            ]) ?>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div>
