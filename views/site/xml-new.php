@@ -79,6 +79,62 @@ $this->registerCss(<<<CSS
     word-break: break-word;
 }
 
+.xml-explorer-controls {
+    display: grid;
+    grid-template-columns: 1.2fr repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.xml-control-card {
+    border: 1px solid var(--xml-border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 8px 10px;
+}
+
+.xml-control-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.xml-inline-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+.xml-mini-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.xml-mini-card {
+    border: 1px solid var(--xml-border);
+    border-radius: 10px;
+    background: #fff;
+    padding: 8px;
+}
+
+.xml-mini-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.xml-mini-meta {
+    font-size: 12px;
+    color: #64748b;
+}
+
 .xml-children-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -249,6 +305,14 @@ $this->registerCss(<<<CSS
     font-weight: 600;
 }
 
+.xml-path {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+    word-break: break-all;
+}
+
 .xml-raw {
     max-height: 80vh;
     overflow: auto;
@@ -273,6 +337,10 @@ $this->registerCss(<<<CSS
     }
 
     .xml-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xml-explorer-controls {
         grid-template-columns: 1fr;
     }
 
@@ -330,6 +398,7 @@ $stats = [
 
 $topLevelChildren = [];
 $rootAttributes = [];
+$sectionStats = [];
 
 if ($dom !== null && $dom->documentElement !== null) {
     foreach ($dom->documentElement->childNodes as $childNode) {
@@ -369,6 +438,46 @@ if ($dom !== null && $dom->documentElement !== null) {
     };
 
     $collectStats($dom->documentElement);
+
+    $collectMetrics = null;
+    $collectMetrics = static function (\DOMElement $element, int $depth = 1) use (&$collectMetrics): array {
+        $elements = 1;
+        $leaves = 0;
+        $maxDepth = $depth;
+
+        $children = [];
+        foreach ($element->childNodes as $childNode) {
+            if ($childNode instanceof \DOMElement) {
+                $children[] = $childNode;
+            }
+        }
+
+        if (empty($children)) {
+            $leaves = 1;
+        }
+
+        foreach ($children as $child) {
+            $result = $collectMetrics($child, $depth + 1);
+            $elements += $result['elements'];
+            $leaves += $result['leaves'];
+            if ($result['maxDepth'] > $maxDepth) {
+                $maxDepth = $result['maxDepth'];
+            }
+        }
+
+        return [
+            'elements' => $elements,
+            'leaves' => $leaves,
+            'maxDepth' => $maxDepth,
+        ];
+    };
+
+    foreach ($topLevelChildren as $child) {
+        $sectionStats[] = [
+            'name' => $child->tagName,
+            'metrics' => $collectMetrics($child),
+        ];
+    }
 }
 
 $extractDirectText = static function (\DOMElement $element): string {
@@ -386,7 +495,7 @@ $extractDirectText = static function (\DOMElement $element): string {
 };
 
 $renderElement = null;
-$renderElement = static function (\DOMElement $element, int $depth = 1) use (&$renderElement, $extractDirectText): string {
+$renderElement = static function (\DOMElement $element, int $depth = 1, string $path = '') use (&$renderElement, $extractDirectText): string {
     $attributes = [];
     if ($element->hasAttributes()) {
         foreach ($element->attributes as $attribute) {
@@ -406,29 +515,33 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
     }
 
     $directText = $extractDirectText($element);
+    $tagName = $element->tagName;
+    $currentPath = $path === '' ? $tagName : $path . '/' . $tagName;
     $hasChildren = !empty($children);
-    $isStageNode = $element->tagName === 'stage';
+    $isStageNode = $tagName === 'stage';
     $isComplexNode = $hasChildren && (count($children) > 2 || $depth > 2 || $isStageNode);
     $childrenClass = 'xml-children-grid';
+    $isLeaf = !$hasChildren;
+    $isEmpty = $isLeaf && $directText === '';
 
-    if ($element->tagName === 'stages') {
+    if ($tagName === 'stages') {
         $childrenClass = 'xml-stage-lane';
     } elseif ($isStageNode) {
         $childrenClass = 'xml-stage-detail-row';
     }
 
-    $searchText = trim($element->tagName . ' ' . $directText);
+    $searchText = trim($tagName . ' ' . $directText . ' ' . $currentPath);
     foreach ($attributes as $attributeHtml) {
         $searchText .= ' ' . strip_tags($attributeHtml);
     }
 
-    $html = '<div class="xml-node-item" data-xml-search="' . Html::encode($searchText) . '">';
+    $html = '<div class="xml-node-item" data-xml-search="' . Html::encode($searchText) . '" data-xml-tag="' . Html::encode(strtolower($tagName)) . '" data-xml-value="' . Html::encode(strtolower($directText)) . '" data-xml-path="' . Html::encode(strtolower($currentPath)) . '" data-xml-depth="' . $depth . '" data-xml-leaf="' . ($isLeaf ? '1' : '0') . '" data-xml-empty="' . ($isEmpty ? '1' : '0') . '">';
     $html .= '<article class="xml-data-card">';
     if ($isComplexNode) {
         $html .= '<details' . ($depth <= 2 ? ' open' : '') . '>';
         $html .= '<summary class="xml-data-summary">';
         $html .= '<div class="xml-node-head">';
-        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'xml-tag-name']);
+        $html .= Html::tag('span', Html::encode($tagName), ['class' => 'xml-tag-name']);
 
         if (!empty($attributes)) {
             $html .= implode(' ', $attributes);
@@ -436,6 +549,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 
         $html .= Html::tag('span', count($children) . ' child', ['class' => 'xml-meta']);
         $html .= '</div>';
+        $html .= Html::tag('span', Html::encode($currentPath), ['class' => 'xml-path']);
         $html .= '</summary>';
 
         if ($directText !== '') {
@@ -448,13 +562,13 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 
         $html .= '<div class="' . $childrenClass . '">';
         foreach ($children as $child) {
-            $html .= $renderElement($child, $depth + 1);
+            $html .= $renderElement($child, $depth + 1, $currentPath);
         }
         $html .= '</div>';
         $html .= '</details>';
     } else {
         $html .= '<div class="xml-node-head">';
-        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'xml-tag-name']);
+        $html .= Html::tag('span', Html::encode($tagName), ['class' => 'xml-tag-name']);
 
         if (!empty($attributes)) {
             $html .= implode(' ', $attributes);
@@ -464,6 +578,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
             $html .= Html::tag('span', count($children) . ' child', ['class' => 'xml-meta']);
         }
         $html .= '</div>';
+        $html .= Html::tag('span', Html::encode($currentPath), ['class' => 'xml-path']);
 
         if ($directText !== '') {
             $html .= Html::tag('div', Html::encode($directText), ['class' => 'xml-leaf-value']);
@@ -476,7 +591,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
         if ($hasChildren) {
             $html .= '<div class="' . $childrenClass . ' mt-2">';
             foreach ($children as $child) {
-                $html .= $renderElement($child, $depth + 1);
+                $html .= $renderElement($child, $depth + 1, $currentPath);
             }
             $html .= '</div>';
         }
