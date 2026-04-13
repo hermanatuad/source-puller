@@ -144,22 +144,16 @@ $this->registerCss(<<<CSS
 
 .xml-stage-lane {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(380px, 460px);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 8px;
     margin-top: 10px;
 }
 
 .xml-stage-detail-row {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(280px, 360px);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 8px;
-    overflow-x: auto;
     margin-top: 8px;
-    padding-bottom: 6px;
 }
 
 .xml-dashboard-grid {
@@ -346,6 +340,11 @@ $this->registerCss(<<<CSS
 
     .xml-page-title {
         font-size: 24px;
+    }
+
+    .xml-stage-lane,
+    .xml-stage-detail-row {
+        grid-template-columns: 1fr;
     }
 }
 CSS);
