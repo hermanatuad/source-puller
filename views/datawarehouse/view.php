@@ -24,9 +24,8 @@ $pagination = null;
 // Validate simple table name (prevent injection) then attempt to fetch sample rows
 if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
     try {
-        $currentPage = max(1, (int)Yii::$app->request->get('page', 1));
         $pageSize = 50;
-        $offset = ($currentPage - 1) * $pageSize;
+        $offset = 0;
 
         $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
@@ -40,12 +39,15 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
             'defaultPageSize' => $pageSize,
             'pageSize' => $pageSize,
             'route' => 'datawarehouse/view',
-            'params' => ['tableName' => $tableName],
+            'params' => ['table' => $tableName],
             'pageParam' => 'page',
             'pageSizeParam' => false,
             'forcePageParam' => true,
             'validatePage' => false,
         ]);
+
+        $offset = $pagination->offset;
+        $pageSize = $pagination->getLimit();
 
         $stmt = $pdo->prepare('SELECT * FROM "' . $tableName . '" LIMIT :limit OFFSET :offset');
         $stmt->bindValue(':limit', $pageSize, \PDO::PARAM_INT);
