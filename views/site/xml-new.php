@@ -13,11 +13,35 @@ $this->title = 'Patient New XML Viewer';
 
 $this->registerCss(<<<CSS
 .xml-compact-shell {
-    --xml-border: #e2e8f0;
-    --xml-muted: #64748b;
-    --xml-bg: #f8fafc;
-    --xml-accent: #0ea5e9;
-    --xml-accent-soft: #e0f2fe;
+    --xml-border: #d4dce8;
+    --xml-muted: #526074;
+    --xml-bg: #f2f6fb;
+    --xml-accent: #0f6e9f;
+    --xml-accent-soft: #dff1fb;
+    --xml-title: #0b1726;
+    --xml-card: #ffffff;
+    background: radial-gradient(circle at top right, #e8f5ff 0%, #f7fbff 45%, #f3f7fc 100%);
+    padding: 14px;
+    border-radius: 16px;
+}
+
+.xml-page-card {
+    border: 1px solid var(--xml-border);
+    border-radius: 16px;
+    background: var(--xml-card);
+    box-shadow: 0 10px 30px rgba(15, 23, 38, 0.07);
+}
+
+.xml-page-title {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--xml-title);
+}
+
+.xml-page-subtitle {
+    font-size: 15px;
+    color: var(--xml-muted);
 }
 
 .xml-toolbar {
@@ -26,75 +50,60 @@ $this->registerCss(<<<CSS
     z-index: 9;
 }
 
-.xml-node details {
-    border: 1px solid var(--xml-border);
-    border-radius: 8px;
-    background: #ffffff;
-    padding: 6px 8px;
-    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+.xml-info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
 }
 
-.xml-node-plain {
+.xml-info-card {
     border: 1px solid var(--xml-border);
-    border-radius: 8px;
+    border-radius: 12px;
     background: #ffffff;
-    padding: 8px;
+    padding: 12px;
 }
 
-.xml-node-head {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
+.xml-info-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #66758a;
     margin-bottom: 4px;
 }
 
-.xml-node details[open] {
-    background: var(--xml-bg);
-}
-
-.xml-node summary {
-    cursor: pointer;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.xml-node summary::-webkit-details-marker {
-    display: none;
+.xml-info-value {
+    font-size: 15px;
+    color: #0f172a;
+    word-break: break-word;
 }
 
 .xml-children-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .xml-stage-lane {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(520px, 72vw);
+    grid-auto-columns: minmax(380px, 460px);
     gap: 10px;
     overflow-x: auto;
-    padding-bottom: 6px;
-    margin-top: 8px;
-}
-
-.xml-stage-lane > .xml-node-item {
-    min-width: 0;
+    padding-bottom: 8px;
+    margin-top: 10px;
 }
 
 .xml-stage-detail-row {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(520px, 72vw);
+    grid-auto-columns: minmax(280px, 360px);
     gap: 8px;
     overflow-x: auto;
     margin-top: 8px;
-    padding-bottom: 4px;
+    padding-bottom: 6px;
 }
 
 .xml-dashboard-grid {
@@ -106,33 +115,35 @@ $this->registerCss(<<<CSS
 .xml-stats-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    gap: 10px;
 }
 
 .xml-stat-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    background: linear-gradient(155deg, #ffffff 0%, #eef7ff 100%);
     border: 1px solid var(--xml-border);
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 14px;
 }
 
 .xml-stat-value {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.1;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
     color: #0f172a;
 }
 
 .xml-stat-label {
-    font-size: 12px;
+    margin-top: 4px;
+    font-size: 13px;
     color: var(--xml-muted);
+    font-weight: 600;
 }
 
 .xml-section-tabs {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     overflow-x: auto;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
     margin-bottom: 10px;
 }
 
@@ -140,17 +151,18 @@ $this->registerCss(<<<CSS
     border: 1px solid var(--xml-border);
     background: #ffffff;
     color: #0f172a;
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 700;
     line-height: 1;
     white-space: nowrap;
 }
 
 .xml-section-tab.active {
     background: var(--xml-accent-soft);
-    border-color: #7dd3fc;
-    color: #075985;
+    border-color: #82caef;
+    color: var(--xml-accent);
 }
 
 .xml-section-panel {
@@ -163,14 +175,15 @@ $this->registerCss(<<<CSS
 
 .xml-side-card {
     border: 1px solid var(--xml-border);
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 14px;
     background: #ffffff;
 }
 
 .xml-side-card h6 {
-    font-size: 13px;
-    margin-bottom: 8px;
+    font-size: 17px;
+    margin-bottom: 10px;
+    color: var(--xml-title);
 }
 
 .xml-attr-list {
@@ -179,23 +192,75 @@ $this->registerCss(<<<CSS
     gap: 6px;
 }
 
-.xml-leaf-value {
+.xml-node-item {
+    min-width: 0;
+}
+
+.xml-data-card {
+    border: 1px solid var(--xml-border);
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 10px;
+}
+
+.xml-data-card details {
+    border: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.xml-data-card details[open] {
+    background: transparent;
+}
+
+.xml-data-summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.xml-data-summary::-webkit-details-marker {
+    display: none;
+}
+
+.xml-node-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.xml-tag-name {
+    font-size: 16px;
+    font-weight: 800;
     color: #0f172a;
-    font-size: 12px;
-    line-height: 1.35;
+}
+
+.xml-leaf-value {
+    color: #1e293b;
+    font-size: 14px;
+    line-height: 1.45;
     word-break: break-word;
 }
 
 .xml-meta {
     color: var(--xml-muted);
     font-size: 12px;
+    font-weight: 600;
 }
 
 .xml-raw {
     max-height: 80vh;
     overflow: auto;
     margin: 0;
-    border-radius: 8px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+@media (max-width: 1199.98px) {
+    .xml-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 991.98px) {
@@ -207,13 +272,12 @@ $this->registerCss(<<<CSS
         grid-template-columns: 1fr;
     }
 
-    .xml-children-grid {
+    .xml-info-grid {
         grid-template-columns: 1fr;
     }
 
-    .xml-stage-lane,
-    .xml-stage-detail-row {
-        grid-auto-columns: 92vw;
+    .xml-page-title {
+        font-size: 24px;
     }
 }
 CSS);
@@ -224,7 +288,7 @@ $this->registerJs(<<<JS
     if (!shell) return;
 
     const toggleNodes = (open) => {
-        shell.querySelectorAll('.xml-node details').forEach((el) => {
+        shell.querySelectorAll('.xml-node-item details').forEach((el) => {
             el.open = open;
         });
     };
@@ -359,17 +423,19 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
     }
 
     $html = '<div class="xml-node-item" data-xml-search="' . Html::encode($searchText) . '">';
-    $html .= '<div class="xml-node">';
+    $html .= '<article class="xml-data-card">';
     if ($isComplexNode) {
         $html .= '<details' . ($depth <= 2 ? ' open' : '') . '>';
-        $html .= '<summary>';
-        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
+        $html .= '<summary class="xml-data-summary">';
+        $html .= '<div class="xml-node-head">';
+        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'xml-tag-name']);
 
         if (!empty($attributes)) {
             $html .= implode(' ', $attributes);
         }
 
         $html .= Html::tag('span', count($children) . ' child', ['class' => 'xml-meta']);
+        $html .= '</div>';
         $html .= '</summary>';
 
         if ($directText !== '') {
@@ -387,9 +453,8 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
         $html .= '</div>';
         $html .= '</details>';
     } else {
-        $html .= '<div class="xml-node-plain">';
         $html .= '<div class="xml-node-head">';
-        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
+        $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'xml-tag-name']);
 
         if (!empty($attributes)) {
             $html .= implode(' ', $attributes);
@@ -415,11 +480,9 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
             }
             $html .= '</div>';
         }
-
-        $html .= '</div>';
     }
 
-    $html .= '</div>';
+    $html .= '</article>';
     $html .= '</div>';
 
     return $html;
@@ -427,12 +490,12 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
 ?>
 
 <div class="col-12 xml-compact-shell">
-    <div class="card">
+    <div class="card xml-page-card">
         <div class="card-header border-0 pb-0">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
                 <div>
-                    <h5 class="card-title mb-1">Patient New XML Detail Viewer</h5>
-                    <p class="text-muted mb-0">Tampilan padat untuk seluruh detail data patient-new.xml.</p>
+                    <h1 class="xml-page-title mb-1">Patient New XML Detail Viewer</h1>
+                    <p class="xml-page-subtitle mb-0">Semua data XML ditampilkan dalam format card dengan tulisan lebih besar dan jelas.</p>
                 </div>
                 <div class="xml-toolbar d-flex flex-wrap gap-2">
                     <button type="button" class="btn btn-sm btn-soft-primary" data-xml-expand>Expand all</button>
@@ -441,26 +504,24 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
             </div>
         </div>
         <div class="card-body">
-            <div class="row g-2 mb-3">
-                <div class="col-lg-7">
-                    <div class="alert alert-info mb-0 py-2">
-                        <strong>File:</strong> <?= Html::encode($xmlPath) ?>
-                    </div>
+            <div class="xml-info-grid mb-3">
+                <div class="xml-info-card">
+                    <span class="xml-info-label">File</span>
+                    <div class="xml-info-value"><?= Html::encode($xmlPath) ?></div>
                 </div>
-                <div class="col-lg-3">
-                    <div class="alert alert-light mb-0 border py-2">
-                        <strong>Last updated:</strong>
-                        <?= $lastModifiedAt ? Html::encode(Yii::$app->formatter->asDatetime($lastModifiedAt)) : 'Unknown' ?>
-                    </div>
+                <div class="xml-info-card">
+                    <span class="xml-info-label">Last Updated</span>
+                    <div class="xml-info-value"><?= $lastModifiedAt ? Html::encode(Yii::$app->formatter->asDatetime($lastModifiedAt)) : 'Unknown' ?></div>
                 </div>
-                <div class="col-lg-2">
-                    <input type="text" class="form-control form-control-sm" placeholder="Cari tag/value" data-xml-filter>
+                <div class="xml-info-card">
+                    <span class="xml-info-label">Filter</span>
+                    <input type="text" class="form-control" placeholder="Cari tag atau value" data-xml-filter>
                 </div>
             </div>
 
             <?php if (!empty($parseErrors)): ?>
-                <div class="alert alert-danger" role="alert">
-                    <strong>XML parse error:</strong>
+                <div class="xml-side-card border-danger" role="alert">
+                    <h6 class="text-danger fw-bold mb-2">XML Parse Error</h6>
                     <ul class="mb-0 mt-2">
                         <?php foreach ($parseErrors as $error): ?>
                             <li><?= Html::encode($error) ?></li>
@@ -472,7 +533,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
             <?php if ($dom !== null && $dom->documentElement !== null): ?>
                 <div class="xml-dashboard-grid mb-3">
                     <div>
-                        <h6 class="fw-semibold mb-2">Structured Explorer</h6>
+                        <h2 class="fw-bold fs-4 mb-2">Structured Explorer</h2>
                         <div class="xml-section-tabs">
                             <button type="button" class="xml-section-tab active" data-xml-tab="root">root</button>
                             <?php foreach ($topLevelChildren as $index => $section): ?>
@@ -514,7 +575,7 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
                         </div>
 
                         <div class="xml-side-card">
-                            <h6 class="fw-semibold">Root Element</h6>
+                            <h6 class="fw-bold">Root Element</h6>
                             <div class="mb-2">
                                 <?= Html::tag('span', Html::encode($dom->documentElement->tagName), ['class' => 'badge bg-primary']) ?>
                             </div>
@@ -533,9 +594,9 @@ $renderElement = static function (\DOMElement $element, int $depth = 1) use (&$r
                 </div>
             <?php endif; ?>
 
-            <div>
+            <div class="xml-side-card">
                 <details>
-                    <summary class="fw-semibold">Raw XML</summary>
+                    <summary class="fw-semibold fs-5">Raw XML</summary>
                     <pre class="xml-raw border p-3 bg-dark text-light mt-2"><code><?= Html::encode($xmlContent) ?></code></pre>
                 </details>
             </div>
