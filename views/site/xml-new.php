@@ -68,7 +68,7 @@ $this->registerCss(<<<CSS
 
 .xml-children-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 8px;
     margin-top: 8px;
 }
@@ -76,7 +76,7 @@ $this->registerCss(<<<CSS
 .xml-stage-lane {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(320px, 380px);
+    grid-auto-columns: minmax(520px, 72vw);
     gap: 10px;
     overflow-x: auto;
     padding-bottom: 6px;
@@ -90,7 +90,7 @@ $this->registerCss(<<<CSS
 .xml-stage-detail-row {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(240px, 320px);
+    grid-auto-columns: minmax(360px, 46vw);
     gap: 8px;
     overflow-x: auto;
     margin-top: 8px;
@@ -99,7 +99,7 @@ $this->registerCss(<<<CSS
 
 .xml-dashboard-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
 }
 
@@ -205,6 +205,15 @@ $this->registerCss(<<<CSS
 
     .xml-stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .xml-children-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xml-stage-lane,
+    .xml-stage-detail-row {
+        grid-auto-columns: 92vw;
     }
 }
 CSS);
