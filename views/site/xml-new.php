@@ -16,6 +16,8 @@ $this->registerCss(<<<CSS
     --xml-border: #e2e8f0;
     --xml-muted: #64748b;
     --xml-bg: #f8fafc;
+    --xml-accent: #0ea5e9;
+    --xml-accent-soft: #e0f2fe;
 }
 
 .xml-toolbar {
@@ -29,6 +31,7 @@ $this->registerCss(<<<CSS
     border-radius: 8px;
     background: #ffffff;
     padding: 6px 8px;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
 }
 
 .xml-node details[open] {
@@ -55,6 +58,88 @@ $this->registerCss(<<<CSS
     margin-top: 8px;
 }
 
+.xml-dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+}
+
+.xml-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.xml-stat-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid var(--xml-border);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.xml-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #0f172a;
+}
+
+.xml-stat-label {
+    font-size: 12px;
+    color: var(--xml-muted);
+}
+
+.xml-section-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    margin-bottom: 10px;
+}
+
+.xml-section-tab {
+    border: 1px solid var(--xml-border);
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.xml-section-tab.active {
+    background: var(--xml-accent-soft);
+    border-color: #7dd3fc;
+    color: #075985;
+}
+
+.xml-section-panel {
+    display: none;
+}
+
+.xml-section-panel.active {
+    display: block;
+}
+
+.xml-side-card {
+    border: 1px solid var(--xml-border);
+    border-radius: 10px;
+    padding: 10px;
+    background: #ffffff;
+}
+
+.xml-side-card h6 {
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.xml-attr-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
 .xml-leaf-value {
     color: #0f172a;
     font-size: 12px;
@@ -72,6 +157,16 @@ $this->registerCss(<<<CSS
     overflow: auto;
     margin: 0;
     border-radius: 8px;
+}
+
+@media (max-width: 991.98px) {
+    .xml-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xml-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }
 CSS);
 
@@ -91,6 +186,17 @@ $this->registerJs(<<<JS
     if (expandBtn) expandBtn.addEventListener('click', () => toggleNodes(true));
     if (collapseBtn) collapseBtn.addEventListener('click', () => toggleNodes(false));
 
+    shell.querySelectorAll('[data-xml-tab]').forEach((tab) => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-xml-tab');
+            shell.querySelectorAll('[data-xml-tab]').forEach((el) => el.classList.remove('active'));
+            shell.querySelectorAll('[data-xml-panel]').forEach((panel) => panel.classList.remove('active'));
+            tab.classList.add('active');
+            const panel = shell.querySelector('[data-xml-panel="' + target + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
     const filterInput = shell.querySelector('[data-xml-filter]');
     if (filterInput) {
         filterInput.addEventListener('input', () => {
@@ -103,6 +209,55 @@ $this->registerJs(<<<JS
     }
 })();
 JS);
+
+$stats = [
+    'elements' => 0,
+    'leaves' => 0,
+    'maxDepth' => 0,
+];
+
+$topLevelChildren = [];
+$rootAttributes = [];
+
+if ($dom !== null && $dom->documentElement !== null) {
+    foreach ($dom->documentElement->childNodes as $childNode) {
+        if ($childNode instanceof \DOMElement) {
+            $topLevelChildren[] = $childNode;
+        }
+    }
+
+    if ($dom->documentElement->hasAttributes()) {
+        foreach ($dom->documentElement->attributes as $attribute) {
+            $rootAttributes[] = $attribute->name . '="' . $attribute->value . '"';
+        }
+    }
+
+    $collectStats = null;
+    $collectStats = static function (\DOMElement $element, int $depth = 1) use (&$collectStats, &$stats): void {
+        $stats['elements']++;
+        if ($depth > $stats['maxDepth']) {
+            $stats['maxDepth'] = $depth;
+        }
+
+        $childElements = [];
+        foreach ($element->childNodes as $childNode) {
+            if ($childNode instanceof \DOMElement) {
+                $childElements[] = $childNode;
+            }
+        }
+
+        if (empty($childElements)) {
+            $stats['leaves']++;
+            return;
+        }
+
+        foreach ($childElements as $childElement) {
+            $collectStats($childElement, $depth + 1);
+        }
+    };
+
+    $collectStats($dom->documentElement);
+}
 
 $extractDirectText = static function (\DOMElement $element): string {
     $parts = [];
@@ -119,7 +274,7 @@ $extractDirectText = static function (\DOMElement $element): string {
 };
 
 $renderElement = null;
-$renderElement = static function (\DOMElement $element) use (&$renderElement, $extractDirectText): string {
+$renderElement = static function (\DOMElement $element, int $depth = 1) use (&$renderElement, $extractDirectText): string {
     $attributes = [];
     if ($element->hasAttributes()) {
         foreach ($element->attributes as $attribute) {
@@ -148,7 +303,7 @@ $renderElement = static function (\DOMElement $element) use (&$renderElement, $e
 
     $html = '<div class="xml-node-item" data-xml-search="' . Html::encode($searchText) . '">';
     $html .= '<div class="xml-node">';
-    $html .= '<details' . ($hasChildren ? '' : ' open') . '>';
+    $html .= '<details' . ((!$hasChildren || $depth <= 2) ? ' open' : '') . '>';
     $html .= '<summary>';
     $html .= Html::tag('span', Html::encode($element->tagName), ['class' => 'badge bg-primary']);
 
@@ -176,7 +331,7 @@ $renderElement = static function (\DOMElement $element) use (&$renderElement, $e
     if ($hasChildren) {
         $html .= '<div class="xml-children-grid">';
         foreach ($children as $child) {
-            $html .= $renderElement($child);
+            $html .= $renderElement($child, $depth + 1);
         }
         $html .= '</div>';
     }
@@ -233,11 +388,65 @@ $renderElement = static function (\DOMElement $element) use (&$renderElement, $e
             <?php endif; ?>
 
             <?php if ($dom !== null && $dom->documentElement !== null): ?>
-                <div class="mb-3">
-                    <h6 class="fw-semibold mb-2">Structured Detail</h6>
-                    <div class="xml-meta mb-2">Semua elemen ditampilkan hierarkis, ringkas, dan bisa di-expand/collapse.</div>
-                    <div class="xml-children-grid">
-                        <?= $renderElement($dom->documentElement) ?>
+                <div class="xml-dashboard-grid mb-3">
+                    <div>
+                        <h6 class="fw-semibold mb-2">Structured Explorer</h6>
+                        <div class="xml-section-tabs">
+                            <button type="button" class="xml-section-tab active" data-xml-tab="root">root</button>
+                            <?php foreach ($topLevelChildren as $index => $section): ?>
+                                <button type="button" class="xml-section-tab" data-xml-tab="section-<?= $index ?>">
+                                    <?= Html::encode($section->tagName) ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="xml-section-panel active" data-xml-panel="root">
+                            <div class="xml-children-grid">
+                                <?= $renderElement($dom->documentElement) ?>
+                            </div>
+                        </div>
+
+                        <?php foreach ($topLevelChildren as $index => $section): ?>
+                            <div class="xml-section-panel" data-xml-panel="section-<?= $index ?>">
+                                <div class="xml-children-grid">
+                                    <?= $renderElement($section) ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <div class="xml-stats-grid">
+                            <div class="xml-stat-card">
+                                <div class="xml-stat-value"><?= Html::encode((string) $stats['elements']) ?></div>
+                                <div class="xml-stat-label">Total Elements</div>
+                            </div>
+                            <div class="xml-stat-card">
+                                <div class="xml-stat-value"><?= Html::encode((string) $stats['leaves']) ?></div>
+                                <div class="xml-stat-label">Leaf Nodes</div>
+                            </div>
+                            <div class="xml-stat-card">
+                                <div class="xml-stat-value"><?= Html::encode((string) $stats['maxDepth']) ?></div>
+                                <div class="xml-stat-label">Max Depth</div>
+                            </div>
+                        </div>
+
+                        <div class="xml-side-card">
+                            <h6 class="fw-semibold">Root Element</h6>
+                            <div class="mb-2">
+                                <?= Html::tag('span', Html::encode($dom->documentElement->tagName), ['class' => 'badge bg-primary']) ?>
+                            </div>
+                            <div class="xml-meta">Attributes</div>
+                            <div class="xml-attr-list mt-1">
+                                <?php if (!empty($rootAttributes)): ?>
+                                    <?php foreach ($rootAttributes as $attributeText): ?>
+                                        <?= Html::tag('span', Html::encode($attributeText), ['class' => 'badge bg-soft-info text-info']) ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <span class="xml-meta">(none)</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
