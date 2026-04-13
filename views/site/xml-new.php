@@ -90,7 +90,7 @@ $this->registerCss(<<<CSS
 .xml-stage-detail-row {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(360px, 46vw);
+    grid-auto-columns: minmax(520px, 72vw);
     gap: 8px;
     overflow-x: auto;
     margin-top: 8px;
@@ -99,7 +99,7 @@ $this->registerCss(<<<CSS
 
 .xml-dashboard-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: 2fr 1fr;
     gap: 12px;
 }
 
