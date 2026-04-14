@@ -31,20 +31,25 @@
                             <p class="text-muted mb-4">Patient Lifetime Data.</p>
 
                             <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-                                <a href="site/signin" class="btn btn-primary btn-label waves-effect waves-light px-3">
-                                    <i class="ri-login-box-line label-icon align-middle fs-16 me-2"></i>Sign In
+                                <a href="site/signin" class="btn btn-primary waves-effect waves-light px-3 d-inline-flex align-items-center gap-2">
+                                    <i class="ri-login-box-line fs-16"></i>
+                                    <span>Sign In</span>
                                 </a>
-                                <a href="site/xml" class="btn btn-outline-info btn-label waves-effect px-3" target="_blank" rel="noopener noreferrer">
-                                    <i class="ri-file-code-line label-icon align-middle fs-16 me-2"></i>XML Viewer
+                                <a href="site/xml" class="btn btn-outline-info waves-effect px-3 d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                                    <i class="ri-file-code-line fs-16"></i>
+                                    <span>XML Viewer</span>
                                 </a>
-                                <a href="site/xml-editor" class="btn btn-outline-warning btn-label waves-effect px-3" target="_blank" rel="noopener noreferrer">
-                                    <i class="ri-edit-box-line label-icon align-middle fs-16 me-2"></i>XML Editor
+                                <a href="site/xml-editor" class="btn btn-outline-warning waves-effect px-3 d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                                    <i class="ri-edit-box-line fs-16"></i>
+                                    <span>XML Editor</span>
                                 </a>
-                                <a href="site/xml-new" class="btn btn-outline-success btn-label waves-effect px-3" target="_blank" rel="noopener noreferrer">
-                                    <i class="ri-file-list-3-line label-icon align-middle fs-16 me-2"></i>XML Buluh Bambu
+                                <a href="site/xml-new" class="btn btn-outline-success waves-effect px-3 d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                                    <i class="ri-file-list-3-line fs-16"></i>
+                                    <span>XML Buluh Bambu</span>
                                 </a>
-                                <a href="site/xsd-new" class="btn btn-outline-secondary btn-label waves-effect px-3" target="_blank" rel="noopener noreferrer">
-                                    <i class="ri-shield-check-line label-icon align-middle fs-16 me-2"></i>XML Schema Buluh Bambu
+                                <a href="site/xsd-new" class="btn btn-outline-secondary waves-effect px-3 d-inline-flex align-items-center gap-2" target="_blank" rel="noopener noreferrer">
+                                    <i class="ri-shield-check-line fs-16"></i>
+                                    <span>XML Schema Buluh Bambu</span>
                                 </a>
                             </div>
 
