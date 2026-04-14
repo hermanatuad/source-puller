@@ -81,226 +81,226 @@ SYSTEM_TABLES = {
         ],
         "drop_order": ["billing", "services", "visits", "patients"],
     },
-    "his02": {
-        "prefix": "his02_",
-        "ddl": [
-            """
-            CREATE TABLE {prefix}patients (
-                patient_id VARCHAR2(36) PRIMARY KEY,
-                national_id VARCHAR2(50) UNIQUE,
-                medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
-                full_name VARCHAR2(100) NOT NULL,
-                date_of_birth DATE,
-                gender VARCHAR2(10),
-                religion VARCHAR2(10),
-                marital_status VARCHAR2(20),
-                city VARCHAR2(50),
-                province VARCHAR2(50),
-                residential VARCHAR2(100),
-                race VARCHAR2(20),
-                address CLOB,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}visits (
-                visit_id VARCHAR2(36) PRIMARY KEY,
-                patient_id VARCHAR2(36) NOT NULL,
-                visit_date TIMESTAMP,
-                exit_date TIMESTAMP,
-                visit_type VARCHAR2(30),
-                attending_doctor VARCHAR2(100),
-                status VARCHAR2(30),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}visits_fk_patient FOREIGN KEY (patient_id)
-                    REFERENCES {prefix}patients(patient_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}services (
-                service_id VARCHAR2(36) PRIMARY KEY,
-                service_code VARCHAR2(30) UNIQUE NOT NULL,
-                service_name VARCHAR2(100) NOT NULL,
-                service_type VARCHAR2(30),
-                unit_price NUMBER(12,2),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}billing (
-                billing_id VARCHAR2(36) PRIMARY KEY,
-                visit_id VARCHAR2(36) NOT NULL,
-                service_id VARCHAR2(36) NOT NULL,
-                quantity NUMBER(10),
-                total_amount NUMBER(12,2),
-                billing_date TIMESTAMP,
-                CONSTRAINT {prefix}billing_fk_visit FOREIGN KEY (visit_id)
-                    REFERENCES {prefix}visits(visit_id),
-                CONSTRAINT {prefix}billing_fk_service FOREIGN KEY (service_id)
-                    REFERENCES {prefix}services(service_id)
-            )
-            """,
-        ],
-        "drop_order": ["billing", "services", "visits", "patients"],
-    },
-    "laboratory_information_system": {
-        "prefix": "lis_",
-        "ddl": [
-            """
-            CREATE TABLE {prefix}patients (
-                patient_id VARCHAR2(36) PRIMARY KEY,
-                medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
-                full_name VARCHAR2(100) NOT NULL,
-                date_of_birth DATE,
-                gender VARCHAR2(10),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}lab_orders (
-                lab_order_id VARCHAR2(36) PRIMARY KEY,
-                patient_id VARCHAR2(36) NOT NULL,
-                order_date TIMESTAMP,
-                ordering_doctor VARCHAR2(100),
-                status VARCHAR2(30),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}lab_orders_fk_patient FOREIGN KEY (patient_id)
-                    REFERENCES {prefix}patients(patient_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}lab_tests (
-                lab_test_id VARCHAR2(36) PRIMARY KEY,
-                test_code VARCHAR2(30) UNIQUE NOT NULL,
-                test_name VARCHAR2(100) NOT NULL,
-                unit VARCHAR2(20),
-                reference_range VARCHAR2(50),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}lab_results (
-                lab_result_id VARCHAR2(36) PRIMARY KEY,
-                lab_order_id VARCHAR2(36) NOT NULL,
-                lab_test_id VARCHAR2(36) NOT NULL,
-                result_value VARCHAR2(50),
-                result_flag VARCHAR2(20),
-                result_date TIMESTAMP,
-                CONSTRAINT {prefix}lab_results_fk_order FOREIGN KEY (lab_order_id)
-                    REFERENCES {prefix}lab_orders(lab_order_id),
-                CONSTRAINT {prefix}lab_results_fk_test FOREIGN KEY (lab_test_id)
-                    REFERENCES {prefix}lab_tests(lab_test_id)
-            )
-            """,
-        ],
-        "drop_order": ["lab_results", "lab_tests", "lab_orders", "patients"],
-    },
-    "radiology_information_system": {
-        "prefix": "ris_",
-        "ddl": [
-            """
-            CREATE TABLE {prefix}patients (
-                patient_id VARCHAR2(36) PRIMARY KEY,
-                medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
-                full_name VARCHAR2(100) NOT NULL,
-                date_of_birth DATE,
-                gender VARCHAR2(10),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}radiology_orders (
-                radiology_order_id VARCHAR2(36) PRIMARY KEY,
-                patient_id VARCHAR2(36) NOT NULL,
-                order_date TIMESTAMP,
-                ordering_doctor VARCHAR2(100),
-                modality VARCHAR2(20),
-                status VARCHAR2(30),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}orders_fk_patient FOREIGN KEY (patient_id)
-                    REFERENCES {prefix}patients(patient_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}imaging_studies (
-                imaging_study_id VARCHAR2(36) PRIMARY KEY,
-                radiology_order_id VARCHAR2(36) NOT NULL,
-                study_date TIMESTAMP,
-                body_part VARCHAR2(50),
-                image_location CLOB,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}studies_fk_order FOREIGN KEY (radiology_order_id)
-                    REFERENCES {prefix}radiology_orders(radiology_order_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}radiology_reports (
-                radiology_report_id VARCHAR2(36) PRIMARY KEY,
-                imaging_study_id VARCHAR2(36) NOT NULL,
-                radiologist_name VARCHAR2(100),
-                findings CLOB,
-                impression CLOB,
-                report_date TIMESTAMP,
-                CONSTRAINT {prefix}reports_fk_study FOREIGN KEY (imaging_study_id)
-                    REFERENCES {prefix}imaging_studies(imaging_study_id)
-            )
-            """,
-        ],
-        "drop_order": ["radiology_reports", "imaging_studies", "radiology_orders", "patients"],
-    },
-    "datawarehouse": {
-        "prefix": "dw_",
-        "ddl": [
-            """
-            CREATE TABLE {prefix}patients (
-                patient_id VARCHAR2(36) PRIMARY KEY,
-                medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
-                full_name VARCHAR2(100) NOT NULL,
-                date_of_birth DATE,
-                gender VARCHAR2(10),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """,
-            """
-            CREATE TABLE {prefix}radiology_orders (
-                radiology_order_id VARCHAR2(36) PRIMARY KEY,
-                patient_id VARCHAR2(36) NOT NULL,
-                order_date TIMESTAMP,
-                ordering_doctor VARCHAR2(100),
-                modality VARCHAR2(20),
-                status VARCHAR2(30),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}orders_fk_patient FOREIGN KEY (patient_id)
-                    REFERENCES {prefix}patients(patient_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}imaging_studies (
-                imaging_study_id VARCHAR2(36) PRIMARY KEY,
-                radiology_order_id VARCHAR2(36) NOT NULL,
-                study_date TIMESTAMP,
-                body_part VARCHAR2(50),
-                image_location CLOB,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT {prefix}studies_fk_order FOREIGN KEY (radiology_order_id)
-                    REFERENCES {prefix}radiology_orders(radiology_order_id)
-            )
-            """,
-            """
-            CREATE TABLE {prefix}radiology_reports (
-                radiology_report_id VARCHAR2(36) PRIMARY KEY,
-                imaging_study_id VARCHAR2(36) NOT NULL,
-                radiologist_name VARCHAR2(100),
-                findings CLOB,
-                impression CLOB,
-                report_date TIMESTAMP,
-                CONSTRAINT {prefix}reports_fk_study FOREIGN KEY (imaging_study_id)
-                    REFERENCES {prefix}imaging_studies(imaging_study_id)
-            )
-            """,
-        ],
-        "drop_order": ["radiology_reports", "imaging_studies", "radiology_orders", "patients"],
-    },
+    # "his02": {
+    #     "prefix": "his02_",
+    #     "ddl": [
+    #         """
+    #         CREATE TABLE {prefix}patients (
+    #             patient_id VARCHAR2(36) PRIMARY KEY,
+    #             national_id VARCHAR2(50) UNIQUE,
+    #             medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
+    #             full_name VARCHAR2(100) NOT NULL,
+    #             date_of_birth DATE,
+    #             gender VARCHAR2(10),
+    #             religion VARCHAR2(10),
+    #             marital_status VARCHAR2(20),
+    #             city VARCHAR2(50),
+    #             province VARCHAR2(50),
+    #             residential VARCHAR2(100),
+    #             race VARCHAR2(20),
+    #             address CLOB,
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}visits (
+    #             visit_id VARCHAR2(36) PRIMARY KEY,
+    #             patient_id VARCHAR2(36) NOT NULL,
+    #             visit_date TIMESTAMP,
+    #             exit_date TIMESTAMP,
+    #             visit_type VARCHAR2(30),
+    #             attending_doctor VARCHAR2(100),
+    #             status VARCHAR2(30),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}visits_fk_patient FOREIGN KEY (patient_id)
+    #                 REFERENCES {prefix}patients(patient_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}services (
+    #             service_id VARCHAR2(36) PRIMARY KEY,
+    #             service_code VARCHAR2(30) UNIQUE NOT NULL,
+    #             service_name VARCHAR2(100) NOT NULL,
+    #             service_type VARCHAR2(30),
+    #             unit_price NUMBER(12,2),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}billing (
+    #             billing_id VARCHAR2(36) PRIMARY KEY,
+    #             visit_id VARCHAR2(36) NOT NULL,
+    #             service_id VARCHAR2(36) NOT NULL,
+    #             quantity NUMBER(10),
+    #             total_amount NUMBER(12,2),
+    #             billing_date TIMESTAMP,
+    #             CONSTRAINT {prefix}billing_fk_visit FOREIGN KEY (visit_id)
+    #                 REFERENCES {prefix}visits(visit_id),
+    #             CONSTRAINT {prefix}billing_fk_service FOREIGN KEY (service_id)
+    #                 REFERENCES {prefix}services(service_id)
+    #         )
+    #         """,
+    #     ],
+    #     "drop_order": ["billing", "services", "visits", "patients"],
+    # },
+    # "laboratory_information_system": {
+    #     "prefix": "lis_",
+    #     "ddl": [
+    #         """
+    #         CREATE TABLE {prefix}patients (
+    #             patient_id VARCHAR2(36) PRIMARY KEY,
+    #             medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
+    #             full_name VARCHAR2(100) NOT NULL,
+    #             date_of_birth DATE,
+    #             gender VARCHAR2(10),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}lab_orders (
+    #             lab_order_id VARCHAR2(36) PRIMARY KEY,
+    #             patient_id VARCHAR2(36) NOT NULL,
+    #             order_date TIMESTAMP,
+    #             ordering_doctor VARCHAR2(100),
+    #             status VARCHAR2(30),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}lab_orders_fk_patient FOREIGN KEY (patient_id)
+    #                 REFERENCES {prefix}patients(patient_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}lab_tests (
+    #             lab_test_id VARCHAR2(36) PRIMARY KEY,
+    #             test_code VARCHAR2(30) UNIQUE NOT NULL,
+    #             test_name VARCHAR2(100) NOT NULL,
+    #             unit VARCHAR2(20),
+    #             reference_range VARCHAR2(50),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}lab_results (
+    #             lab_result_id VARCHAR2(36) PRIMARY KEY,
+    #             lab_order_id VARCHAR2(36) NOT NULL,
+    #             lab_test_id VARCHAR2(36) NOT NULL,
+    #             result_value VARCHAR2(50),
+    #             result_flag VARCHAR2(20),
+    #             result_date TIMESTAMP,
+    #             CONSTRAINT {prefix}lab_results_fk_order FOREIGN KEY (lab_order_id)
+    #                 REFERENCES {prefix}lab_orders(lab_order_id),
+    #             CONSTRAINT {prefix}lab_results_fk_test FOREIGN KEY (lab_test_id)
+    #                 REFERENCES {prefix}lab_tests(lab_test_id)
+    #         )
+    #         """,
+    #     ],
+    #     "drop_order": ["lab_results", "lab_tests", "lab_orders", "patients"],
+    # },
+    # "radiology_information_system": {
+    #     "prefix": "ris_",
+    #     "ddl": [
+    #         """
+    #         CREATE TABLE {prefix}patients (
+    #             patient_id VARCHAR2(36) PRIMARY KEY,
+    #             medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
+    #             full_name VARCHAR2(100) NOT NULL,
+    #             date_of_birth DATE,
+    #             gender VARCHAR2(10),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}radiology_orders (
+    #             radiology_order_id VARCHAR2(36) PRIMARY KEY,
+    #             patient_id VARCHAR2(36) NOT NULL,
+    #             order_date TIMESTAMP,
+    #             ordering_doctor VARCHAR2(100),
+    #             modality VARCHAR2(20),
+    #             status VARCHAR2(30),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}orders_fk_patient FOREIGN KEY (patient_id)
+    #                 REFERENCES {prefix}patients(patient_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}imaging_studies (
+    #             imaging_study_id VARCHAR2(36) PRIMARY KEY,
+    #             radiology_order_id VARCHAR2(36) NOT NULL,
+    #             study_date TIMESTAMP,
+    #             body_part VARCHAR2(50),
+    #             image_location CLOB,
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}studies_fk_order FOREIGN KEY (radiology_order_id)
+    #                 REFERENCES {prefix}radiology_orders(radiology_order_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}radiology_reports (
+    #             radiology_report_id VARCHAR2(36) PRIMARY KEY,
+    #             imaging_study_id VARCHAR2(36) NOT NULL,
+    #             radiologist_name VARCHAR2(100),
+    #             findings CLOB,
+    #             impression CLOB,
+    #             report_date TIMESTAMP,
+    #             CONSTRAINT {prefix}reports_fk_study FOREIGN KEY (imaging_study_id)
+    #                 REFERENCES {prefix}imaging_studies(imaging_study_id)
+    #         )
+    #         """,
+    #     ],
+    #     "drop_order": ["radiology_reports", "imaging_studies", "radiology_orders", "patients"],
+    # },
+    # "datawarehouse": {
+    #     "prefix": "dw_",
+    #     "ddl": [
+    #         """
+    #         CREATE TABLE {prefix}patients (
+    #             patient_id VARCHAR2(36) PRIMARY KEY,
+    #             medical_record_number VARCHAR2(50) UNIQUE NOT NULL,
+    #             full_name VARCHAR2(100) NOT NULL,
+    #             date_of_birth DATE,
+    #             gender VARCHAR2(10),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}radiology_orders (
+    #             radiology_order_id VARCHAR2(36) PRIMARY KEY,
+    #             patient_id VARCHAR2(36) NOT NULL,
+    #             order_date TIMESTAMP,
+    #             ordering_doctor VARCHAR2(100),
+    #             modality VARCHAR2(20),
+    #             status VARCHAR2(30),
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}orders_fk_patient FOREIGN KEY (patient_id)
+    #                 REFERENCES {prefix}patients(patient_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}imaging_studies (
+    #             imaging_study_id VARCHAR2(36) PRIMARY KEY,
+    #             radiology_order_id VARCHAR2(36) NOT NULL,
+    #             study_date TIMESTAMP,
+    #             body_part VARCHAR2(50),
+    #             image_location CLOB,
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             CONSTRAINT {prefix}studies_fk_order FOREIGN KEY (radiology_order_id)
+    #                 REFERENCES {prefix}radiology_orders(radiology_order_id)
+    #         )
+    #         """,
+    #         """
+    #         CREATE TABLE {prefix}radiology_reports (
+    #             radiology_report_id VARCHAR2(36) PRIMARY KEY,
+    #             imaging_study_id VARCHAR2(36) NOT NULL,
+    #             radiologist_name VARCHAR2(100),
+    #             findings CLOB,
+    #             impression CLOB,
+    #             report_date TIMESTAMP,
+    #             CONSTRAINT {prefix}reports_fk_study FOREIGN KEY (imaging_study_id)
+    #                 REFERENCES {prefix}imaging_studies(imaging_study_id)
+    #         )
+    #         """,
+    #     ],
+    #     "drop_order": ["radiology_reports", "imaging_studies", "radiology_orders", "patients"],
+    # },
 }
 
 

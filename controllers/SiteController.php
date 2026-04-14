@@ -171,9 +171,9 @@ class SiteController extends Controller
      */
     public function actionXml()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient.xml not found');
+            throw new NotFoundHttpException('patient-new.xml not found');
         }
 
         Yii::$app->response->format = Response::FORMAT_RAW;
@@ -270,17 +270,17 @@ class SiteController extends Controller
      */
     public function actionXmlEditor()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient.xml not found');
+            throw new NotFoundHttpException('patient-new.xml not found');
         }
 
-        $this->view->title = 'Patient XML Editor';
+        $this->view->title = 'Patient New XML Editor';
         $this->view->params['pagetitle'] = 'Data Sources';
-        $this->view->params['title'] = 'Patient XML Editor';
+        $this->view->params['title'] = 'Patient New XML Editor';
         $this->view->params['breadcrumbs'] = [
             ['label' => 'Data Sources', 'url' => ['system/index']],
-            'Patient XML Editor',
+            'Patient New XML Editor',
         ];
 
         $xmlContent = file_get_contents($xmlPath);
@@ -303,9 +303,9 @@ class SiteController extends Controller
                     $formattedXml = $dom->saveXML();
 
                     if (file_put_contents($xmlPath, $formattedXml, LOCK_EX) === false) {
-                        Yii::$app->session->setFlash('error', 'Failed to save patient.xml. Please check file permissions.');
+                        Yii::$app->session->setFlash('error', 'Failed to save patient-new.xml. Please check file permissions.');
                     } else {
-                        Yii::$app->session->setFlash('success', 'patient.xml updated successfully.');
+                        Yii::$app->session->setFlash('success', 'patient-new.xml updated successfully.');
                         libxml_clear_errors();
                         libxml_use_internal_errors($previousUseInternalErrors);
 

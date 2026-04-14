@@ -6,7 +6,7 @@ Creates sample patients, services, visits and billing rows using simple random d
 Uses `oracledb`.
 
 Usage:
-  python generates/gen_seed_hospital_information_system_oracle.py --host 34.45.175.24 --port 3333 --user app_user --password app_pass --service-name FREEPDB1 --patients 50 --truncate
+    python generates/gen_seed_hospital_information_system_oracle.py --host 34.60.27.246 --port 3333 --user app_user --password app_pass --service-name FREEPDB1 --patients 50 --truncate
 """
 import argparse
 import random
@@ -21,7 +21,7 @@ except Exception:
     ORACLE_AVAILABLE = False
 
 DB_CONFIG = {
-    "host": "34.45.175.24",
+    "host": "34.60.27.246",
     "port": 3333,
     "user": "app_user",
     "password": "app_pass",

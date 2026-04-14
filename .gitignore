@@ -2,7 +2,7 @@
 .idea/
 .vscode/
 nbproject/
-
+.venv/
 # OS files
 .DS_Store
 Thumbs.db
