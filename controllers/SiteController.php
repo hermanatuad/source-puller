@@ -184,9 +184,9 @@ class SiteController extends Controller
 
     public function actionXmlNew()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient.xml not found');
+            throw new NotFoundHttpException('patient-new.xml not found');
         }
 
         $this->view->title = 'Patient New XML Viewer';
@@ -239,9 +239,9 @@ class SiteController extends Controller
 
     public function actionXsdNew()
     {
-        $xsdPath = Yii::getAlias('@webroot') . '/patient.xsd';
+        $xsdPath = Yii::getAlias('@webroot') . '/patient-new.xsd';
         if (!file_exists($xsdPath)) {
-            throw new NotFoundHttpException('patient.xsd not found');
+            throw new NotFoundHttpException('patient-new.xsd not found');
         }
 
         $this->view->title = 'Patient New XSD Viewer';
@@ -275,12 +275,12 @@ class SiteController extends Controller
             throw new NotFoundHttpException('patient.xml not found');
         }
 
-        $this->view->title = 'Patient New XML Editor';
+        $this->view->title = 'Patient XML Editor';
         $this->view->params['pagetitle'] = 'Data Sources';
-        $this->view->params['title'] = 'Patient New XML Editor';
+        $this->view->params['title'] = 'Patient XML Editor';
         $this->view->params['breadcrumbs'] = [
             ['label' => 'Data Sources', 'url' => ['system/index']],
-            'Patient New XML Editor',
+            'Patient XML Editor',
         ];
 
         $xmlContent = file_get_contents($xmlPath);
