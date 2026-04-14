@@ -5,6 +5,14 @@
 
   <xs:complexType name="PatientsType">
     <xs:sequence>
+      <xs:element name="demographics" type="DemographicsType"/>
+      <xs:element name="episodes" type="EpisodesType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DemographicsType">
+    <xs:sequence>
+      <xs:element name="patient_id" type="xs:string"/>
       <xs:element name="date_of_birth" type="xs:string"/>
       <xs:element name="medical_record_number" type="xs:string"/>
       <xs:element name="age_at_admission" type="xs:integer"/>
@@ -12,7 +20,6 @@
       <xs:element name="ethnicity" type="xs:string"/>
       <xs:element name="primary_language" type="xs:string"/>
       <xs:element name="insurance_type" type="xs:string"/>
-      <xs:element name="episodes" type="EpisodesType"/>
     </xs:sequence>
   </xs:complexType>
 

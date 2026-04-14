@@ -26,6 +26,7 @@
                     body {
                         margin: 0;
                         font-family: "Segoe UI", Arial, sans-serif;
+                        font-size: 17px;
                         background: radial-gradient(circle at 10% 0%, #eaf2ff, var(--bg));
                         color: var(--ink);
                     }
@@ -53,6 +54,7 @@
                     }
                     .title {
                         font-weight: 700;
+                        font-size: 22px;
                     }
                     .toolbar {
                         display: flex;
@@ -63,8 +65,8 @@
                         background: #ffffff;
                         color: #23406a;
                         border-radius: 8px;
-                        padding: 6px 10px;
-                        font-size: 12px;
+                        padding: 8px 12px;
+                        font-size: 14px;
                         cursor: pointer;
                     }
                     .btn:hover {
@@ -73,8 +75,8 @@
                     .tree {
                         padding: 14px;
                         font-family: Consolas, "Courier New", monospace;
-                        font-size: 13px;
-                        line-height: 1.45;
+                        font-size: 16px;
+                        line-height: 1.55;
                     }
                     .node {
                         margin-left: 14px;
@@ -99,14 +101,14 @@
                     .meta {
                         color: var(--muted);
                         margin-left: 8px;
-                        font-size: 11px;
+                        font-size: 13px;
                     }
                     .bracket { color: #334155; }
                     .tag { color: var(--tag); }
                     .attr { color: var(--attr); }
                     .value { color: var(--value); }
                     .hint {
-                        font-size: 12px;
+                        font-size: 14px;
                         color: var(--muted);
                         padding: 10px 16px 14px;
                         border-top: 1px solid #edf2fb;
