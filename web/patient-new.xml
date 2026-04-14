@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<patients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<patients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="patient-new.xsd">
     <date_of_birth>1965-03-15</date_of_birth>
     <medical_record_number>MRN-87654321</medical_record_number>
     <age_at_admission>61</age_at_admission>
@@ -7,7 +7,7 @@
     <ethnicity>Hispanic</ethnicity>
     <primary_language>English</primary_language>
     <insurance_type>Medicare</insurance_type>
-    <!-- ==================== LAYER 1: EPISODE DATA ==================== -->
+    
     <episodes>
         <episode>
             <episode_id>EP-2026-001234</episode_id>
@@ -21,7 +21,7 @@
                 <bmi>27.0</bmi>
             </admission_info>
 
-            <!-- Historical Risk Factors (pre-existing conditions) -->
+            
             <historical_risk_factors>
                 <risk_factor>
                     <condition>Hypertension</condition>
@@ -43,7 +43,7 @@
                 </risk_factor>
             </historical_risk_factors>
 
-            <!-- Historical Medications (pre-admission) -->
+            
             <historical_medications>
                 <medication>
                     <medication_name>Lisinopril</medication_name>
@@ -74,7 +74,7 @@
                 </medication>
             </historical_medications>
 
-            <!-- Episode Summary Metrics -->
+            
             <episode_summary>
                 <total_length_of_stay_days>7.5</total_length_of_stay_days>
                 <discharge_date>2026-03-27T16:30:00</discharge_date>
@@ -83,10 +83,10 @@
                 <in_hospital_mortality>false</in_hospital_mortality>
             </episode_summary>
 
-            <!-- ==================== LAYER 2: STAGES ==================== -->
+            
             <stages>
 
-                <!-- STAGE 1: ADMISSION STAGE (Emergency Department / Initial Assessment) -->
+                
                 <stage type="Admission">
                     <stage_type>Admission</stage_type>
                     <stage_id>STG-ADM-001</stage_id>
@@ -187,7 +187,7 @@
                     </risk_scores>
                 </stage>
 
-                <!-- STAGE 2: PROCEDURE STAGE (Cardiac Catheterization) -->
+                
                 <stage type="Procedure">
                     <stage_type>Procedure</stage_type>
                     <stage_id>STG-PROC-001</stage_id>
@@ -225,19 +225,19 @@
                     </procedure_details>
                 </stage>
 
-                <!-- NEW: OPERATION/SURGERY STAGE (Coronary Artery Bypass Grafting) -->
-                <!-- This stage can occur before, after, or between other stages -->
-                <!-- Multiple operation stages can be included for repeated surgeries -->
+                
+                
+                
 
                 <stage type="Operation">
                     <stage_type>Operation</stage_type>
                     <stage_id>STG-OP-001</stage_id>
-                    <operation_sequence>1</operation_sequence> <!-- For tracking multiple operations -->
+                    <operation_sequence>1</operation_sequence> 
                     <start_datetime>2026-03-21T07:30:00</start_datetime>
                     <end_datetime>2026-03-21T13:45:00</end_datetime>
                     <location>Cardiothoracic Operating Room 5</location>
 
-                    <!-- Pre-Operative Assessment -->
+                    
                     <pre_operative_assessment>
                         <assessment_datetime>2026-03-20T19:00:00</assessment_datetime>
                         <assessing_physician>Dr. Michael Thompson, Cardiothoracic Surgery</assessing_physician>
@@ -250,7 +250,7 @@
                         <surgical_urgency>Elective</surgical_urgency>
                         <anesthesia_plan>General anesthesia with invasive monitoring</anesthesia_plan>
 
-                        <!-- Pre-operative Risk Assessment -->
+                        
                         <preoperative_risk_assessment>
                             <euroscore_ii>3.2</euroscore_ii>
                             <sts_mortality_risk>2.8</sts_mortality_risk>
@@ -260,7 +260,7 @@
                             <ccs_class>III</ccs_class>
                         </preoperative_risk_assessment>
 
-                        <!-- Pre-operative Labs and Diagnostics -->
+                        
                         <preoperative_labs>
                             <lab>
                                 <lab_type>Complete Blood Count</lab_type>
@@ -280,7 +280,7 @@
                             </lab>
                         </preoperative_labs>
 
-                        <!-- Pre-operative Imaging -->
+                        
                         <preoperative_imaging>
                             <echocardiogram>
                                 <study_date>2026-03-20T14:30:00</study_date>
@@ -296,7 +296,7 @@
                             </cardiac_ct>
                         </preoperative_imaging>
 
-                        <!-- Pre-operative Medications (held before surgery) -->
+                        
                         <medications_held>
                             <medication>
                                 <name>Ticagrelor</name>
@@ -316,7 +316,7 @@
                             </medication>
                         </medications_held>
 
-                        <!-- Pre-operative Instructions -->
+                        
                         <preoperative_instructions>
                             <nil_per_os_start>2026-03-20T23:00:00</nil_per_os_start>
                             <preoperative_antibiotic>Cefazolin 2g IV at 07:00</preoperative_antibiotic>
@@ -324,9 +324,9 @@
                         </preoperative_instructions>
                     </pre_operative_assessment>
 
-                    <!-- Intra-Operative Details -->
+                    
                     <intra_operative>
-                        <!-- Anesthesia Record -->
+                        
                         <anesthesia>
                             <anesthesiologist>Dr. Patricia Lee</anesthesiologist>
                             <anesthesia_type>General endotracheal</anesthesia_type>
@@ -408,7 +408,7 @@
                             </intraoperative_medications>
                         </anesthesia>
 
-                        <!-- Surgical Procedure Details -->
+                        
                         <surgical_procedure>
                             <surgeon>Dr. Michael Thompson</surgeon>
                             <assistant_surgeon>Dr. Jennifer Park</assistant_surgeon>
@@ -417,14 +417,14 @@
                             <scrub_nurse>Susan Martinez, RN</scrub_nurse>
                             <circulating_nurse>Thomas Brown, RN</circulating_nurse>
 
-                            <!-- Incision and Access -->
+                            
                             <incision>
                                 <incision_time>2026-03-21T08:05:00</incision_time>
                                 <incision_type>Median sternotomy</incision_type>
                                 <approach>Standard midline incision from sternal notch to xiphoid</approach>
                             </incision>
 
-                            <!-- Cardiopulmonary Bypass -->
+                            
                             <cardiopulmonary_bypass>
                                 <bypass_initiation_time>2026-03-21T08:45:00</bypass_initiation_time>
                                 <bypass_termination_time>2026-03-21T12:15:00</bypass_termination_time>
@@ -439,7 +439,7 @@
                                 <lowest_temperature>28.5°C</lowest_temperature>
                             </cardiopulmonary_bypass>
 
-                            <!-- Graft Details -->
+                            
                             <grafts>
                                 <graft>
                                     <graft_number>1</graft_number>
@@ -472,7 +472,7 @@
                                 </graft>
                             </grafts>
 
-                            <!-- Intra-operative Assessment -->
+                            
                             <intraoperative_assessment>
                                 <transesophageal_echocardiogram>
                                     <pre_bypass_lvef>45%</pre_bypass_lvef>
@@ -501,7 +501,7 @@
                                 </graft_flow_measurements>
                             </intraoperative_assessment>
 
-                            <!-- Closure -->
+                            
                             <closure>
                                 <chest_tubes_placed>2 (mediastinal and pleural)</chest_tubes_placed>
                                 <chest_tube_size>28 Fr and 32 Fr</chest_tube_size>
@@ -511,7 +511,7 @@
                             </closure>
                         </surgical_procedure>
 
-                        <!-- Intra-operative Events and Complications -->
+                        
                         <intraoperative_events>
                             <event>
                                 <event_time>2026-03-21T10:15:00</event_time>
@@ -531,7 +531,7 @@
                             </event>
                         </intraoperative_events>
 
-                        <!-- Fluid and Blood Products -->
+                        
                         <fluid_management>
                             <intravenous_fluids>
                                 <fluid>
@@ -565,7 +565,7 @@
                         </fluid_management>
                     </intra_operative>
 
-                    <!-- Post-Operative Handoff -->
+                    
                     <post_operative_handoff>
                         <handoff_time>2026-03-21T13:50:00</handoff_time>
                         <receiving_unit>Cardiothoracic Intensive Care Unit (CTICU)</receiving_unit>
@@ -613,7 +613,7 @@
                         </handoff_summary>
                     </post_operative_handoff>
 
-                    <!-- Operative Note Summary -->
+                    
                     <operative_note>
                         <dictation_datetime>2026-03-21T15:30:00</dictation_datetime>
                         <surgeon_signature>Dr. Michael Thompson, MD, FACS</surgeon_signature>
@@ -627,7 +627,7 @@
                             but critical condition.</summary>
                     </operative_note>
 
-                    <!-- Quality Metrics -->
+                    
                     <quality_metrics>
                         <operative_time_minutes>375</operative_time_minutes>
                         <skin_to_skin_time_minutes>310</skin_to_skin_time_minutes>
@@ -638,7 +638,7 @@
                         <sternal_wound_class>Clean</sternal_wound_class>
                     </quality_metrics>
 
-                    <!-- Post-Operative Diagnoses (added after surgery) -->
+                    
                     <post_operative_diagnoses>
                         <diagnosis>Three-vessel coronary artery disease, status post CABG x 3</diagnosis>
                         <diagnosis>Postoperative atrial fibrillation, resolved</diagnosis>
@@ -646,14 +646,13 @@
                     </post_operative_diagnoses>
                 </stage>
 
-                <!-- STAGE 3: ICU STAGE (Post-Operative Critical Care) -->
-                <!-- This stage follows the operation stage for post-surgical recovery -->
+                
+                
                 <stage type="ICU">
                     <stage_type>ICU</stage_type>
                     <stage_id>STG-ICU-002</stage_id>
                     <stage_sequence>2</stage_sequence>
-                    <!--Second
-                    ICU stay, following operation -->
+                    
                     <start_datetime>
                         2026-03-21T14:00:00</start_datetime>
                     <end_datetime>2026-03-24T08:00:00</end_datetime>
@@ -785,7 +784,7 @@
                     </daily_goals>
                 </stage>
 
-                <!-- STAGE 4: WARD STAGE (Post-Operative Recovery) -->
+                
                 <stage type="Ward">
                     <stage_type>Ward</stage_type>
                     <stage_id>STG-WARD-001</stage_id>
@@ -794,7 +793,7 @@
                     <location>Cardiac Telemetry Unit, Room 412</location>
                     <room_type>Telemetry</room_type>
 
-                    <!-- Ward stage content remains as previously defined -->
+                    
                     <clinical_assessments>
                         <assessment>
                             <timestamp>2026-03-24T09:00:00</timestamp>
@@ -807,7 +806,7 @@
                         </assessment>
                     </clinical_assessments>
 
-                    <!-- Additional ward content as needed -->
+                    
 
                     <medications_administered>
                         <medication>
@@ -907,7 +906,7 @@
                     </discharge_planning>
                 </stage>
 
-                <!-- STAGE 5: DISCHARGE STAGE -->
+                
                 <stage type="Discharge">
                     <stage_type>Discharge</stage_type>
                     <stage_id>STG-DIS-001</stage_id>
@@ -915,7 +914,7 @@
                     <end_datetime>2026-03-27T16:30:00</end_datetime>
                     <location>Cardiac Telemetry Unit</location>
 
-                    <!-- Discharge stage content as previously defined -->
+                    
                 </stage>
 
             </stages>
