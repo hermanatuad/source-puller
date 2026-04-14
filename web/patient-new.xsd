@@ -23,6 +23,14 @@
     </xs:sequence>
   </xs:complexType>
 
+  <xs:complexType name="ValueWithUnitType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="unit" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
   <xs:complexType name="EpisodesType">
     <xs:sequence>
       <xs:element name="episode" type="EpisodeType" maxOccurs="unbounded"/>
@@ -75,7 +83,7 @@
   <xs:complexType name="HistoricalMedicationType">
     <xs:sequence>
       <xs:element name="medication_name" type="xs:string"/>
-      <xs:element name="dose" type="xs:string"/>
+      <xs:element name="dose" type="ValueWithUnitType"/>
       <xs:element name="frequency" type="xs:string"/>
       <xs:element name="route" type="xs:string"/>
       <xs:element name="start_date" type="xs:string"/>
@@ -149,14 +157,14 @@
       <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure_systolic" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure_diastolic" type="xs:string" minOccurs="0"/>
-      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="respiratory_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="temperature_celsius" type="xs:string" minOccurs="0"/>
       <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
       <xs:element name="pulmonary_artery_pressure_systolic" type="xs:string" minOccurs="0"/>
       <xs:element name="pulmonary_artery_pressure_diastolic" type="xs:string" minOccurs="0"/>
       <xs:element name="cardiac_output" type="xs:string" minOccurs="0"/>
-      <xs:element name="pain_score" type="xs:string" minOccurs="0"/>
+      <xs:element name="pain_score" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="sedation_score" type="xs:string" minOccurs="0"/>
       <xs:element name="ambulation_distance_meters" type="xs:string" minOccurs="0"/>
       <xs:element name="dyspnea_on_exertion" type="xs:string" minOccurs="0"/>
@@ -226,8 +234,8 @@
       <xs:element name="medication_name" type="xs:string" minOccurs="0"/>
       <xs:element name="medication_class" type="xs:string" minOccurs="0"/>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
-      <xs:element name="dose" type="xs:string" minOccurs="0"/>
-      <xs:element name="total_dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="dose" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="total_dose" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="frequency" type="xs:string" minOccurs="0"/>
       <xs:element name="route" type="xs:string" minOccurs="0"/>
       <xs:element name="administration_datetime" type="xs:string" minOccurs="0"/>
@@ -261,13 +269,13 @@
       <xs:element name="complications" type="xs:string" minOccurs="0"/>
       <xs:element name="drug" type="xs:string" minOccurs="0"/>
       <xs:element name="ventilator_mode" type="xs:string" minOccurs="0"/>
-      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="fio2" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="peep" type="xs:string" minOccurs="0"/>
       <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure" type="xs:string" minOccurs="0"/>
       <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
-      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
-      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="rate" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="tidal_volume" type="xs:string" minOccurs="0"/>
       <xs:element name="removal_datetime" type="xs:string" minOccurs="0"/>
     </xs:choice>
@@ -276,7 +284,7 @@
   <xs:complexType name="MedicationDetailsType">
     <xs:sequence>
       <xs:element name="drug" type="xs:string"/>
-      <xs:element name="dose" type="xs:string" minOccurs="0"/>
+      <xs:element name="dose" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="frequency" type="xs:string" minOccurs="0"/>
       <xs:element name="route" type="xs:string" minOccurs="0"/>
       <xs:element name="start_datetime" type="xs:string" minOccurs="0"/>
@@ -316,7 +324,7 @@
       <xs:element name="coronary_dominance" type="xs:string" minOccurs="0"/>
       <xs:element name="left_main" type="xs:string" minOccurs="0"/>
       <xs:element name="left_anterior_descending" type="LeftAnteriorDescendingType" minOccurs="0"/>
-      <xs:element name="ejection_fraction_visual" type="xs:string" minOccurs="0"/>
+      <xs:element name="ejection_fraction_visual" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -537,7 +545,7 @@
   <xs:complexType name="MyocardialProtectionType">
     <xs:sequence>
       <xs:element name="cardioplegia_type" type="xs:string" minOccurs="0"/>
-      <xs:element name="cardioplegia_volume" type="xs:string" minOccurs="0"/>
+      <xs:element name="cardioplegia_volume" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="dosing_frequency" type="xs:string" minOccurs="0"/>
       <xs:element name="myocardial_temperature" type="xs:string" minOccurs="0"/>
     </xs:sequence>
@@ -558,7 +566,7 @@
       <xs:element name="distal_anastomosis" type="xs:string" minOccurs="0"/>
       <xs:element name="distal_anastomosis_location" type="xs:string" minOccurs="0"/>
       <xs:element name="graft_quality" type="xs:string" minOccurs="0"/>
-      <xs:element name="doppler_flow" type="xs:string" minOccurs="0"/>
+      <xs:element name="doppler_flow" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -571,8 +579,8 @@
 
   <xs:complexType name="TransesophagealEchocardiogramType">
     <xs:sequence>
-      <xs:element name="pre_bypass_lvef" type="xs:string" minOccurs="0"/>
-      <xs:element name="post_bypass_lvef" type="xs:string" minOccurs="0"/>
+      <xs:element name="pre_bypass_lvef" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="post_bypass_lvef" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="wall_motion_improvement" type="xs:string" minOccurs="0"/>
       <xs:element name="valvular_function" type="xs:string" minOccurs="0"/>
       <xs:element name="graft_flow_assessment" type="xs:string" minOccurs="0"/>
@@ -679,12 +687,12 @@
   <xs:complexType name="CurrentStatusType">
     <xs:sequence>
       <xs:element name="ventilator_mode" type="xs:string" minOccurs="0"/>
-      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="fio2" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="peep" type="xs:string" minOccurs="0"/>
       <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure" type="xs:string" minOccurs="0"/>
       <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
-      <xs:element name="oxygen_saturation" type="xs:string" minOccurs="0"/>
+      <xs:element name="oxygen_saturation" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -697,7 +705,7 @@
   <xs:complexType name="InfusionType">
     <xs:sequence>
       <xs:element name="medication" type="xs:string" minOccurs="0"/>
-      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="rate" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -752,9 +760,9 @@
 
   <xs:complexType name="PreExtubationSettingsType">
     <xs:sequence>
-      <xs:element name="fio2" type="xs:string" minOccurs="0"/>
+      <xs:element name="fio2" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="peep" type="xs:string" minOccurs="0"/>
-      <xs:element name="rate" type="xs:string" minOccurs="0"/>
+      <xs:element name="rate" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="tidal_volume" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -768,7 +776,7 @@
   <xs:complexType name="ChestTubeType">
     <xs:sequence>
       <xs:element name="location" type="xs:string" minOccurs="0"/>
-      <xs:element name="size" type="xs:string" minOccurs="0"/>
+      <xs:element name="size" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="output" type="ChestTubeOutputType" minOccurs="0"/>
       <xs:element name="removal_datetime" type="xs:string" minOccurs="0"/>
     </xs:sequence>
@@ -834,7 +842,7 @@
       <xs:element name="distance_meters" type="xs:string" minOccurs="0"/>
       <xs:element name="pre_activity_heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="post_activity_heart_rate" type="xs:string" minOccurs="0"/>
-      <xs:element name="perceived_exertion" type="xs:string" minOccurs="0"/>
+      <xs:element name="perceived_exertion" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="resistance_exercises" type="xs:string" minOccurs="0"/>
     </xs:choice>
   </xs:complexType>

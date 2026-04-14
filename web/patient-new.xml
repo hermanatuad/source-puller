@@ -51,7 +51,7 @@
             <historical_medications>
                 <medication>
                     <medication_name>Lisinopril</medication_name>
-                    <dose>20 mg</dose>
+                    <dose unit="mg">20</dose>
                     <frequency>Once daily</frequency>
                     <route>Oral</route>
                     <start_date>2010-06-20</start_date>
@@ -60,7 +60,7 @@
                 </medication>
                 <medication>
                     <medication_name>Metformin</medication_name>
-                    <dose>1000 mg</dose>
+                    <dose unit="mg">1000</dose>
                     <frequency>Twice daily</frequency>
                     <route>Oral</route>
                     <start_date>2015-02-15</start_date>
@@ -69,7 +69,7 @@
                 </medication>
                 <medication>
                     <medication_name>Aspirin</medication_name>
-                    <dose>81 mg</dose>
+                    <dose unit="mg">81</dose>
                     <frequency>Once daily</frequency>
                     <route>Oral</route>
                     <start_date>2012-10-01</start_date>
@@ -101,7 +101,7 @@
                             <heart_rate>112</heart_rate>
                             <blood_pressure_systolic>165</blood_pressure_systolic>
                             <blood_pressure_diastolic>95</blood_pressure_diastolic>
-                            <oxygen_saturation>94.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">94.0</oxygen_saturation>
                             <respiratory_rate>22</respiratory_rate>
                             <temperature_celsius>37.2</temperature_celsius>
                         </assessment>
@@ -110,7 +110,7 @@
                             <heart_rate>98</heart_rate>
                             <blood_pressure_systolic>142</blood_pressure_systolic>
                             <blood_pressure_diastolic>88</blood_pressure_diastolic>
-                            <oxygen_saturation>96.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">96.0</oxygen_saturation>
                             <respiratory_rate>18</respiratory_rate>
                         </assessment>
                     </clinical_assessments>
@@ -162,7 +162,7 @@
                     <medications_administered>
                         <medication>
                             <medication_name>Aspirin</medication_name>
-                            <dose>324 mg</dose>
+                            <dose unit="mg">324</dose>
                             <route>Oral</route>
                             <administration_datetime>2026-03-20T08:35:00</administration_datetime>
                             <ordered_by>Dr. Sarah Chen</ordered_by>
@@ -170,7 +170,7 @@
                         </medication>
                         <medication>
                             <medication_name>Ticagrelor</medication_name>
-                            <dose>180 mg</dose>
+                            <dose unit="mg">180</dose>
                             <route>Oral</route>
                             <administration_datetime>2026-03-20T08:40:00</administration_datetime>
                             <ordered_by>Dr. Sarah Chen</ordered_by>
@@ -212,7 +212,7 @@
                                 <location>Proximal to mid</location>
                                 <lesion_characteristics>Calcified, thrombus present</lesion_characteristics>
                             </left_anterior_descending>
-                            <ejection_fraction_visual>45%</ejection_fraction_visual>
+                            <ejection_fraction_visual unit="percent">45</ejection_fraction_visual>
                         </angiography_findings>
 
                         <intervention>
@@ -372,25 +372,25 @@
                             <intraoperative_medications>
                                 <medication>
                                     <name>Propofol</name>
-                                    <dose>100-150 mcg/kg/min</dose>
+                                    <dose unit="mcg/kg/min">100-150</dose>
                                     <route>IV infusion</route>
                                     <indication>Anesthesia maintenance</indication>
                                 </medication>
                                 <medication>
                                     <name>Fentanyl</name>
-                                    <total_dose>750 mcg</total_dose>
+                                    <total_dose unit="mcg">750</total_dose>
                                     <route>IV</route>
                                     <indication>Analgesia</indication>
                                 </medication>
                                 <medication>
                                     <name>Rocuronium</name>
-                                    <dose>50 mg</dose>
+                                    <dose unit="mg">50</dose>
                                     <route>IV</route>
                                     <indication>Neuromuscular blockade</indication>
                                 </medication>
                                 <medication>
                                     <name>Heparin</name>
-                                    <dose>300 units/kg</dose>
+                                    <dose unit="units/kg">300</dose>
                                     <route>IV</route>
                                     <indication>Anticoagulation for cardiopulmonary bypass</indication>
                                     <act_target>480</act_target>
@@ -398,7 +398,7 @@
                                 </medication>
                                 <medication>
                                     <name>Protamine Sulfate</name>
-                                    <dose>250 mg</dose>
+                                    <dose unit="mg">250</dose>
                                     <route>IV</route>
                                     <indication>Heparin reversal</indication>
                                     <post_act>125</post_act>
@@ -430,7 +430,7 @@
                                 <aortic_cross_clamp_time>165</aortic_cross_clamp_time>
                                 <myocardial_protection>
                                     <cardioplegia_type>Del Nido cardioplegia</cardioplegia_type>
-                                    <cardioplegia_volume>1500 mL</cardioplegia_volume>
+                                    <cardioplegia_volume unit="mL">1500</cardioplegia_volume>
                                     <dosing_frequency>Every 20 minutes</dosing_frequency>
                                     <myocardial_temperature>4°C</myocardial_temperature>
                                 </myocardial_protection>
@@ -446,7 +446,7 @@
                                     <distal_anastomosis>Left Anterior Descending (LAD)</distal_anastomosis>
                                     <distal_anastomosis_location>Mid LAD</distal_anastomosis_location>
                                     <graft_quality>Excellent, good flow</graft_quality>
-                                    <doppler_flow>45 mL/min</doppler_flow>
+                                    <doppler_flow unit="mL/min">45</doppler_flow>
                                 </graft>
                                 <graft>
                                     <graft_number>2</graft_number>
@@ -456,7 +456,7 @@
                                     <distal_anastomosis>Obtuse Marginal (OM)</distal_anastomosis>
                                     <distal_anastomosis_location>First OM branch</distal_anastomosis_location>
                                     <graft_quality>Good</graft_quality>
-                                    <doppler_flow>35 mL/min</doppler_flow>
+                                    <doppler_flow unit="mL/min">35</doppler_flow>
                                 </graft>
                                 <graft>
                                     <graft_number>3</graft_number>
@@ -466,15 +466,15 @@
                                     <distal_anastomosis>Right Coronary Artery (RCA)</distal_anastomosis>
                                     <distal_anastomosis_location>Posterior descending artery (PDA)</distal_anastomosis_location>
                                     <graft_quality>Good</graft_quality>
-                                    <doppler_flow>40 mL/min</doppler_flow>
+                                    <doppler_flow unit="mL/min">40</doppler_flow>
                                 </graft>
                             </grafts>
 
 
                             <intraoperative_assessment>
                                 <transesophageal_echocardiogram>
-                                    <pre_bypass_lvef>45%</pre_bypass_lvef>
-                                    <post_bypass_lvef>55%</post_bypass_lvef>
+                                    <pre_bypass_lvef unit="percent">45</pre_bypass_lvef>
+                                    <post_bypass_lvef unit="percent">55</post_bypass_lvef>
                                     <wall_motion_improvement>Significant improvement in anterior
                                         wall motion</wall_motion_improvement>
                                     <valvular_function>Mild mitral regurgitation unchanged</valvular_function>
@@ -577,25 +577,25 @@
                                 support, now stable</intraoperative_course>
                             <current_status>
                                 <ventilator_mode>SIMV-PC</ventilator_mode>
-                                <fio2>50%</fio2>
+                                <fio2 unit="percent">50</fio2>
                                 <peep>5</peep>
                                 <heart_rate>88</heart_rate>
                                 <blood_pressure>115/68</blood_pressure>
                                 <central_venous_pressure>12</central_venous_pressure>
-                                <oxygen_saturation>96%</oxygen_saturation>
+                                <oxygen_saturation unit="percent">96</oxygen_saturation>
                             </current_status>
                             <infusions>
                                 <infusion>
                                     <medication>Epinephrine</medication>
-                                    <rate>0.05 mcg/kg/min</rate>
+                                    <rate unit="mcg/kg/min">0.05</rate>
                                 </infusion>
                                 <infusion>
                                     <medication>Amiodarone</medication>
-                                    <rate>1 mg/min</rate>
+                                    <rate unit="mg/min">1</rate>
                                 </infusion>
                                 <infusion>
                                     <medication>Propofol</medication>
-                                    <rate>30 mcg/kg/min</rate>
+                                    <rate unit="mcg/kg/min">30</rate>
                                 </infusion>
                             </infusions>
                             <drains>
@@ -669,10 +669,10 @@
                             <pulmonary_artery_pressure_systolic>32</pulmonary_artery_pressure_systolic>
                             <pulmonary_artery_pressure_diastolic>18</pulmonary_artery_pressure_diastolic>
                             <cardiac_output>4.2</cardiac_output>
-                            <oxygen_saturation>96.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">96.0</oxygen_saturation>
                             <respiratory_rate>18</respiratory_rate>
                             <temperature_celsius>36.8</temperature_celsius>
-                            <pain_score>3/10</pain_score>
+                            <pain_score unit="/10">3</pain_score>
                             <sedation_score>RASS -1</sedation_score>
                         </assessment>
                         <assessment>
@@ -682,7 +682,7 @@
                             <blood_pressure_diastolic>70</blood_pressure_diastolic>
                             <central_venous_pressure>10</central_venous_pressure>
                             <cardiac_output>4.8</cardiac_output>
-                            <oxygen_saturation>98.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">98.0</oxygen_saturation>
                             <respiratory_rate>14</respiratory_rate>
                         </assessment>
                     </clinical_assessments>
@@ -691,7 +691,7 @@
                         <ventilator_mode>SIMV-PC</ventilator_mode>
                         <extubation_datetime>2026-03-22T09:30:00</extubation_datetime>
                         <pre_extubation_settings>
-                            <fio2>40%</fio2>
+                            <fio2 unit="percent">40</fio2>
                             <peep>5</peep>
                             <rate>12</rate>
                             <tidal_volume>500</tidal_volume>
@@ -703,7 +703,7 @@
                     <chest_tube_management>
                         <chest_tube>
                             <location>Mediastinal</location>
-                            <size>28 Fr</size>
+                            <size unit="Fr">28</size>
                             <output>
                                 <day1_ml>350</day1_ml>
                                 <day2_ml>150</day2_ml>
@@ -713,7 +713,7 @@
                         </chest_tube>
                         <chest_tube>
                             <location>Pleural</location>
-                            <size>32 Fr</size>
+                            <size unit="Fr">32</size>
                             <output>
                                 <day1_ml>200</day1_ml>
                                 <day2_ml>100</day2_ml>
@@ -726,7 +726,7 @@
                     <medications_administered>
                         <medication>
                             <medication_name>Epinephrine</medication_name>
-                            <dose>0.03-0.05 mcg/kg/min</dose>
+                            <dose unit="mcg/kg/min">0.03-0.05</dose>
                             <route>IV infusion</route>
                             <start_datetime>2026-03-21T14:00:00</start_datetime>
                             <end_datetime>2026-03-22T18:00:00</end_datetime>
@@ -735,7 +735,7 @@
                         </medication>
                         <medication>
                             <medication_name>Amiodarone</medication_name>
-                            <dose>1 mg/min</dose>
+                            <dose unit="mg/min">1</dose>
                             <route>IV infusion</route>
                             <start_datetime>2026-03-21T14:00:00</start_datetime>
                             <end_datetime>2026-03-23T08:00:00</end_datetime>
@@ -743,7 +743,7 @@
                         </medication>
                         <medication>
                             <medication_name>Aspirin</medication_name>
-                            <dose>81 mg</dose>
+                            <dose unit="mg">81</dose>
                             <route>Oral</route>
                             <start_datetime>2026-03-23T08:00:00</start_datetime>
                             <status>Restarted post-operative day 2</status>
@@ -797,7 +797,7 @@
                             <heart_rate>76</heart_rate>
                             <blood_pressure_systolic>118</blood_pressure_systolic>
                             <blood_pressure_diastolic>72</blood_pressure_diastolic>
-                            <oxygen_saturation>97.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">97.0</oxygen_saturation>
                             <ambulation_distance_meters>50</ambulation_distance_meters>
                             <dyspnea_on_exertion>Mild</dyspnea_on_exertion>
                         </assessment>
@@ -810,7 +810,7 @@
                             <medication_class>Antiplatelet</medication_class>
                             <details>
                                 <drug>Aspirin</drug>
-                                <dose>81 mg</dose>
+                                <dose unit="mg">81</dose>
                                 <frequency>Daily</frequency>
                                 <route>Oral</route>
                                 <start_datetime>2026-03-22T08:00:00</start_datetime>
@@ -818,7 +818,7 @@
                             </details>
                             <details>
                                 <drug>Ticagrelor</drug>
-                                <dose>90 mg</dose>
+                                <dose unit="mg">90</dose>
                                 <frequency>Twice daily</frequency>
                                 <route>Oral</route>
                                 <start_datetime>2026-03-22T08:00:00</start_datetime>
@@ -826,7 +826,7 @@
                         </medication>
                         <medication>
                             <medication_name>Metoprolol Succinate</medication_name>
-                            <dose>Titrated to 50 mg</dose>
+                            <dose unit="mg">50</dose>
                             <frequency>Daily</frequency>
                             <route>Oral</route>
                             <start_datetime>2026-03-24T08:00:00</start_datetime>
@@ -835,7 +835,7 @@
                         </medication>
                         <medication>
                             <medication_name>Lisinopril</medication_name>
-                            <dose>10 mg</dose>
+                            <dose unit="mg">10</dose>
                             <frequency>Daily</frequency>
                             <route>Oral</route>
                             <start_datetime>2026-03-23T08:00:00</start_datetime>
@@ -844,7 +844,7 @@
                         </medication>
                         <medication>
                             <medication_name>Metformin</medication_name>
-                            <dose>500 mg</dose>
+                            <dose unit="mg">500</dose>
                             <frequency>Twice daily</frequency>
                             <route>Oral</route>
                             <start_datetime>2026-03-24T08:00:00</start_datetime>
@@ -862,7 +862,7 @@
                                 <distance_meters>50</distance_meters>
                                 <pre_activity_heart_rate>70</pre_activity_heart_rate>
                                 <post_activity_heart_rate>88</post_activity_heart_rate>
-                                <perceived_exertion>3/10</perceived_exertion>
+                                <perceived_exertion unit="/10">3</perceived_exertion>
                             </session>
                             <session>
                                 <session_datetime>2026-03-25T10:30:00</session_datetime>
@@ -870,7 +870,7 @@
                                 <duration_minutes>15</duration_minutes>
                                 <distance_meters>100</distance_meters>
                                 <resistance_exercises>Seated leg raises, arm curls with 2 lb weights</resistance_exercises>
-                                <perceived_exertion>4/10</perceived_exertion>
+                                <perceived_exertion unit="/10">4</perceived_exertion>
                             </session>
                         </sessions>
                     </cardiac_rehabilitation>
@@ -952,7 +952,7 @@
             <historical_medications>
                 <medication>
                     <medication_name>Aspirin</medication_name>
-                    <dose>81 mg</dose>
+                    <dose unit="mg">81</dose>
                     <frequency>Once daily</frequency>
                     <route>Oral</route>
                     <start_date>2026-03-22</start_date>
@@ -961,7 +961,7 @@
                 </medication>
                 <medication>
                     <medication_name>Furosemide</medication_name>
-                    <dose>40 mg</dose>
+                    <dose unit="mg">40</dose>
                     <frequency>Once daily</frequency>
                     <route>Oral</route>
                     <start_date>2026-05-01</start_date>
@@ -970,7 +970,7 @@
                 </medication>
                 <medication>
                     <medication_name>Metoprolol Succinate</medication_name>
-                    <dose>50 mg</dose>
+                    <dose unit="mg">50</dose>
                     <frequency>Once daily</frequency>
                     <route>Oral</route>
                     <start_date>2026-03-24</start_date>
@@ -1002,7 +1002,7 @@
                             <heart_rate>104</heart_rate>
                             <blood_pressure_systolic>150</blood_pressure_systolic>
                             <blood_pressure_diastolic>92</blood_pressure_diastolic>
-                            <oxygen_saturation>92.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">92.0</oxygen_saturation>
                             <respiratory_rate>24</respiratory_rate>
                             <temperature_celsius>37.0</temperature_celsius>
                         </assessment>
@@ -1032,7 +1032,7 @@
                     <medications_administered>
                         <medication>
                             <medication_name>Furosemide</medication_name>
-                            <dose>40 mg</dose>
+                            <dose unit="mg">40</dose>
                             <route>IV</route>
                             <administration_datetime>2026-07-11T11:20:00</administration_datetime>
                             <ordered_by>Dr. Emily Rodriguez</ordered_by>
@@ -1057,7 +1057,7 @@
                             <heart_rate>92</heart_rate>
                             <blood_pressure_systolic>138</blood_pressure_systolic>
                             <blood_pressure_diastolic>84</blood_pressure_diastolic>
-                            <oxygen_saturation>96.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">96.0</oxygen_saturation>
                             <respiratory_rate>18</respiratory_rate>
                             <central_venous_pressure>11</central_venous_pressure>
                             <cardiac_output>4.5</cardiac_output>
@@ -1067,7 +1067,7 @@
                     <medications_administered>
                         <medication>
                             <medication_name>Nitroglycerin</medication_name>
-                            <dose>10 mcg/min</dose>
+                            <dose unit="mcg/min">10</dose>
                             <route>IV infusion</route>
                             <start_datetime>2026-07-11T14:30:00</start_datetime>
                             <end_datetime>2026-07-12T05:00:00</end_datetime>
@@ -1098,7 +1098,7 @@
                             <heart_rate>78</heart_rate>
                             <blood_pressure_systolic>124</blood_pressure_systolic>
                             <blood_pressure_diastolic>76</blood_pressure_diastolic>
-                            <oxygen_saturation>97.0</oxygen_saturation>
+                            <oxygen_saturation unit="percent">97.0</oxygen_saturation>
                             <ambulation_distance_meters>120</ambulation_distance_meters>
                             <dyspnea_on_exertion>Mild</dyspnea_on_exertion>
                         </assessment>
@@ -1137,3 +1137,4 @@
         </episode>
     </episodes>
 </patients>
+
