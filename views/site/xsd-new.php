@@ -19,9 +19,10 @@ $xpath->registerNamespace('xs', 'http://www.w3.org/2001/XMLSchema');
 
 $collectDirectText = static function (DOMElement $element): string {
     $parts = [];
+
     foreach ($element->childNodes as $childNode) {
         if ($childNode->nodeType === XML_TEXT_NODE || $childNode->nodeType === XML_CDATA_SECTION_NODE) {
-            $value = trim((string) $childNode->nodeValue);
+            $value = trim($childNode->nodeValue ?? '');
             if ($value !== '') {
                 $parts[] = $value;
             }
@@ -29,6 +30,17 @@ $collectDirectText = static function (DOMElement $element): string {
     }
 
     return trim(implode(' ', $parts));
+};
+
+$collectChildElements = static function (DOMElement $element): array {
+    $children = [];
+    foreach ($element->childNodes as $childNode) {
+        if ($childNode instanceof DOMElement) {
+            $children[] = $childNode;
+        }
+    }
+
+    return $children;
 };
 
 $globalElements = [];
@@ -68,7 +80,7 @@ $schemaStats = [
 ];
 
 $renderParticle = null;
-$renderParticle = static function (DOMElement $node, int $depth = 0) use (&$renderParticle, $collectDirectText): string {
+$renderParticle = static function (DOMElement $node, int $depth = 0) use (&$renderParticle, $collectDirectText, $collectChildElements): string {
     $label = $node->tagName;
     $name = $node->getAttribute('name');
     $type = $node->getAttribute('type');
@@ -78,26 +90,7 @@ $renderParticle = static function (DOMElement $node, int $depth = 0) use (&$rend
     $use = $node->getAttribute('use');
     $fixed = $node->getAttribute('fixed');
     $default = $node->getAttribute('default');
-    $children = [];
-
-    foreach ($node->childNodes as $childNode) {
-        if ($childNode instanceof DOMElement) {
-            $children[] = $childNode;
-        }
-    }
-
-    $directText = $collectDirectText($node);
-    $cardClass = 'xsd-node-card';
     $pathLabel = $name !== '' ? $name : ($ref !== '' ? $ref : $label);
-
-    $html = '<article class="' . $cardClass . '" data-xsd-node="' . Html::encode(strtolower($pathLabel)) . '">';
-    $html .= '<div class="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2">';
-    $html .= '<div>';
-    $html .= Html::tag('div', Html::encode($pathLabel), ['class' => 'xsd-node-title']);
-    $html .= Html::tag('div', Html::encode($label), ['class' => 'xsd-node-subtitle']);
-    $html .= '</div>';
-    $html .= Html::tag('span', $depth === 0 ? 'Schema Root' : 'Level ' . $depth, ['class' => 'badge bg-soft-info text-info']);
-    $html .= '</div>';
 
     $meta = [];
     if ($type !== '') {
@@ -122,23 +115,41 @@ $renderParticle = static function (DOMElement $node, int $depth = 0) use (&$rend
         $meta[] = Html::tag('span', 'default: ' . Html::encode($default), ['class' => 'badge bg-soft-success text-success']);
     }
 
+    $childElements = $collectChildElements($node);
+    $directText = $collectDirectText($node);
+
+    $html = '<details class="xsd-node-card xsd-collapsible" data-xsd-node="' . Html::encode(strtolower($pathLabel)) . '">';
+    $html .= '<summary class="xsd-collapsible-summary">';
+    $html .= '<div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">';
+    $html .= '<div>';
+    $html .= Html::tag('div', Html::encode($pathLabel), ['class' => 'xsd-node-title']);
+    $html .= Html::tag('div', Html::encode($label), ['class' => 'xsd-node-subtitle']);
+    $html .= '</div>';
+    $html .= Html::tag('span', $depth === 0 ? 'Schema Root' : 'Level ' . $depth, ['class' => 'badge bg-soft-info text-info']);
+    $html .= '</div>';
+
     if (!empty($meta)) {
-        $html .= '<div class="d-flex flex-wrap gap-1 mb-2">' . implode('', $meta) . '</div>';
+        $html .= '<div class="d-flex flex-wrap gap-1 mt-2">' . implode('', $meta) . '</div>';
     }
+
+    $html .= Html::tag('div', 'Click to expand or collapse', ['class' => 'xsd-summary-hint']);
+    $html .= '</summary>';
+    $html .= '<div class="xsd-collapsible-body">';
 
     if ($directText !== '') {
         $html .= Html::tag('div', Html::encode($directText), ['class' => 'xsd-node-text mb-2']);
     }
 
-    if (!empty($children)) {
+    if (!empty($childElements)) {
         $html .= '<div class="xsd-child-grid">';
-        foreach ($children as $child) {
-            $html .= $renderParticle($child, $depth + 1);
+        foreach ($childElements as $childElement) {
+            $html .= $renderParticle($childElement, $depth + 1);
         }
         $html .= '</div>';
     }
 
-    $html .= '</article>';
+    $html .= '</div>';
+    $html .= '</details>';
 
     return $html;
 };
@@ -146,6 +157,7 @@ $renderParticle = static function (DOMElement $node, int $depth = 0) use (&$rend
 $renderTypeSummary = static function (DOMElement $typeNode) use ($xpath): array {
     $name = $typeNode->getAttribute('name');
     $sequenceNodes = [];
+
     foreach ($xpath->query('.//xs:sequence/xs:element | .//xs:choice/xs:element | .//xs:all/xs:element', $typeNode) as $element) {
         if ($element instanceof DOMElement) {
             $sequenceNodes[] = $element;
@@ -161,6 +173,7 @@ $renderTypeSummary = static function (DOMElement $typeNode) use ($xpath): array 
 
     return [
         'name' => $name,
+        'node' => $typeNode,
         'elements' => $sequenceNodes,
         'attributes' => $attributeNodes,
     ];
@@ -270,10 +283,37 @@ $this->registerCss(<<<CSS
     padding: 14px;
 }
 
+.xsd-collapsible {
+    overflow: hidden;
+}
+
+.xsd-collapsible > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px;
+}
+
+.xsd-collapsible > summary::-webkit-details-marker {
+    display: none;
+}
+
+.xsd-collapsible[open] > summary {
+    border-bottom: 1px solid var(--xsd-border);
+    background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.xsd-collapsible-body {
+    padding: 14px;
+}
+
 .xsd-node-title {
     font-size: 18px;
     font-weight: 800;
     color: #0f172a;
+}
+
+.xsd-collapsible-summary .xsd-node-title {
+    font-size: 17px;
 }
 
 .xsd-node-subtitle {
@@ -285,6 +325,12 @@ $this->registerCss(<<<CSS
     font-size: 14px;
     color: #1f2937;
     line-height: 1.5;
+}
+
+.xsd-summary-hint {
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--xsd-muted);
 }
 
 .xsd-child-grid {
@@ -336,7 +382,7 @@ CSS);
             <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
                 <div>
                     <h1 class="xsd-title mb-1">Patient New XSD Viewer</h1>
-                    <p class="xsd-subtitle mb-0">Struktur schema ditampilkan dalam kartu, ringkasan tipe, dan tree deklarasi elemen.</p>
+                    <p class="xsd-subtitle mb-0">Bagian utama menampilkan ringkasan. Detail schema dapat dibuka atau ditutup seperti accordion.</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
                     <a class="btn btn-sm btn-soft-primary" href="#global-elements">Global Elements</a>
@@ -391,34 +437,36 @@ CSS);
                             $ref = $globalElement->getAttribute('ref');
                             $minOccurs = $globalElement->getAttribute('minOccurs');
                             $maxOccurs = $globalElement->getAttribute('maxOccurs');
-                            $children = [];
-                            foreach ($globalElement->childNodes as $childNode) {
-                                if ($childNode instanceof DOMElement) {
-                                    $children[] = $childNode;
-                                }
-                            }
+                            $children = $collectChildElements($globalElement);
                         ?>
-                        <article class="xsd-node-card p-3">
-                            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2">
-                                <div>
-                                    <div class="xsd-node-title"><?= Html::encode($name !== '' ? $name : $globalElement->tagName) ?></div>
-                                    <div class="xsd-node-subtitle">Global xs:element</div>
+                        <details class="xsd-node-card xsd-collapsible">
+                            <summary class="xsd-collapsible-summary">
+                                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                    <div>
+                                        <div class="xsd-node-title"><?= Html::encode($name !== '' ? $name : $globalElement->tagName) ?></div>
+                                        <div class="xsd-node-subtitle">Global xs:element</div>
+                                    </div>
+                                    <?php if ($type !== ''): ?><span class="badge bg-soft-primary text-primary">type: <?= Html::encode($type) ?></span><?php endif; ?>
                                 </div>
-                                <?php if ($type !== ''): ?><span class="badge bg-soft-primary text-primary">type: <?= Html::encode($type) ?></span><?php endif; ?>
-                            </div>
-                            <div class="xsd-pill-list mb-2">
-                                <?php if ($ref !== ''): ?><span class="badge bg-soft-secondary text-secondary">ref: <?= Html::encode($ref) ?></span><?php endif; ?>
-                                <?php if ($minOccurs !== ''): ?><span class="badge bg-light text-dark">min: <?= Html::encode($minOccurs) ?></span><?php endif; ?>
-                                <?php if ($maxOccurs !== ''): ?><span class="badge bg-light text-dark">max: <?= Html::encode($maxOccurs) ?></span><?php endif; ?>
-                            </div>
-                            <?php if (!empty($children)): ?>
-                                <div class="xsd-child-grid">
-                                    <?php foreach ($children as $child): ?>
-                                        <?= $renderParticle($child) ?>
-                                    <?php endforeach; ?>
+                                <div class="xsd-pill-list mt-2">
+                                    <?php if ($ref !== ''): ?><span class="badge bg-soft-secondary text-secondary">ref: <?= Html::encode($ref) ?></span><?php endif; ?>
+                                    <?php if ($minOccurs !== ''): ?><span class="badge bg-light text-dark">min: <?= Html::encode($minOccurs) ?></span><?php endif; ?>
+                                    <?php if ($maxOccurs !== ''): ?><span class="badge bg-light text-dark">max: <?= Html::encode($maxOccurs) ?></span><?php endif; ?>
                                 </div>
-                            <?php endif; ?>
-                        </article>
+                                <div class="xsd-summary-hint">Click to expand or collapse</div>
+                            </summary>
+                            <div class="xsd-collapsible-body">
+                                <?php if (!empty($children)): ?>
+                                    <div class="xsd-child-grid">
+                                        <?php foreach ($children as $child): ?>
+                                            <?= $renderParticle($child) ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="xsd-node-text text-muted">No child declarations.</div>
+                                <?php endif; ?>
+                            </div>
+                        </details>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -427,37 +475,41 @@ CSS);
                 <div class="xsd-section-title">Complex Types</div>
                 <div class="xsd-type-list">
                     <?php foreach ($typeSummaries as $summary): ?>
-                        <article class="xsd-node-card p-3">
-                            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2">
-                                <div>
-                                    <div class="xsd-node-title"><?= Html::encode($summary['name']) ?></div>
-                                    <div class="xsd-node-subtitle">complexType</div>
+                        <details class="xsd-node-card xsd-collapsible">
+                            <summary class="xsd-collapsible-summary">
+                                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                    <div>
+                                        <div class="xsd-node-title"><?= Html::encode($summary['name']) ?></div>
+                                        <div class="xsd-node-subtitle">complexType</div>
+                                    </div>
+                                    <span class="badge bg-soft-info text-info"><?= count($summary['elements']) ?> elements</span>
                                 </div>
-                                <span class="badge bg-soft-info text-info"><?= count($summary['elements']) ?> elements</span>
-                            </div>
+                                <div class="xsd-summary-hint">Click to expand or collapse</div>
+                            </summary>
+                            <div class="xsd-collapsible-body">
+                                <?php if (!empty($summary['attributes'])): ?>
+                                    <div class="mb-2">
+                                        <div class="xsd-label">Attributes</div>
+                                        <div class="xsd-pill-list">
+                                            <?php foreach ($summary['attributes'] as $attributeNode): ?>
+                                                <?php $attributeName = $attributeNode->getAttribute('name'); ?>
+                                                <span class="badge bg-soft-secondary text-secondary"><?= Html::encode($attributeName !== '' ? $attributeName : $attributeNode->tagName) ?></span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
 
-                            <?php if (!empty($summary['attributes'])): ?>
-                                <div class="mb-2">
-                                    <div class="xsd-label">Attributes</div>
-                                    <div class="xsd-pill-list">
-                                        <?php foreach ($summary['attributes'] as $attributeNode): ?>
-                                            <?php $attributeName = $attributeNode->getAttribute('name'); ?>
-                                            <span class="badge bg-soft-secondary text-secondary"><?= Html::encode($attributeName !== '' ? $attributeName : $attributeNode->tagName) ?></span>
+                                <?php if (!empty($summary['elements'])): ?>
+                                    <div class="xsd-child-grid">
+                                        <?php foreach ($summary['elements'] as $elementNode): ?>
+                                            <?= $renderParticle($elementNode) ?>
                                         <?php endforeach; ?>
                                     </div>
-                                </div>
-                            <?php endif; ?>
-
-                            <?php if (!empty($summary['elements'])): ?>
-                                <div class="xsd-child-grid">
-                                    <?php foreach ($summary['elements'] as $elementNode): ?>
-                                        <?= $renderParticle($elementNode) ?>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php else: ?>
-                                <div class="xsd-node-text text-muted">No nested elements declared.</div>
-                            <?php endif; ?>
-                        </article>
+                                <?php else: ?>
+                                    <div class="xsd-node-text text-muted">No nested elements declared.</div>
+                                <?php endif; ?>
+                            </div>
+                        </details>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -467,34 +519,48 @@ CSS);
                     <div class="xsd-section-title">Supporting Declarations</div>
                     <div class="xsd-child-grid">
                         <?php foreach ($simpleTypes as $simpleType): ?>
-                            <article class="xsd-node-card p-3">
-                                <div class="xsd-node-title"><?= Html::encode($simpleType->getAttribute('name') ?: $simpleType->tagName) ?></div>
-                                <div class="xsd-node-subtitle">simpleType</div>
-                                <?php $directText = $collectDirectText($simpleType); ?>
-                                <?php if ($directText !== ''): ?>
-                                    <div class="xsd-node-text mt-2"><?= Html::encode($directText) ?></div>
-                                <?php endif; ?>
-                            </article>
+                            <details class="xsd-node-card xsd-collapsible">
+                                <summary class="xsd-collapsible-summary">
+                                    <div class="xsd-node-title"><?= Html::encode($simpleType->getAttribute('name') ?: $simpleType->tagName) ?></div>
+                                    <div class="xsd-node-subtitle">simpleType</div>
+                                    <div class="xsd-summary-hint">Click to expand or collapse</div>
+                                </summary>
+                                <div class="xsd-collapsible-body">
+                                    <?php $directText = $collectDirectText($simpleType); ?>
+                                    <?php if ($directText !== ''): ?>
+                                        <div class="xsd-node-text"><?= Html::encode($directText) ?></div>
+                                    <?php else: ?>
+                                        <div class="xsd-node-text text-muted">No direct text content.</div>
+                                    <?php endif; ?>
+                                </div>
+                            </details>
                         <?php endforeach; ?>
 
                         <?php foreach ($attributes as $attributeNode): ?>
-                            <article class="xsd-node-card p-3">
-                                <div class="xsd-node-title"><?= Html::encode($attributeNode->getAttribute('name') ?: $attributeNode->tagName) ?></div>
-                                <div class="xsd-node-subtitle">global attribute</div>
-                                <div class="xsd-pill-list mt-2">
-                                    <?php if ($attributeNode->getAttribute('type') !== ''): ?><span class="badge bg-soft-primary text-primary">type: <?= Html::encode($attributeNode->getAttribute('type')) ?></span><?php endif; ?>
-                                    <?php if ($attributeNode->getAttribute('use') !== ''): ?><span class="badge bg-light text-dark">use: <?= Html::encode($attributeNode->getAttribute('use')) ?></span><?php endif; ?>
+                            <details class="xsd-node-card xsd-collapsible">
+                                <summary class="xsd-collapsible-summary">
+                                    <div class="xsd-node-title"><?= Html::encode($attributeNode->getAttribute('name') ?: $attributeNode->tagName) ?></div>
+                                    <div class="xsd-node-subtitle">global attribute</div>
+                                    <div class="xsd-summary-hint">Click to expand or collapse</div>
+                                </summary>
+                                <div class="xsd-collapsible-body">
+                                    <div class="xsd-pill-list">
+                                        <?php if ($attributeNode->getAttribute('type') !== ''): ?><span class="badge bg-soft-primary text-primary">type: <?= Html::encode($attributeNode->getAttribute('type')) ?></span><?php endif; ?>
+                                        <?php if ($attributeNode->getAttribute('use') !== ''): ?><span class="badge bg-light text-dark">use: <?= Html::encode($attributeNode->getAttribute('use')) ?></span><?php endif; ?>
+                                    </div>
                                 </div>
-                            </article>
+                            </details>
                         <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
 
-            <div class="xsd-panel-card" id="raw-xsd">
-                <div class="xsd-section-title">Raw XSD</div>
-                <pre class="xsd-code-box bg-dark text-light p-3 mb-0"><code><?= Html::encode($xsdContent) ?></code></pre>
-            </div>
+            <details class="xsd-panel-card" id="raw-xsd">
+                <summary class="xsd-section-title mb-0">Raw XSD</summary>
+                <div class="xsd-collapsible-body pt-0">
+                    <pre class="xsd-code-box bg-dark text-light p-3 mb-0"><code><?= Html::encode($xsdContent) ?></code></pre>
+                </div>
+            </details>
         </div>
     </div>
 </div>
