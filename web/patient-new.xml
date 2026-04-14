@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="patient-new.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/patient-new.xsl"?>
 <patients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="patient-new.xsd">
     <date_of_birth>1965-03-15</date_of_birth>
     <medical_record_number>MRN-87654321</medical_record_number>
