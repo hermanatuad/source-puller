@@ -94,9 +94,9 @@
   </xs:complexType>
 
   <xs:complexType name="StageType">
-    <xs:sequence>
-      <xs:element name="stage_type" type="xs:string"/>
-      <xs:element name="stage_id" type="xs:string"/>
+    <xs:all>
+      <xs:element name="stage_type" type="xs:string" minOccurs="0"/>
+      <xs:element name="stage_id" type="xs:string" minOccurs="0"/>
       <xs:element name="operation_sequence" type="xs:integer" minOccurs="0"/>
       <xs:element name="stage_sequence" type="xs:integer" minOccurs="0"/>
       <xs:element name="start_datetime" type="xs:string" minOccurs="0"/>
@@ -125,7 +125,7 @@
       <xs:element name="cardiac_rehabilitation" type="CardiacRehabilitationType" minOccurs="0"/>
       <xs:element name="patient_education" type="PatientEducationType" minOccurs="0"/>
       <xs:element name="discharge_planning" type="DischargePlanningType" minOccurs="0"/>
-    </xs:sequence>
+    </xs:all>
     <xs:attribute name="type" type="xs:string" use="optional"/>
   </xs:complexType>
 
@@ -137,7 +137,8 @@
 
   <xs:complexType name="AssessmentType">
     <xs:sequence>
-      <xs:element name="timestamp" type="xs:string"/>
+      <xs:element name="timestamp" type="xs:string" minOccurs="0"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure_systolic" type="xs:string" minOccurs="0"/>
       <xs:element name="blood_pressure_diastolic" type="xs:string" minOccurs="0"/>
@@ -152,6 +153,7 @@
       <xs:element name="sedation_score" type="xs:string" minOccurs="0"/>
       <xs:element name="ambulation_distance_meters" type="xs:string" minOccurs="0"/>
       <xs:element name="dyspnea_on_exertion" type="xs:string" minOccurs="0"/>
+      </xs:choice>
     </xs:sequence>
   </xs:complexType>
 
@@ -213,7 +215,7 @@
   </xs:complexType>
 
   <xs:complexType name="MedicationType">
-    <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="medication_name" type="xs:string" minOccurs="0"/>
       <xs:element name="medication_class" type="xs:string" minOccurs="0"/>
       <xs:element name="name" type="xs:string" minOccurs="0"/>
@@ -261,7 +263,7 @@
       <xs:element name="rate" type="xs:string" minOccurs="0"/>
       <xs:element name="tidal_volume" type="xs:string" minOccurs="0"/>
       <xs:element name="removal_datetime" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
+    </xs:choice>
   </xs:complexType>
 
   <xs:complexType name="MedicationDetailsType">
@@ -818,7 +820,7 @@
   </xs:complexType>
 
   <xs:complexType name="SessionType">
-    <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="session_datetime" type="xs:string" minOccurs="0"/>
       <xs:element name="activity_type" type="xs:string" minOccurs="0"/>
       <xs:element name="duration_minutes" type="xs:string" minOccurs="0"/>
@@ -827,7 +829,7 @@
       <xs:element name="post_activity_heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="perceived_exertion" type="xs:string" minOccurs="0"/>
       <xs:element name="resistance_exercises" type="xs:string" minOccurs="0"/>
-    </xs:sequence>
+    </xs:choice>
   </xs:complexType>
 
   <xs:complexType name="PatientEducationType">
