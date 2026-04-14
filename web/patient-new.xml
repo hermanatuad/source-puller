@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/patient-new.xsl"?>
-<patients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="patient-new.xsd">
-    <date_of_birth>1965-03-15</date_of_birth>
-    <medical_record_number>MRN-87654321</medical_record_number>
-    <age_at_admission>61</age_at_admission>
-    <gender>Male</gender>
-    <ethnicity>Hispanic</ethnicity>
-    <primary_language>English</primary_language>
-    <insurance_type>Medicare</insurance_type>
-    
+<patients xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="patient-new.xsd">
+
+    <demographics>
+        <patient_id>PT-2026-000123</patient_id>
+        <date_of_birth>1965-03-15</date_of_birth>
+        <medical_record_number>MRN-87654321</medical_record_number>
+        <age_at_admission>61</age_at_admission>
+        <gender>Male</gender>
+        <ethnicity>Hispanic</ethnicity>
+        <primary_language>English</primary_language>
+        <insurance_type>Medicare</insurance_type>
+    </demographics> 
+
     <episodes>
         <episode>
             <episode_id>EP-2026-001234</episode_id>
@@ -22,7 +27,6 @@
                 <bmi>27.0</bmi>
             </admission_info>
 
-            
             <historical_risk_factors>
                 <risk_factor>
                     <condition>Hypertension</condition>
@@ -44,7 +48,6 @@
                 </risk_factor>
             </historical_risk_factors>
 
-            
             <historical_medications>
                 <medication>
                     <medication_name>Lisinopril</medication_name>
@@ -75,7 +78,6 @@
                 </medication>
             </historical_medications>
 
-            
             <episode_summary>
                 <total_length_of_stay_days>7.5</total_length_of_stay_days>
                 <discharge_date>2026-03-27T16:30:00</discharge_date>
@@ -84,10 +86,8 @@
                 <in_hospital_mortality>false</in_hospital_mortality>
             </episode_summary>
 
-            
             <stages>
 
-                
                 <stage type="Admission">
                     <stage_type>Admission</stage_type>
                     <stage_id>STG-ADM-001</stage_id>
@@ -188,7 +188,7 @@
                     </risk_scores>
                 </stage>
 
-                
+
                 <stage type="Procedure">
                     <stage_type>Procedure</stage_type>
                     <stage_id>STG-PROC-001</stage_id>
@@ -226,19 +226,16 @@
                     </procedure_details>
                 </stage>
 
-                
-                
-                
 
                 <stage type="Operation">
                     <stage_type>Operation</stage_type>
                     <stage_id>STG-OP-001</stage_id>
-                    <operation_sequence>1</operation_sequence> 
+                    <operation_sequence>1</operation_sequence>
                     <start_datetime>2026-03-21T07:30:00</start_datetime>
                     <end_datetime>2026-03-21T13:45:00</end_datetime>
                     <location>Cardiothoracic Operating Room 5</location>
 
-                    
+
                     <pre_operative_assessment>
                         <assessment_datetime>2026-03-20T19:00:00</assessment_datetime>
                         <assessing_physician>Dr. Michael Thompson, Cardiothoracic Surgery</assessing_physician>
@@ -251,7 +248,7 @@
                         <surgical_urgency>Elective</surgical_urgency>
                         <anesthesia_plan>General anesthesia with invasive monitoring</anesthesia_plan>
 
-                        
+
                         <preoperative_risk_assessment>
                             <euroscore_ii>3.2</euroscore_ii>
                             <sts_mortality_risk>2.8</sts_mortality_risk>
@@ -261,7 +258,7 @@
                             <ccs_class>III</ccs_class>
                         </preoperative_risk_assessment>
 
-                        
+
                         <preoperative_labs>
                             <lab>
                                 <lab_type>Complete Blood Count</lab_type>
@@ -281,7 +278,7 @@
                             </lab>
                         </preoperative_labs>
 
-                        
+
                         <preoperative_imaging>
                             <echocardiogram>
                                 <study_date>2026-03-20T14:30:00</study_date>
@@ -297,7 +294,7 @@
                             </cardiac_ct>
                         </preoperative_imaging>
 
-                        
+
                         <medications_held>
                             <medication>
                                 <name>Ticagrelor</name>
@@ -317,7 +314,7 @@
                             </medication>
                         </medications_held>
 
-                        
+
                         <preoperative_instructions>
                             <nil_per_os_start>2026-03-20T23:00:00</nil_per_os_start>
                             <preoperative_antibiotic>Cefazolin 2g IV at 07:00</preoperative_antibiotic>
@@ -325,9 +322,9 @@
                         </preoperative_instructions>
                     </pre_operative_assessment>
 
-                    
+
                     <intra_operative>
-                        
+
                         <anesthesia>
                             <anesthesiologist>Dr. Patricia Lee</anesthesiologist>
                             <anesthesia_type>General endotracheal</anesthesia_type>
@@ -409,7 +406,7 @@
                             </intraoperative_medications>
                         </anesthesia>
 
-                        
+
                         <surgical_procedure>
                             <surgeon>Dr. Michael Thompson</surgeon>
                             <assistant_surgeon>Dr. Jennifer Park</assistant_surgeon>
@@ -418,14 +415,14 @@
                             <scrub_nurse>Susan Martinez, RN</scrub_nurse>
                             <circulating_nurse>Thomas Brown, RN</circulating_nurse>
 
-                            
+
                             <incision>
                                 <incision_time>2026-03-21T08:05:00</incision_time>
                                 <incision_type>Median sternotomy</incision_type>
                                 <approach>Standard midline incision from sternal notch to xiphoid</approach>
                             </incision>
 
-                            
+
                             <cardiopulmonary_bypass>
                                 <bypass_initiation_time>2026-03-21T08:45:00</bypass_initiation_time>
                                 <bypass_termination_time>2026-03-21T12:15:00</bypass_termination_time>
@@ -440,7 +437,7 @@
                                 <lowest_temperature>28.5°C</lowest_temperature>
                             </cardiopulmonary_bypass>
 
-                            
+
                             <grafts>
                                 <graft>
                                     <graft_number>1</graft_number>
@@ -473,7 +470,7 @@
                                 </graft>
                             </grafts>
 
-                            
+
                             <intraoperative_assessment>
                                 <transesophageal_echocardiogram>
                                     <pre_bypass_lvef>45%</pre_bypass_lvef>
@@ -502,7 +499,7 @@
                                 </graft_flow_measurements>
                             </intraoperative_assessment>
 
-                            
+
                             <closure>
                                 <chest_tubes_placed>2 (mediastinal and pleural)</chest_tubes_placed>
                                 <chest_tube_size>28 Fr and 32 Fr</chest_tube_size>
@@ -512,7 +509,7 @@
                             </closure>
                         </surgical_procedure>
 
-                        
+
                         <intraoperative_events>
                             <event>
                                 <event_time>2026-03-21T10:15:00</event_time>
@@ -532,7 +529,7 @@
                             </event>
                         </intraoperative_events>
 
-                        
+
                         <fluid_management>
                             <intravenous_fluids>
                                 <fluid>
@@ -566,7 +563,7 @@
                         </fluid_management>
                     </intra_operative>
 
-                    
+
                     <post_operative_handoff>
                         <handoff_time>2026-03-21T13:50:00</handoff_time>
                         <receiving_unit>Cardiothoracic Intensive Care Unit (CTICU)</receiving_unit>
@@ -614,7 +611,7 @@
                         </handoff_summary>
                     </post_operative_handoff>
 
-                    
+
                     <operative_note>
                         <dictation_datetime>2026-03-21T15:30:00</dictation_datetime>
                         <surgeon_signature>Dr. Michael Thompson, MD, FACS</surgeon_signature>
@@ -628,7 +625,7 @@
                             but critical condition.</summary>
                     </operative_note>
 
-                    
+
                     <quality_metrics>
                         <operative_time_minutes>375</operative_time_minutes>
                         <skin_to_skin_time_minutes>310</skin_to_skin_time_minutes>
@@ -639,7 +636,7 @@
                         <sternal_wound_class>Clean</sternal_wound_class>
                     </quality_metrics>
 
-                    
+
                     <post_operative_diagnoses>
                         <diagnosis>Three-vessel coronary artery disease, status post CABG x 3</diagnosis>
                         <diagnosis>Postoperative atrial fibrillation, resolved</diagnosis>
@@ -647,13 +644,12 @@
                     </post_operative_diagnoses>
                 </stage>
 
-                
-                
+
                 <stage type="ICU">
                     <stage_type>ICU</stage_type>
                     <stage_id>STG-ICU-002</stage_id>
                     <stage_sequence>2</stage_sequence>
-                    
+
                     <start_datetime>
                         2026-03-21T14:00:00</start_datetime>
                     <end_datetime>2026-03-24T08:00:00</end_datetime>
@@ -785,7 +781,7 @@
                     </daily_goals>
                 </stage>
 
-                
+
                 <stage type="Ward">
                     <stage_type>Ward</stage_type>
                     <stage_id>STG-WARD-001</stage_id>
@@ -794,7 +790,7 @@
                     <location>Cardiac Telemetry Unit, Room 412</location>
                     <room_type>Telemetry</room_type>
 
-                    
+
                     <clinical_assessments>
                         <assessment>
                             <timestamp>2026-03-24T09:00:00</timestamp>
@@ -807,7 +803,6 @@
                         </assessment>
                     </clinical_assessments>
 
-                    
 
                     <medications_administered>
                         <medication>
@@ -907,7 +902,7 @@
                     </discharge_planning>
                 </stage>
 
-                
+
                 <stage type="Discharge">
                     <stage_type>Discharge</stage_type>
                     <stage_id>STG-DIS-001</stage_id>
@@ -915,7 +910,227 @@
                     <end_datetime>2026-03-27T16:30:00</end_datetime>
                     <location>Cardiac Telemetry Unit</location>
 
-                    
+
+                </stage>
+
+            </stages>
+        </episode>
+
+        <episode>
+            <episode_id>EP-2026-001235</episode_id>
+
+            <admission_info>
+                <admission_date>2026-07-11T10:20:00</admission_date>
+                <admission_source>Outpatient Referral</admission_source>
+                <presenting_complaint>Progressive shortness of breath and lower extremity edema for 5 days</presenting_complaint>
+                <admission_weight_kg>87.1</admission_weight_kg>
+                <admission_height_cm>178.0</admission_height_cm>
+                <bmi>27.5</bmi>
+            </admission_info>
+
+            <historical_risk_factors>
+                <risk_factor>
+                    <condition>Coronary artery disease</condition>
+                    <diagnosis_date>2026-03-20</diagnosis_date>
+                    <status>Active</status>
+                    <notes>Status post CABG x3</notes>
+                </risk_factor>
+                <risk_factor>
+                    <condition>Chronic heart failure</condition>
+                    <diagnosis_date>2026-04-15</diagnosis_date>
+                    <status>Active</status>
+                    <notes>Reduced EF, outpatient follow-up with cardiology</notes>
+                </risk_factor>
+                <risk_factor>
+                    <condition>Type 2 Diabetes Mellitus</condition>
+                    <diagnosis_date>2015-02-10</diagnosis_date>
+                    <status>Active</status>
+                    <notes>On oral medications</notes>
+                </risk_factor>
+            </historical_risk_factors>
+
+            <historical_medications>
+                <medication>
+                    <medication_name>Aspirin</medication_name>
+                    <dose>81 mg</dose>
+                    <frequency>Once daily</frequency>
+                    <route>Oral</route>
+                    <start_date>2026-03-22</start_date>
+                    <end_date xsi:nil="true" />
+                    <status>Active at admission</status>
+                </medication>
+                <medication>
+                    <medication_name>Furosemide</medication_name>
+                    <dose>40 mg</dose>
+                    <frequency>Once daily</frequency>
+                    <route>Oral</route>
+                    <start_date>2026-05-01</start_date>
+                    <end_date xsi:nil="true" />
+                    <status>Active at admission</status>
+                </medication>
+                <medication>
+                    <medication_name>Metoprolol Succinate</medication_name>
+                    <dose>50 mg</dose>
+                    <frequency>Once daily</frequency>
+                    <route>Oral</route>
+                    <start_date>2026-03-24</start_date>
+                    <end_date xsi:nil="true" />
+                    <status>Active at admission</status>
+                </medication>
+            </historical_medications>
+
+            <episode_summary>
+                <total_length_of_stay_days>4.0</total_length_of_stay_days>
+                <discharge_date>2026-07-15T13:15:00</discharge_date>
+                <discharge_disposition>Home with outpatient heart failure clinic follow-up</discharge_disposition>
+                <discharge_ambulatory_status>Independent ambulation</discharge_ambulatory_status>
+                <in_hospital_mortality>false</in_hospital_mortality>
+            </episode_summary>
+
+            <stages>
+
+                <stage type="Admission">
+                    <stage_type>Admission</stage_type>
+                    <stage_id>STG-ADM-002</stage_id>
+                    <start_datetime>2026-07-11T10:20:00</start_datetime>
+                    <end_datetime>2026-07-11T14:00:00</end_datetime>
+                    <location>Emergency Department</location>
+
+                    <clinical_assessments>
+                        <assessment>
+                            <timestamp>2026-07-11T10:35:00</timestamp>
+                            <heart_rate>104</heart_rate>
+                            <blood_pressure_systolic>150</blood_pressure_systolic>
+                            <blood_pressure_diastolic>92</blood_pressure_diastolic>
+                            <oxygen_saturation>92.0</oxygen_saturation>
+                            <respiratory_rate>24</respiratory_rate>
+                            <temperature_celsius>37.0</temperature_celsius>
+                        </assessment>
+                    </clinical_assessments>
+
+                    <diagnoses>
+                        <diagnosis>
+                            <diagnosis_code>I50.23</diagnosis_code>
+                            <description>Acute on chronic systolic heart failure</description>
+                            <diagnosis_type>Primary</diagnosis_type>
+                            <diagnosis_datetime>2026-07-11T11:00:00</diagnosis_datetime>
+                            <diagnosing_physician>Dr. Emily Rodriguez</diagnosing_physician>
+                        </diagnosis>
+                    </diagnoses>
+
+                    <labs>
+                        <lab>
+                            <lab_type>BNP</lab_type>
+                            <lab_datetime>2026-07-11T11:10:00</lab_datetime>
+                            <lab_value>980</lab_value>
+                            <lab_unit>pg/mL</lab_unit>
+                            <reference_range>&lt;100</reference_range>
+                            <is_abnormal>true</is_abnormal>
+                        </lab>
+                    </labs>
+
+                    <medications_administered>
+                        <medication>
+                            <medication_name>Furosemide</medication_name>
+                            <dose>40 mg</dose>
+                            <route>IV</route>
+                            <administration_datetime>2026-07-11T11:20:00</administration_datetime>
+                            <ordered_by>Dr. Emily Rodriguez</ordered_by>
+                            <status>Given in ED</status>
+                        </medication>
+                    </medications_administered>
+                </stage>
+
+                <stage type="ICU">
+                    <stage_type>ICU</stage_type>
+                    <stage_id>STG-ICU-003</stage_id>
+                    <stage_sequence>1</stage_sequence>
+                    <start_datetime>2026-07-11T14:10:00</start_datetime>
+                    <end_datetime>2026-07-13T09:00:00</end_datetime>
+                    <location>Cardiac ICU, Bed 3</location>
+                    <icu_acuity_level>Level 2</icu_acuity_level>
+                    <icu_admission_source>Acute decompensated heart failure</icu_admission_source>
+
+                    <clinical_assessments>
+                        <assessment>
+                            <timestamp>2026-07-11T16:00:00</timestamp>
+                            <heart_rate>92</heart_rate>
+                            <blood_pressure_systolic>138</blood_pressure_systolic>
+                            <blood_pressure_diastolic>84</blood_pressure_diastolic>
+                            <oxygen_saturation>96.0</oxygen_saturation>
+                            <respiratory_rate>18</respiratory_rate>
+                            <central_venous_pressure>11</central_venous_pressure>
+                            <cardiac_output>4.5</cardiac_output>
+                        </assessment>
+                    </clinical_assessments>
+
+                    <medications_administered>
+                        <medication>
+                            <medication_name>Nitroglycerin</medication_name>
+                            <dose>10 mcg/min</dose>
+                            <route>IV infusion</route>
+                            <start_datetime>2026-07-11T14:30:00</start_datetime>
+                            <end_datetime>2026-07-12T05:00:00</end_datetime>
+                            <indication>Afterload reduction</indication>
+                        </medication>
+                    </medications_administered>
+
+                    <daily_goals>
+                        <goal>
+                            <post_operative_day>NA</post_operative_day>
+                            <goals>Diuresis target 2L negative balance and oxygen weaning</goals>
+                            <achieved>true</achieved>
+                        </goal>
+                    </daily_goals>
+                </stage>
+
+                <stage type="Ward">
+                    <stage_type>Ward</stage_type>
+                    <stage_id>STG-WARD-002</stage_id>
+                    <start_datetime>2026-07-13T09:15:00</start_datetime>
+                    <end_datetime>2026-07-15T12:00:00</end_datetime>
+                    <location>Cardiology Ward, Room 210</location>
+                    <room_type>Telemetry</room_type>
+
+                    <clinical_assessments>
+                        <assessment>
+                            <timestamp>2026-07-14T08:00:00</timestamp>
+                            <heart_rate>78</heart_rate>
+                            <blood_pressure_systolic>124</blood_pressure_systolic>
+                            <blood_pressure_diastolic>76</blood_pressure_diastolic>
+                            <oxygen_saturation>97.0</oxygen_saturation>
+                            <ambulation_distance_meters>120</ambulation_distance_meters>
+                            <dyspnea_on_exertion>Mild</dyspnea_on_exertion>
+                        </assessment>
+                    </clinical_assessments>
+
+                    <patient_education>
+                        <topic>Low-salt diet and daily fluid monitoring</topic>
+                        <delivery_datetime>2026-07-14T15:00:00</delivery_datetime>
+                        <provided_by>Heart Failure Nurse Educator</provided_by>
+                        <understanding_assessed>Good</understanding_assessed>
+                    </patient_education>
+
+                    <discharge_planning>
+                        <consult_datetime>2026-07-15T09:30:00</consult_datetime>
+                        <home_health_services>Nursing visit once weekly for 1 month</home_health_services>
+                        <outpatient_cardiac_rehab_referral>Heart failure clinic within 7 days</outpatient_cardiac_rehab_referral>
+                        <follow_up_appointments>
+                            <appointment>
+                                <specialty>Cardiology</specialty>
+                                <provider>Dr. James Wilson</provider>
+                                <appointment_date>2026-07-22</appointment_date>
+                            </appointment>
+                        </follow_up_appointments>
+                    </discharge_planning>
+                </stage>
+
+                <stage type="Discharge">
+                    <stage_type>Discharge</stage_type>
+                    <stage_id>STG-DIS-002</stage_id>
+                    <start_datetime>2026-07-15T12:00:00</start_datetime>
+                    <end_datetime>2026-07-15T13:15:00</end_datetime>
+                    <location>Cardiology Ward</location>
                 </stage>
 
             </stages>
