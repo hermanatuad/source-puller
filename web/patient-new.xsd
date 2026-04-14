@@ -53,8 +53,8 @@
       <xs:element name="admission_date" type="xs:string"/>
       <xs:element name="admission_source" type="xs:string"/>
       <xs:element name="presenting_complaint" type="xs:string"/>
-      <xs:element name="admission_weight_kg" type="xs:decimal"/>
-      <xs:element name="admission_height_cm" type="xs:decimal"/>
+      <xs:element name="admission_weight" type="ValueWithUnitType"/>
+      <xs:element name="admission_height" type="ValueWithUnitType"/>
       <xs:element name="bmi" type="xs:decimal"/>
     </xs:sequence>
   </xs:complexType>
@@ -94,7 +94,7 @@
 
   <xs:complexType name="EpisodeSummaryType">
     <xs:sequence>
-      <xs:element name="total_length_of_stay_days" type="xs:decimal"/>
+      <xs:element name="total_length_of_stay" type="ValueWithUnitType"/>
       <xs:element name="discharge_date" type="xs:string"/>
       <xs:element name="discharge_disposition" type="xs:string"/>
       <xs:element name="discharge_ambulatory_status" type="xs:string"/>
@@ -159,14 +159,14 @@
       <xs:element name="blood_pressure_diastolic" type="xs:string" minOccurs="0"/>
       <xs:element name="oxygen_saturation" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="respiratory_rate" type="xs:string" minOccurs="0"/>
-      <xs:element name="temperature_celsius" type="xs:string" minOccurs="0"/>
+      <xs:element name="temperature" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="central_venous_pressure" type="xs:string" minOccurs="0"/>
       <xs:element name="pulmonary_artery_pressure_systolic" type="xs:string" minOccurs="0"/>
       <xs:element name="pulmonary_artery_pressure_diastolic" type="xs:string" minOccurs="0"/>
       <xs:element name="cardiac_output" type="xs:string" minOccurs="0"/>
       <xs:element name="pain_score" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="sedation_score" type="xs:string" minOccurs="0"/>
-      <xs:element name="ambulation_distance_meters" type="xs:string" minOccurs="0"/>
+      <xs:element name="ambulation_distance" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="dyspnea_on_exertion" type="xs:string" minOccurs="0"/>
       </xs:choice>
     </xs:sequence>
@@ -535,7 +535,7 @@
     <xs:sequence>
       <xs:element name="bypass_initiation_time" type="xs:string" minOccurs="0"/>
       <xs:element name="bypass_termination_time" type="xs:string" minOccurs="0"/>
-      <xs:element name="total_bypass_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="total_bypass_time" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="aortic_cross_clamp_time" type="xs:string" minOccurs="0"/>
       <xs:element name="myocardial_protection" type="MyocardialProtectionType" minOccurs="0"/>
       <xs:element name="lowest_temperature" type="xs:string" minOccurs="0"/>
@@ -596,7 +596,7 @@
   <xs:complexType name="GraftFlowMeasurementType">
     <xs:sequence>
       <xs:element name="graft" type="xs:string" minOccurs="0"/>
-      <xs:element name="flow_ml_min" type="xs:string" minOccurs="0"/>
+      <xs:element name="flow" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="pulsatility_index" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -631,8 +631,8 @@
     <xs:sequence>
       <xs:element name="intravenous_fluids" type="IntravenousFluidsType" minOccurs="0"/>
       <xs:element name="blood_products" type="BloodProductsType" minOccurs="0"/>
-      <xs:element name="urine_output_ml" type="xs:string" minOccurs="0"/>
-      <xs:element name="estimated_blood_loss_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="urine_output" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="estimated_blood_loss" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -645,7 +645,7 @@
   <xs:complexType name="FluidType">
     <xs:sequence>
       <xs:element name="type" type="xs:string" minOccurs="0"/>
-      <xs:element name="volume_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="volume" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -711,7 +711,7 @@
 
   <xs:complexType name="DrainsType">
     <xs:sequence>
-      <xs:element name="chest_tube_output_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="chest_tube_output" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="characteristics" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -732,10 +732,10 @@
 
   <xs:complexType name="QualityMetricsType">
     <xs:sequence>
-      <xs:element name="operative_time_minutes" type="xs:string" minOccurs="0"/>
-      <xs:element name="skin_to_skin_time_minutes" type="xs:string" minOccurs="0"/>
-      <xs:element name="cardiopulmonary_bypass_time_minutes" type="xs:string" minOccurs="0"/>
-      <xs:element name="cross_clamp_time_minutes" type="xs:string" minOccurs="0"/>
+      <xs:element name="operative_time" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="skin_to_skin_time" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="cardiopulmonary_bypass_time" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="cross_clamp_time" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="complete_revascularization_achieved" type="xs:boolean" minOccurs="0"/>
       <xs:element name="graft_patency_assessed" type="xs:string" minOccurs="0"/>
       <xs:element name="sternal_wound_class" type="xs:string" minOccurs="0"/>
@@ -784,9 +784,9 @@
 
   <xs:complexType name="ChestTubeOutputType">
     <xs:sequence>
-      <xs:element name="day1_ml" type="xs:string" minOccurs="0"/>
-      <xs:element name="day2_ml" type="xs:string" minOccurs="0"/>
-      <xs:element name="day3_ml" type="xs:string" minOccurs="0"/>
+      <xs:element name="day1" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="day2" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="day3" type="ValueWithUnitType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -838,8 +838,8 @@
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="session_datetime" type="xs:string" minOccurs="0"/>
       <xs:element name="activity_type" type="xs:string" minOccurs="0"/>
-      <xs:element name="duration_minutes" type="xs:string" minOccurs="0"/>
-      <xs:element name="distance_meters" type="xs:string" minOccurs="0"/>
+      <xs:element name="duration" type="ValueWithUnitType" minOccurs="0"/>
+      <xs:element name="distance" type="ValueWithUnitType" minOccurs="0"/>
       <xs:element name="pre_activity_heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="post_activity_heart_rate" type="xs:string" minOccurs="0"/>
       <xs:element name="perceived_exertion" type="ValueWithUnitType" minOccurs="0"/>

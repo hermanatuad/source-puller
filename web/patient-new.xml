@@ -22,8 +22,8 @@
                 <admission_date>2026-03-20T08:30:00</admission_date>
                 <admission_source>Emergency Department</admission_source>
                 <presenting_complaint>Acute chest pain radiating to left arm, diaphoresis</presenting_complaint>
-                <admission_weight_kg>85.4</admission_weight_kg>
-                <admission_height_cm>178.0</admission_height_cm>
+                <admission_weight unit="kg">85.4</admission_weight>
+                <admission_height unit="cm">178.0</admission_height>
                 <bmi>27.0</bmi>
             </admission_info>
 
@@ -79,7 +79,7 @@
             </historical_medications>
 
             <episode_summary>
-                <total_length_of_stay_days>7.5</total_length_of_stay_days>
+                <total_length_of_stay unit="days">7.5</total_length_of_stay>
                 <discharge_date>2026-03-27T16:30:00</discharge_date>
                 <discharge_disposition>Home with home health services</discharge_disposition>
                 <discharge_ambulatory_status>Independent with walker</discharge_ambulatory_status>
@@ -103,7 +103,7 @@
                             <blood_pressure_diastolic>95</blood_pressure_diastolic>
                             <oxygen_saturation unit="percent">94.0</oxygen_saturation>
                             <respiratory_rate>22</respiratory_rate>
-                            <temperature_celsius>37.2</temperature_celsius>
+                            <temperature unit="celsius">37.2</temperature>
                         </assessment>
                         <assessment>
                             <timestamp>2026-03-20T11:30:00</timestamp>
@@ -426,7 +426,7 @@
                             <cardiopulmonary_bypass>
                                 <bypass_initiation_time>2026-03-21T08:45:00</bypass_initiation_time>
                                 <bypass_termination_time>2026-03-21T12:15:00</bypass_termination_time>
-                                <total_bypass_minutes>210</total_bypass_minutes>
+                                <total_bypass_time unit="minutes">210</total_bypass_time>
                                 <aortic_cross_clamp_time>165</aortic_cross_clamp_time>
                                 <myocardial_protection>
                                     <cardioplegia_type>Del Nido cardioplegia</cardioplegia_type>
@@ -483,17 +483,17 @@
                                 <graft_flow_measurements>
                                     <measurement>
                                         <graft>LIMA to LAD</graft>
-                                        <flow_ml_min>45</flow_ml_min>
+                                        <flow unit="mL/min">45</flow>
                                         <pulsatility_index>2.1</pulsatility_index>
                                     </measurement>
                                     <measurement>
                                         <graft>SVG to OM</graft>
-                                        <flow_ml_min>35</flow_ml_min>
+                                        <flow unit="mL/min">35</flow>
                                         <pulsatility_index>2.4</pulsatility_index>
                                     </measurement>
                                     <measurement>
                                         <graft>SVG to RCA</graft>
-                                        <flow_ml_min>40</flow_ml_min>
+                                        <flow unit="mL/min">40</flow>
                                         <pulsatility_index>2.2</pulsatility_index>
                                     </measurement>
                                 </graft_flow_measurements>
@@ -534,11 +534,11 @@
                             <intravenous_fluids>
                                 <fluid>
                                     <type>Crystalloids</type>
-                                    <volume_ml>2500</volume_ml>
+                                    <volume unit="mL">2500</volume>
                                 </fluid>
                                 <fluid>
                                     <type>Colloids</type>
-                                    <volume_ml>500</volume_ml>
+                                    <volume unit="mL">500</volume>
                                 </fluid>
                             </intravenous_fluids>
                             <blood_products>
@@ -558,8 +558,8 @@
                                     <indication>Thrombocytopenia post-bypass</indication>
                                 </product>
                             </blood_products>
-                            <urine_output_ml>850</urine_output_ml>
-                            <estimated_blood_loss_ml>450</estimated_blood_loss_ml>
+                            <urine_output unit="mL">850</urine_output>
+                            <estimated_blood_loss unit="mL">450</estimated_blood_loss>
                         </fluid_management>
                     </intra_operative>
 
@@ -599,7 +599,7 @@
                                 </infusion>
                             </infusions>
                             <drains>
-                                <chest_tube_output_ml>150</chest_tube_output_ml>
+                                <chest_tube_output unit="mL">150</chest_tube_output>
                                 <characteristics>Serosanguinous</characteristics>
                             </drains>
                             <special_instructions>
@@ -627,10 +627,10 @@
 
 
                     <quality_metrics>
-                        <operative_time_minutes>375</operative_time_minutes>
-                        <skin_to_skin_time_minutes>310</skin_to_skin_time_minutes>
-                        <cardiopulmonary_bypass_time_minutes>210</cardiopulmonary_bypass_time_minutes>
-                        <cross_clamp_time_minutes>165</cross_clamp_time_minutes>
+                        <operative_time unit="minutes">375</operative_time>
+                        <skin_to_skin_time unit="minutes">310</skin_to_skin_time>
+                        <cardiopulmonary_bypass_time unit="minutes">210</cardiopulmonary_bypass_time>
+                        <cross_clamp_time unit="minutes">165</cross_clamp_time>
                         <complete_revascularization_achieved>true</complete_revascularization_achieved>
                         <graft_patency_assessed>All grafts patent</graft_patency_assessed>
                         <sternal_wound_class>Clean</sternal_wound_class>
@@ -671,7 +671,7 @@
                             <cardiac_output>4.2</cardiac_output>
                             <oxygen_saturation unit="percent">96.0</oxygen_saturation>
                             <respiratory_rate>18</respiratory_rate>
-                            <temperature_celsius>36.8</temperature_celsius>
+                            <temperature unit="celsius">36.8</temperature>
                             <pain_score unit="/10">3</pain_score>
                             <sedation_score>RASS -1</sedation_score>
                         </assessment>
@@ -705,9 +705,9 @@
                             <location>Mediastinal</location>
                             <size unit="Fr">28</size>
                             <output>
-                                <day1_ml>350</day1_ml>
-                                <day2_ml>150</day2_ml>
-                                <day3_ml>75</day3_ml>
+                                <day1 unit="mL">350</day1>
+                                <day2 unit="mL">150</day2>
+                                <day3 unit="mL">75</day3>
                             </output>
                             <removal_datetime>2026-03-24T10:00:00</removal_datetime>
                         </chest_tube>
@@ -715,9 +715,9 @@
                             <location>Pleural</location>
                             <size unit="Fr">32</size>
                             <output>
-                                <day1_ml>200</day1_ml>
-                                <day2_ml>100</day2_ml>
-                                <day3_ml>50</day3_ml>
+                                <day1 unit="mL">200</day1>
+                                <day2 unit="mL">100</day2>
+                                <day3 unit="mL">50</day3>
                             </output>
                             <removal_datetime>2026-03-24T10:00:00</removal_datetime>
                         </chest_tube>
@@ -798,7 +798,7 @@
                             <blood_pressure_systolic>118</blood_pressure_systolic>
                             <blood_pressure_diastolic>72</blood_pressure_diastolic>
                             <oxygen_saturation unit="percent">97.0</oxygen_saturation>
-                            <ambulation_distance_meters>50</ambulation_distance_meters>
+                            <ambulation_distance unit="meters">50</ambulation_distance>
                             <dyspnea_on_exertion>Mild</dyspnea_on_exertion>
                         </assessment>
                     </clinical_assessments>
@@ -858,8 +858,8 @@
                             <session>
                                 <session_datetime>2026-03-23T10:00:00</session_datetime>
                                 <activity_type>Supervised ambulation</activity_type>
-                                <duration_minutes>10</duration_minutes>
-                                <distance_meters>50</distance_meters>
+                                <duration unit="minutes">10</duration>
+                                <distance unit="meters">50</distance>
                                 <pre_activity_heart_rate>70</pre_activity_heart_rate>
                                 <post_activity_heart_rate>88</post_activity_heart_rate>
                                 <perceived_exertion unit="/10">3</perceived_exertion>
@@ -867,8 +867,8 @@
                             <session>
                                 <session_datetime>2026-03-25T10:30:00</session_datetime>
                                 <activity_type>Ambulation and light resistance</activity_type>
-                                <duration_minutes>15</duration_minutes>
-                                <distance_meters>100</distance_meters>
+                                <duration unit="minutes">15</duration>
+                                <distance unit="meters">100</distance>
                                 <resistance_exercises>Seated leg raises, arm curls with 2 lb weights</resistance_exercises>
                                 <perceived_exertion unit="/10">4</perceived_exertion>
                             </session>
@@ -923,8 +923,8 @@
                 <admission_date>2026-07-11T10:20:00</admission_date>
                 <admission_source>Outpatient Referral</admission_source>
                 <presenting_complaint>Progressive shortness of breath and lower extremity edema for 5 days</presenting_complaint>
-                <admission_weight_kg>87.1</admission_weight_kg>
-                <admission_height_cm>178.0</admission_height_cm>
+                <admission_weight unit="kg">87.1</admission_weight>
+                <admission_height unit="cm">178.0</admission_height>
                 <bmi>27.5</bmi>
             </admission_info>
 
@@ -980,7 +980,7 @@
             </historical_medications>
 
             <episode_summary>
-                <total_length_of_stay_days>4.0</total_length_of_stay_days>
+                <total_length_of_stay unit="days">4.0</total_length_of_stay>
                 <discharge_date>2026-07-15T13:15:00</discharge_date>
                 <discharge_disposition>Home with outpatient heart failure clinic follow-up</discharge_disposition>
                 <discharge_ambulatory_status>Independent ambulation</discharge_ambulatory_status>
@@ -1004,7 +1004,7 @@
                             <blood_pressure_diastolic>92</blood_pressure_diastolic>
                             <oxygen_saturation unit="percent">92.0</oxygen_saturation>
                             <respiratory_rate>24</respiratory_rate>
-                            <temperature_celsius>37.0</temperature_celsius>
+                            <temperature unit="celsius">37.0</temperature>
                         </assessment>
                     </clinical_assessments>
 
@@ -1099,7 +1099,7 @@
                             <blood_pressure_systolic>124</blood_pressure_systolic>
                             <blood_pressure_diastolic>76</blood_pressure_diastolic>
                             <oxygen_saturation unit="percent">97.0</oxygen_saturation>
-                            <ambulation_distance_meters>120</ambulation_distance_meters>
+                            <ambulation_distance unit="meters">120</ambulation_distance>
                             <dyspnea_on_exertion>Mild</dyspnea_on_exertion>
                         </assessment>
                     </clinical_assessments>
@@ -1137,4 +1137,7 @@
         </episode>
     </episodes>
 </patients>
+
+
+
 

@@ -49,5 +49,6 @@ mkdir -p /var/www/html/runtime/cache /var/www/html/web/assets
 chown -R www-data:www-data /var/www/html/runtime /var/www/html/web/assets || true
 chmod -R 0777 /var/www/html/runtime /var/www/html/web/assets || true
 
+
 # Execute the main process (php-fpm)
 exec "$@"
