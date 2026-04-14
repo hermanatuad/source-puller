@@ -62,7 +62,7 @@
                         <div class="head">Patient New XML Viewer</div>
                         <pre class="content"><xsl:apply-templates select="*" mode="pretty"/></pre>
                     </div>
-                    <div class="hint">Rendered with patient-new.xsl so browser does not show default XML warning text.</div>
+                    <div class="hint">Rendered with patient.xsl so browser does not show default XML warning text.</div>
                 </div>
             </body>
         </html>

@@ -171,9 +171,9 @@ class SiteController extends Controller
      */
     public function actionXml()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient-new.xml not found');
+            throw new NotFoundHttpException('patient.xml not found');
         }
 
         Yii::$app->response->format = Response::FORMAT_RAW;
@@ -184,9 +184,9 @@ class SiteController extends Controller
 
     public function actionXmlNew()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient-new.xml not found');
+            throw new NotFoundHttpException('patient.xml not found');
         }
 
         $this->view->title = 'Patient New XML Viewer';
@@ -239,9 +239,9 @@ class SiteController extends Controller
 
     public function actionXsdNew()
     {
-        $xsdPath = Yii::getAlias('@webroot') . '/patient-new.xsd';
+        $xsdPath = Yii::getAlias('@webroot') . '/patient.xsd';
         if (!file_exists($xsdPath)) {
-            throw new NotFoundHttpException('patient-new.xsd not found');
+            throw new NotFoundHttpException('patient.xsd not found');
         }
 
         $this->view->title = 'Patient New XSD Viewer';
@@ -270,9 +270,9 @@ class SiteController extends Controller
      */
     public function actionXmlEditor()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient-new.xml not found');
+            throw new NotFoundHttpException('patient.xml not found');
         }
 
         $this->view->title = 'Patient New XML Editor';
@@ -303,9 +303,9 @@ class SiteController extends Controller
                     $formattedXml = $dom->saveXML();
 
                     if (file_put_contents($xmlPath, $formattedXml, LOCK_EX) === false) {
-                        Yii::$app->session->setFlash('error', 'Failed to save patient-new.xml. Please check file permissions.');
+                        Yii::$app->session->setFlash('error', 'Failed to save patient.xml. Please check file permissions.');
                     } else {
-                        Yii::$app->session->setFlash('success', 'patient-new.xml updated successfully.');
+                        Yii::$app->session->setFlash('success', 'patient.xml updated successfully.');
                         libxml_clear_errors();
                         libxml_use_internal_errors($previousUseInternalErrors);
 
