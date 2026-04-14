@@ -49,6 +49,14 @@ mkdir -p /var/www/html/runtime/cache /var/www/html/web/assets
 chown -R www-data:www-data /var/www/html/runtime /var/www/html/web/assets || true
 chmod -R 0777 /var/www/html/runtime /var/www/html/web/assets || true
 
+# Ensure editable XML/XSD/XSL files under web/ are writable by php-fpm (www-data)
+for f in /var/www/html/web/patient.xml /var/www/html/web/patient-new.xml /var/www/html/web/patient.xsd /var/www/html/web/patient-new.xsd /var/www/html/web/patient.xsl /var/www/html/web/patient-new.xsl; do
+  if [ -f "$f" ]; then
+    chown www-data:www-data "$f" || true
+    chmod 0666 "$f" || true
+  fi
+done
+
 
 # Execute the main process (php-fpm)
 exec "$@"
