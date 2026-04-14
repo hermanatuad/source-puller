@@ -185,6 +185,7 @@ class SiteController extends Controller
     public function actionXmlNew()
     {
         $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
+        echo '<pre>';print_r($xmlPath);die;
         if (!file_exists($xmlPath)) {
             throw new NotFoundHttpException('patient-new.xml not found');
         }
