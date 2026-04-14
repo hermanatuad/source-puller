@@ -171,9 +171,9 @@ class SiteController extends Controller
      */
     public function actionXml()
     {
-        $xmlPath = Yii::getAlias('@webroot') . '/patient.xml';
+        $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
         if (!file_exists($xmlPath)) {
-            throw new NotFoundHttpException('patient.xml not found');
+            throw new NotFoundHttpException('patient-new.xml not found');
         }
 
         Yii::$app->response->format = Response::FORMAT_RAW;
@@ -185,7 +185,6 @@ class SiteController extends Controller
     public function actionXmlNew()
     {
         $xmlPath = Yii::getAlias('@webroot') . '/patient-new.xml';
-        echo '<pre>';print_r($xmlPath);die;
         if (!file_exists($xmlPath)) {
             throw new NotFoundHttpException('patient-new.xml not found');
         }
