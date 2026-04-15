@@ -196,7 +196,6 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
-                    echo '<pre>';print_r($pkColumn);die;
 
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
@@ -849,7 +848,7 @@ class BridgeController extends Controller
                         'extractedCount' => $extractedCount,
                     ];
                 }
-            } elseif ($systemType === 'postgres' || $systemType === 'oracle' || strpos($systemType, 'sql-server') !== false || strpos($systemType, 'sqlserver') !== false) {
+            } elseif ($systemType === 'postgres' || $systemType === 'oracle' || strpos($systemType, 'sql-server') !== false ) {
 
                 if ($model->bridge_type == 'independent') {
 
@@ -872,6 +871,8 @@ class BridgeController extends Controller
                         $model->bridge_table_source
                     );
 
+                    echo '<pre>';print_r($systemType);die;
+                    echo '<pre>';print_r($pkColumn);die;
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
                     }
