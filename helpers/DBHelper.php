@@ -1058,13 +1058,14 @@ class DBHelper
         $cacheDir = Yii::getAlias('@runtime') . '/db_cache/';
 
         $hash = md5("$hostname:$port:$username:$database");
-        $prefixes = ['mysql_schema_', 'oracle_schema_'];
+        // Fallback to checking all known prefixes when system_type is missing.
+        $prefixes = ['mysql_schema_', 'oracle_schema_', 'sql-server_schema_', 'postgres_schema_'];
 
         if ($systemType === 'mysql') {
             $prefixes = ['mysql_schema_'];
         } elseif ($systemType === 'oracle') {
             $prefixes = ['oracle_schema_'];
-        } elseif ($systemType === 'sql-server') {
+        } elseif ($systemType === 'sql-server' || $systemType === 'sqlserver') {
             $prefixes = ['sql-server_schema_'];
         }elseif ($systemType === 'postgres') {
             $prefixes = ['postgres_schema_'];
@@ -1097,13 +1098,14 @@ class DBHelper
         $cacheDir = Yii::getAlias('@runtime') . '/db_cache/';
 
         $hash = md5("$hostname:$port:$username:$database");
-        $prefixes = ['mysql_schema_', 'oracle_schema_'];
+        // Fallback to checking all known prefixes when system_type is missing.
+        $prefixes = ['mysql_schema_', 'oracle_schema_', 'sql-server_schema_', 'postgres_schema_'];
 
         if ($systemType === 'mysql') {
             $prefixes = ['mysql_schema_'];
         } elseif ($systemType === 'oracle') {
             $prefixes = ['oracle_schema_'];
-        } elseif ($systemType === 'sql-server') {
+        } elseif ($systemType === 'sql-server' || $systemType === 'sqlserver') {
             $prefixes = ['sql-server_schema_'];
         } elseif ($systemType === 'postgres') {
             $prefixes = ['postgres_schema_'];

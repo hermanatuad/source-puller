@@ -282,6 +282,7 @@ class SystemController extends Controller
             'port' => $model->port,
             'username' => $model->username,
             'database' => $model->database_name ?? null,
+            'system_type' => $model->system_type,
         ];
 
         $result = DBHelper::clearCache($params);
