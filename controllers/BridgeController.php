@@ -1744,7 +1744,7 @@ class BridgeController extends Controller
 
             if ($type === 'oracle' || strpos($type, 'sql-server') !== false || strpos($type, 'postgres') !== false) {
                 $msPort = $this->getMicroservicePort($systemType);
-                $url = 'http://34.60.27.246:' . $msPort . '/get-primary-keys?params=' . urlencode(json_encode([
+                $url = 'http://34.68.68.86:' . $msPort . '/get-primary-keys?params=' . urlencode(json_encode([
                     'hostname' => $hostname,
                     'port' => $port,
                     'username' => $username,
