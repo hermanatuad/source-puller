@@ -881,7 +881,7 @@ class BridgeController extends Controller
                         ->column();
 
                     $msPort = $this->getMicroservicePort($database->system_type);
-                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
+                    $urlDataColumns = 'http://34.68.68.86:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
                         'columns' => $sourceColumns,
@@ -1172,7 +1172,7 @@ class BridgeController extends Controller
                         ->column();
 
                     $msPort = $this->getMicroservicePort($database->system_type);
-                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
+                    $urlDataColumns = 'http://34.68.68.86:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
                         'columns' => $sourceColumns,
@@ -1478,7 +1478,7 @@ class BridgeController extends Controller
                     // Fetch data from microservice for Oracle/SQL Server
                     $sourceColumns = array_values(array_unique(array_values($mapTargetToSource)));
                     $msPort = $this->getMicroservicePort($database->system_type);
-                    $urlDataColumns = 'http://34.60.27.246:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
+                    $urlDataColumns = 'http://34.68.68.86:' . $msPort . '/get-data-columns?params=' . urlencode(json_encode([
                         'hostname' => $database->hostname,
                         'port' => $database->port,
                         'columns' => $sourceColumns,
