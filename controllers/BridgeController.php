@@ -870,7 +870,7 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
-                    echo '<pre>';print_r($pkColumn);die;
+                    
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
                     }
