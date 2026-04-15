@@ -158,7 +158,6 @@ class BridgeController extends Controller
 
     public function actionRun($id)
     {
-        echo '<pre>';print_r('co');die;
         $isAjax = Yii::$app->request->isAjax;
         if ($isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -871,8 +870,6 @@ class BridgeController extends Controller
                         $database->port,
                         $model->bridge_table_source
                     );
-
-                    echo '<pre>';print_r($systemType);die;
                     echo '<pre>';print_r($pkColumn);die;
                     if (!$pkColumn) {
                         throw new Exception("Could not determine primary key for source table: {$model->bridge_table_source}");
