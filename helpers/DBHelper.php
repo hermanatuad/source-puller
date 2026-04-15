@@ -236,7 +236,7 @@ class DBHelper
 
         try {
             // Build API request URL (GET with params)
-            $url = 'http://34.60.27.246:2002/check-connection?params=' . urlencode(json_encode([
+            $url = 'http://34.68.68.86:2002/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
                 'port' => $port,
@@ -377,7 +377,7 @@ class DBHelper
 
         try {
             // Build API request URL (GET with params)
-            $url = 'http://34.60.27.246:2003/check-connection?params=' . urlencode(json_encode([
+            $url = 'http://34.68.68.86:2003/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
                 'port' => $port,
@@ -518,7 +518,7 @@ class DBHelper
 
         try {
             // Build API request URL (GET with params)
-            $url = 'http://34.60.27.246:2004/check-connection?params=' . urlencode(json_encode([
+            $url = 'http://34.68.68.86:2004/check-connection?params=' . urlencode(json_encode([
                 'system_code' => $model->system_code,
                 'hostname' => $model->hostname,
                 'port' => $port,

@@ -30,7 +30,7 @@ except Exception:
     PYMysql_AVAILABLE = False
 
 DB_CONFIG = {
-    "host": "34.60.27.246",
+    "host": "34.68.68.86",
     "user": "root",
     "password": "example",
     "port": 1234
