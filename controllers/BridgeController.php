@@ -1752,6 +1752,8 @@ class BridgeController extends Controller
                     'database' => $database_name,
                     'table_name' => $table_name,
                 ]));
+                
+                echo '<pre>';print_r($url);die;
                 $ch = curl_init($url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 30);
