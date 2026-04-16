@@ -28,7 +28,7 @@
                     <div class="col-lg-8">
                         <div class="text-center mb-5">
                             <h3 class="mb-3 fw-semibold">Buluh Bambu</h3>
-                            <p class="text-muted mb-4">Growing and mantain the patient data</p>
+                            <p class="text-muted mb-4">Growing and maintain the patient data</p>
 
                             <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
                                 <a href="site/signin" class="btn btn-primary waves-effect waves-light px-3 d-inline-flex align-items-center gap-2">
