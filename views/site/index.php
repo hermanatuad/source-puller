@@ -9,7 +9,7 @@ $this->title = 'Extraction Tools';
     <div class="jumbotron text-center bg-transparent">
         <h1 class="display-4">Extraction Tools</h1>
 
-        <p class="lead">Data Warehouse System for Extraction Tools</p>
+        <p class="lead">From Database Sources to Data Warehouse</p>
 
         <!-- <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p> -->
     </div>
