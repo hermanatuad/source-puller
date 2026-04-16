@@ -32,7 +32,7 @@
                                         <div class="position-relative h-100 d-flex flex-column">
                                             <div class="mb-4">
                                                 <a href="/" class="d-block">
-                                                    Source Puller
+                                                    Extraction Tools
                                                 </a>
                                             </div>
                                             <div class="mt-auto">

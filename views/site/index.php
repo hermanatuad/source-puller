@@ -2,12 +2,12 @@
 
 /** @var yii\web\View $this */
 
-$this->title = 'Source Puller';
+$this->title = 'Extraction Tools';
 ?>
 <div class="site-index">
 
     <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Source Puller</h1>
+        <h1 class="display-4">Extraction Tools</h1>
 
         <p class="lead">Data Warehouse System for Extraction Tools</p>
 
