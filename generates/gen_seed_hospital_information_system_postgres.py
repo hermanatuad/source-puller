@@ -3,47 +3,43 @@
 Seed script for `hospital_information_system` database.
 
 Creates sample patients, services, visits and billing rows using simple random data.
-Uses `pyodbc` for SQL Server.
+Uses `psycopg2` for PostgreSQL.
 
 Usage:
-  python generates/gen_seed_hospital_information_system_mssql.py --server 127.0.0.1 --user sa --password 'YourStrong!Password123' --port 1433 --db hospital_information_system --patients 50
+  python generates/gen_seed_hospital_information_system_postgres.py --host 127.0.0.1 --user postgres --password postgres --port 5432 --db hospital_information_system --patients 50
 """
 import argparse
 import random
 import string
-import sys
 import uuid
 from datetime import datetime, timedelta
 
 try:
-    import pyodbc
-    MSSQL_CONNECTOR = True
+    import psycopg2
+    POSTGRES_CONNECTOR = True
 except Exception:
-    pyodbc = None
-    MSSQL_CONNECTOR = False
+    psycopg2 = None
+    POSTGRES_CONNECTOR = False
 
 DB_CONFIG = {
-    "server": "34.31.172.119",
-    "user": "sa",
-    "password": "YourStrong!Password123",
-    "port": 1433
+    "host": "34.31.172.119",
+    "user": "appuser",
+    "password": "AppPass!123",
+    "port": 5432
 }
 
 
-def get_mssql_connection(server, user, password, port, database=None):
-    if not MSSQL_CONNECTOR:
-        raise RuntimeError('pyodbc is not available. Install pyodbc in your environment.')
+def get_postgres_connection(host, user, password, port, database):
+    if not POSTGRES_CONNECTOR:
+        raise RuntimeError('psycopg2 is not available. Install psycopg2-binary in your environment.')
 
-    database_name = database or 'master'
-    conn_str = (
-        'DRIVER={ODBC Driver 17 for SQL Server};'
-        f'SERVER={server},{port};'
-        f'DATABASE={database_name};'
-        f'UID={user};'
-        f'PWD={password};'
-        'TrustServerCertificate=yes;'
+    return psycopg2.connect(
+        host=host,
+        user=user,
+        password=password,
+        port=port,
+        dbname=database,
     )
-    return pyodbc.connect(conn_str)
 
 
 def rand_digits(n=8):
@@ -88,19 +84,11 @@ def random_date_of_birth(min_age=0, max_age=90):
 def seed(conn, args):
     cursor = conn.cursor()
 
-    db = args.db
-    if db:
-        try:
-            cursor.execute(f"USE [{db}]")
-        except Exception as e:
-            print('Failed to set database:', e)
-            raise
-
     if args.truncate:
-        print('Truncating tables (billing, services, visits, patients)')
-        for t in ('billing', 'services', 'visits', 'patients'):
+        print('Truncating tables (billing, visits, services, patients)')
+        for t in ('billing', 'visits', 'services', 'patients'):
             try:
-                cursor.execute(f"DELETE FROM [{t}]")
+                cursor.execute(f'DELETE FROM {t}')
             except Exception:
                 print('Failed to clear table', t)
 
@@ -132,7 +120,7 @@ def seed(conn, args):
 
     patient_sql = (
         "INSERT INTO patients (patient_id, national_id, medical_record_number, full_name, date_of_birth, gender, religion, marital_status, city, province, residential, race, address, created_at)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     )
 
     print('Inserting patients...')
@@ -153,10 +141,18 @@ def seed(conn, args):
         svc_rows.append((service_id, code, name, stype, price, now))
 
     print('Inserting services...')
-    svc_sql = "INSERT INTO services (service_id, service_code, service_name, service_type, unit_price, created_at) VALUES (?,?,?,?,?,?)"
+    svc_sql = (
+        "INSERT INTO services (service_id, service_code, service_name, service_type, unit_price, created_at) "
+        "VALUES (%s, %s, %s, %s, %s, %s) "
+        "ON CONFLICT (service_code) DO UPDATE SET "
+        "service_name = EXCLUDED.service_name, "
+        "service_type = EXCLUDED.service_type, "
+        "unit_price = EXCLUDED.unit_price"
+    )
     cursor.executemany(svc_sql, svc_rows)
 
-    service_ids = [row[0] for row in sample_services]
+    cursor.execute('SELECT service_id FROM services')
+    service_ids = [row[0] for row in cursor.fetchall()]
 
     # VISITS and BILLING
     visit_rows = []
@@ -185,7 +181,7 @@ def seed(conn, args):
             ))
 
     visit_sql = ("INSERT INTO visits (visit_id, patient_id, visit_date, exit_date, visit_type, attending_doctor, status, created_at) "
-                 "VALUES (?,?,?,?,?,?,?,?)")
+                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
     cursor.executemany(visit_sql, visit_rows)
 
     visit_ids = [row[0] for row in visit_rows]
@@ -201,7 +197,10 @@ def seed(conn, args):
             bill_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             billing_rows.append((str(uuid.uuid4()), vid, sid, qty, total, bill_date))
 
-    billing_sql = "INSERT INTO billing (billing_id, visit_id, service_id, quantity, total_amount, billing_date) VALUES (?,?,?,?,?,?)"
+    billing_sql = (
+        "INSERT INTO billing (billing_id, visit_id, service_id, quantity, total_amount, billing_date) "
+        "VALUES (%s,%s,%s,%s,%s,%s)"
+    )
     if billing_rows:
         cursor.executemany(billing_sql, billing_rows)
 
@@ -215,8 +214,9 @@ def seed(conn, args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Seed hospital_information_system sample data for SQL Server')
-    parser.add_argument('--server', default=None)
+    parser = argparse.ArgumentParser(description='Seed hospital_information_system sample data for PostgreSQL')
+    parser.add_argument('--host', default=None)
+    parser.add_argument('--server', default=None, help='Alias for --host (backward compatibility)')
     parser.add_argument('--user', default=None)
     parser.add_argument('--password', default=None)
     parser.add_argument('--port', type=int, default=None)
@@ -227,13 +227,13 @@ def main():
     args = parser.parse_args()
 
     # use DB_CONFIG as defaults when CLI args are not provided
-    server = args.server if args.server is not None else DB_CONFIG.get('server')
+    host = args.host or args.server or DB_CONFIG.get('host')
     user = args.user if args.user is not None else DB_CONFIG.get('user')
     password = args.password if args.password is not None else DB_CONFIG.get('password')
     port = args.port if args.port is not None else DB_CONFIG.get('port')
     dbname = args.db if args.db is not None else 'hospital_information_system'
 
-    conn = get_mssql_connection(server, user, password, port, database=dbname)
+    conn = get_postgres_connection(host, user, password, port, database=dbname)
     try:
         seed(conn, args)
     finally:

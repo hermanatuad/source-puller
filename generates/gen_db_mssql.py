@@ -10,7 +10,7 @@ except Exception:
 
 
 DB_CONFIG = {
-    "server": "34.45.175.24",
+    "server": "34.31.172.119",
     "user": "sa",
     "password": "YourStrong!Password123",
     "port": 1433

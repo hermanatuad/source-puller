@@ -19,7 +19,7 @@ class DWHelper
      * @var array
      */
     private static $dwConfig = [
-        'hostname' => '34.45.175.24',
+        'hostname' => '34.31.172.119',
         'username' => 'appuser',
         'password' => 'AppPass!123',
         'port' => 5432,

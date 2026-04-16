@@ -21,7 +21,7 @@ except Exception:
     ORACLE_AVAILABLE = False
 
 DB_CONFIG = {
-    "host": "34.68.68.86",
+    "host": "34.31.172.119",
     "port": 3333,
     "user": "app_user",
     "password": "app_pass",

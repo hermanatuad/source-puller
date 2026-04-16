@@ -14,10 +14,10 @@ except Exception:
 
 # Default MySQL server config (can be overridden via CLI)
 DB_CONFIG = {
-    "host": "34.68.68.86",
+    "host": "34.31.172.119",
     "user": "root",
-    "password": "example",
-    "port": 1234
+    "password": "rootpassword123",
+    "port": 3456
 }
 
 # MySQL schemas (keeps MySQL-specific syntax)

@@ -371,7 +371,7 @@ class BridgeController extends Controller
                             }
                         }
 
-                        $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                        $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -552,7 +552,7 @@ class BridgeController extends Controller
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                    $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                     $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -770,7 +770,7 @@ class BridgeController extends Controller
 
                     $columns = array_keys($pgRows[0]);
 
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                    $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                     $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -1070,7 +1070,7 @@ class BridgeController extends Controller
                             }
                         }
 
-                        $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                        $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -1279,7 +1279,7 @@ class BridgeController extends Controller
                         return $this->redirect(['view', 'id' => $id]);
                     }
 
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                    $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                     $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
@@ -1527,7 +1527,7 @@ class BridgeController extends Controller
                         }
                     }
 
-                    $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+                    $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
 
                     $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [
                         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,

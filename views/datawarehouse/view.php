@@ -27,7 +27,7 @@ if (preg_match('/^[a-zA-Z0-9_]+$/', (string)$tableName)) {
         $pageSize = 50;
         $offset = 0;
 
-        $dsn = "pgsql:host=34.45.175.24;port=5432;dbname=datawarehouse";
+        $dsn = "pgsql:host=34.31.172.119;port=5432;dbname=datawarehouse";
         $pdo = new \PDO($dsn, 'appuser', 'AppPass!123', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
 
         $countStmt = $pdo->prepare('SELECT COUNT(*) AS total_rows FROM "' . $tableName . '"');

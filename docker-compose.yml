@@ -21,7 +21,7 @@ services:
       - .env
     networks:
       - yii2-network
-    # Note: external DB at 34.45.175.24; no local DB dependency
+    # Note: external DB at 34.31.172.119; no local DB dependency
 
   # Nginx Service
   nginx:
@@ -40,7 +40,7 @@ services:
     depends_on:
       - php
 
-  # Databases are provided externally at 34.45.175.24 (MySQL & PostgreSQL)
+  # Databases are provided externally at 34.31.172.119 (MySQL & PostgreSQL)
 
 networks:
   yii2-network:
