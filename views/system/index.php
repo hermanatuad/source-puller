@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <th scope="col">DBS Code</th>
                                 <th scope="col">Application System</th>
                                 <th scope="col">DBS Name</th>
+                                <th scope="col">Hostname</th>
                                 <th scope="col">Type</th>
                                 <th scope="col" class="text-center">Actions</th>
                             </tr>
@@ -55,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= Html::encode($model->system_code) ?></td>
                                         <td><?= Html::a($model->system_name, ['check-connection', 'id' => $model->id]) ?></td>
                                         <td><?= Html::encode($model->database_name) ?></td>
+                                        <td><?= Html::encode($model->hostname) ?: '<span class="text-muted">-</span>' ?></td>
                                         <td><?= Html::encode(ucfirst($model->system_type)) ?></td>
                                         <td class="text-center">
                                             <div class="dropdown">
@@ -87,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted py-4">
+                                    <td colspan="7" class="text-center text-muted py-4">
                                         <i class="ri-inbox-line fs-1 d-block mb-2"></i>
                                         No systems found
                                     </td>
